@@ -1,10 +1,16 @@
-
-import { LoginPage } from './features/auth';
+import { useState } from 'react';
+import { LoginPage, RegisterPage } from './features/auth';
 
 function App() {
+  const [isLoginView, setIsLoginView] = useState(true);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <LoginPage />
+      {isLoginView ? (
+        <LoginPage onToggleView={() => setIsLoginView(false)} />
+      ) : (
+        <RegisterPage onToggleView={() => setIsLoginView(true)} />
+      )}
     </div>
   );
 }
