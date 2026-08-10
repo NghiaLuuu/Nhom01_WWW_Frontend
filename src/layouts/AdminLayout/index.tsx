@@ -7,7 +7,7 @@ import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 export const AdminLayout: React.FC = () => {
   const location = useLocation();
    const titles: Record<string, string> = {
-    "/admin": "Tổng quan",
+    "/admin": "Bảng điều khiển",
     "/admin/trips": "Quản lý chuyến xe",
     "/admin/tickets": "Quản lý đặt vé",
     "/admin/passengers": "Quản lý hành khách",
