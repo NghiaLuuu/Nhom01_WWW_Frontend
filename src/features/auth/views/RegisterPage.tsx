@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { Bus, User, Lock, Eye, EyeOff, Mail } from 'lucide-react';
 
 const CONTENT = {
@@ -23,6 +24,7 @@ interface RegisterPageProps {
 }
 
 export const RegisterPage: React.FC<RegisterPageProps> = ({ onToggleView }) => {
+  useDocumentTitle(CONTENT.TITLE);
   const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
