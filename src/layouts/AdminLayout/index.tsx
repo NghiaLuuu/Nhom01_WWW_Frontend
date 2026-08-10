@@ -1,9 +1,22 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 export const AdminLayout: React.FC = () => {
+  const location = useLocation();
+   const titles: Record<string, string> = {
+    "/admin": "Tổng quan",
+    "/admin/trips": "Quản lý chuyến xe",
+    "/admin/tickets": "Quản lý đặt vé",
+    "/admin/passengers": "Quản lý hành khách",
+    "/admin/vehicles-drivers": "Quản lý xe & tài xế",
+    "/admin/routes": "Quản lý tuyến đường",
+    "/admin/reports": "Báo cáo & thống kê",
+    "/admin/settings": "Cài đặt",
+  };
+  useDocumentTitle(titles[location.pathname] || "Quản trị");
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
       {/* Fixed Sidebar Skeleton */}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { Bus, User, Lock, Eye, EyeOff } from 'lucide-react';
 
 // === CONSTANTS FOR CONTENT (Fixed UI Skeleton) ===
@@ -24,6 +25,7 @@ interface LoginPageProps {
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
+  useDocumentTitle(CONTENT.TITLE);
   const [showPassword, setShowPassword] = useState(false);
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
