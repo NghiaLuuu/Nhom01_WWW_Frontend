@@ -1,6 +1,6 @@
 import { api } from '../../../services/api';
-import { Route } from './route.service';
-import { Vehicle } from './vehicle.service';
+import { type Route } from './route.service';
+import { type Vehicle } from './vehicle.service';
 
 export interface Trip {
   id: number;

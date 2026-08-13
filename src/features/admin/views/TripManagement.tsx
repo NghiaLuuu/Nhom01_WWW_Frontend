@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Trip, TripRequest, TripService } from '../api/trip.service';
-import { Route, RouteService } from '../api/route.service';
-import { Vehicle, VehicleService } from '../api/vehicle.service';
-import { DataTable, Column } from '../../../components/DataTable';
+import { api } from '../../../services/api';
+import { type Trip, type TripRequest, TripService } from '../api/trip.service';
+import { type Route, RouteService } from '../api/route.service';
+import { type Vehicle, VehicleService } from '../api/vehicle.service';
+import { DataTable, type Column } from '../../../components/DataTable';
 import { FormModal } from '../../../components/FormModal';
 import toast from 'react-hot-toast';
 import { Plus } from 'lucide-react';
@@ -28,7 +29,7 @@ export const TripManagement: React.FC = () => {
     try {
       const [tripsRes, routesRes, vehiclesRes] = await Promise.all([
         // Assuming search with empty params returns all trips for now
-        api.get('/trips/search?departureLocation=&arrivalLocation=&date=').then(res => res.data),
+        api.get('/trips/search?departureLocation=&arrivalLocation=&date=').then((res: any) => res.data),
         RouteService.getAll(),
         VehicleService.getAll()
       ]);

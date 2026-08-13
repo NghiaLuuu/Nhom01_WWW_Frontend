@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Vehicle, VehicleRequest, VehicleService } from '../api/vehicle.service';
-import { DataTable, Column } from '../../../components/DataTable';
+import { type Vehicle, type VehicleRequest, VehicleService } from '../api/vehicle.service';
+import { DataTable, type Column } from '../../../components/DataTable';
 import { FormModal } from '../../../components/FormModal';
 import toast from 'react-hot-toast';
 import { Plus } from 'lucide-react';

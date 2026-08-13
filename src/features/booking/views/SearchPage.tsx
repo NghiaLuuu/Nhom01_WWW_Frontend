@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Trip } from '../../admin/api/trip.service';
+import { type Trip } from '../../admin/api/trip.service';
 import { BookingService } from '../api/booking.service';
 import { TripList } from '../components/TripList';
 

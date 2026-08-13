@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Ticket, TicketService } from '../../../services/ticket.service';
-import { DataTable, Column } from '../../../components/DataTable';
+import { type Ticket, TicketService } from '../../../services/ticket.service';
+import { DataTable, type Column } from '../../../components/DataTable';
 import toast from 'react-hot-toast';
 
 export const TicketManagement: React.FC = () => {

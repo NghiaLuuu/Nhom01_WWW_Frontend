@@ -1,6 +1,6 @@
 import { api } from './api';
-import { Trip } from '../features/admin/api/trip.service';
-import { User } from '../features/admin/api/user.service';
+import { type Trip } from '../features/admin/api/trip.service';
+import { type User } from '../features/admin/api/user.service';
 
 export interface Ticket {
   id: number;

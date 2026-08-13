@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../../../store/useAuthStore';
-import { Ticket, TicketService } from '../../../services/ticket.service';
+import { type Ticket, TicketService } from '../../../services/ticket.service';
 import toast from 'react-hot-toast';
 import { User, Mail, Ticket as TicketIcon, Clock, AlertTriangle } from 'lucide-react';
 

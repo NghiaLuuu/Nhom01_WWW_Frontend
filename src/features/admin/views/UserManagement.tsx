@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { User, StaffRequest, UserService } from '../api/user.service';
-import { Role, RoleService } from '../api/role.service';
-import { DataTable, Column } from '../../../components/DataTable';
+import { type User, type StaffRequest, UserService } from '../api/user.service';
+import { type Role, RoleService } from '../api/role.service';
+import { DataTable, type Column } from '../../../components/DataTable';
 import { FormModal } from '../../../components/FormModal';
 import toast from 'react-hot-toast';
 import { Plus, Users, UserCheck } from 'lucide-react';

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Trip } from '../admin/api/trip.service';
+import { type Trip } from '../features/admin/api/trip.service';
 
 interface BookingState {
   selectedTrip: Trip | null;

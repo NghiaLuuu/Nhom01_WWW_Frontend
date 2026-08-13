@@ -13,19 +13,19 @@ export interface RoleRequest {
 
 export const RoleService = {
   getAll: async () => {
-    const res = await api.get('/roles');
+    const res = await api.get('/admin/roles');
     return res.data;
   },
   create: async (data: RoleRequest) => {
-    const res = await api.post('/roles', data);
+    const res = await api.post('/admin/roles', data);
     return res.data;
   },
   update: async (id: number, data: RoleRequest) => {
-    const res = await api.put(`/roles/${id}`, data);
+    const res = await api.put(`/admin/roles/${id}`, data);
     return res.data;
   },
   delete: async (id: number) => {
-    const res = await api.delete(`/roles/${id}`);
+    const res = await api.delete(`/admin/roles/${id}`);
     return res.data;
   }
 };

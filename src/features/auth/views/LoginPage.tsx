@@ -46,7 +46,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
         const { accessToken, refreshToken } = response.data.data;
         setTokens(accessToken, refreshToken);
         toast.success(response.data.message || 'Đăng nhập thành công!');
-        navigate('/admin');
+        const user = useAuthStore.getState().user;
+        if (user?.roles?.some((r: string) => r === 'ROLE_ADMIN' || r === 'ROLE_STAFF')) {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
       } else {
         toast.error(response.data.message || 'Đăng nhập thất bại');
       }

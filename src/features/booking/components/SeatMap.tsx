@@ -1,5 +1,5 @@
 import React from 'react';
-import { Seat } from '../api/booking.service';
+import { type Seat } from '../api/booking.service';
 import { useBookingStore } from '../../../store/useBookingStore';
 
 interface SeatMapProps {

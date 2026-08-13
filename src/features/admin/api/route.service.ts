@@ -5,12 +5,16 @@ export interface Route {
   departureLocation: string;
   arrivalLocation: string;
   basePrice: number;
+  distance?: number;
+  duration?: number;
 }
 
 export interface RouteRequest {
   departureLocation: string;
   arrivalLocation: string;
   basePrice: number;
+  distance?: number;
+  duration?: string;
 }
 
 export const RouteService = {

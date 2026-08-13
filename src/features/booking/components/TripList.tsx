@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Trip } from '../../admin/api/trip.service';
-import { BookingService, Seat } from '../api/booking.service';
+import { type Trip } from '../../admin/api/trip.service';
+import { BookingService, type Seat } from '../api/booking.service';
 import { useBookingStore } from '../../../store/useBookingStore';
 import { SeatMap } from './SeatMap';
 import { useNavigate } from 'react-router-dom';
