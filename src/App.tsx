@@ -1,6 +1,19 @@
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { LoginPage, RegisterPage } from './features/auth';
 import { AdminLayout } from './layouts/AdminLayout';
+import { PublicLayout } from './layouts/PublicLayout';
+import { ProtectedRoute } from './routes/ProtectedRoute';
+import { RouteManagement } from './features/admin/views/RouteManagement';
+import { VehicleManagement } from './features/admin/views/VehicleManagement';
+import { TripManagement } from './features/admin/views/TripManagement';
+import { UserManagement } from './features/admin/views/UserManagement';
+import { LandingPage } from './features/booking/views/LandingPage';
+import { SearchPage } from './features/booking/views/SearchPage';
+import { CheckoutPage } from './features/booking/views/CheckoutPage';
+import { BookingSuccessPage } from './features/booking/views/BookingSuccessPage';
+import { ProfilePage } from './features/customer/views/ProfilePage';
+import { TicketManagement } from './features/admin/views/TicketManagement';
+import { Toaster } from 'react-hot-toast';
 
 // Wrapper to handle navigation for auth pages
 const AuthWrapper = ({ isLogin }: { isLogin: boolean }) => {
@@ -16,27 +29,47 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/admin" replace />} />
+        {/* Public Routes with Public Layout */}
+        <Route path="/" element={<PublicLayout />}>
+          <Route index element={<LandingPage />} />
+          <Route path="search" element={<SearchPage />} />
+          <Route path="checkout" element={<CheckoutPage />} />
+          <Route path="booking-success" element={<BookingSuccessPage />} />
+        </Route>
         
         {/* Auth Routes */}
         <Route path="/login" element={<AuthWrapper isLogin={true} />} />
         <Route path="/register" element={<AuthWrapper isLogin={false} />} />
+
+        {/* Customer Profile Route */}
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <PublicLayout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<ProfilePage />} />
+        </Route>
         
-        {/* Admin Routes with Layout Wrapper */}
-        <Route path="/admin" element={<AdminLayout />}>
+        {/* Protected Admin Routes */}
+        <Route path="/admin" element={
+          <ProtectedRoute allowedRoles={['ROLE_ADMIN', 'ROLE_STAFF']}>
+            <AdminLayout />
+          </ProtectedRoute>
+        }>
           {/* Outlet contents */}
           <Route index element={
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-2">Bảng Điều Khiển</h2>
-              <p className="text-gray-500">Chào mừng bạn đến với hệ thống quản trị VEXEBUS.</p>
+              <p className="text-gray-500">Chào mừng bạn đến với hệ thống quản trị VEXE.</p>
             </div>
           } />
           
-          <Route path="trips" element={
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-              <h2 className="text-2xl font-bold text-gray-800">Quản Lý Chuyến Xe</h2>
-            </div>
-          } />
+          <Route path="trips" element={<TripManagement />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="tickets" element={<TicketManagement />} />
+
+          <Route path="routes" element={<RouteManagement />} />
+          <Route path="vehicles-drivers" element={<VehicleManagement />} />
           
           {/* Catch all inside admin */}
           <Route path="*" element={
@@ -46,6 +79,7 @@ function App() {
           } />
         </Route>
       </Routes>
+      <Toaster position="top-right" />
     </BrowserRouter>
   );
 }

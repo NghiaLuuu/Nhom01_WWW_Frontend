@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { Bus, User, Lock, Eye, EyeOff, Mail } from 'lucide-react';
+import { api } from '../../../services/api';
+import toast from 'react-hot-toast';
 
 const CONTENT = {
   NAV_LINKS: ["Trang chủ", "Đặt vé", "Liên hệ", "Tuyển dụng"],
-  LOGO_TEXT: "VEXEBUS",
+  LOGO_TEXT: "VEXE",
   TITLE: "ĐĂNG KÝ",
   SUBTITLE: "Tạo tài khoản để trải nghiệm dịch vụ đặt vé xe khách số 1 Việt Nam.",
   INPUT_FULLNAME_LABEL: "Họ và tên",
@@ -29,10 +31,38 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onToggleView }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showOtp, setShowOtp] = useState(false);
+  const [otp, setOtp] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Register Submit:", { fullName, email, password });
+    setIsLoading(true);
+    try {
+      if (!showOtp) {
+        // Step 1: Register
+        const response = await api.post('/auth/register', { fullName, email, password });
+        if (response.data.success) {
+          toast.success(response.data.message || 'Đăng ký thành công, vui lòng nhập mã OTP!');
+          setShowOtp(true);
+        } else {
+          toast.error(response.data.message || 'Đăng ký thất bại');
+        }
+      } else {
+        // Step 2: Verify OTP
+        const response = await api.post('/auth/verify-otp', { email, otp });
+        if (response.data.success) {
+          toast.success(response.data.message || 'Xác thực thành công! Bạn có thể đăng nhập.');
+          if (onToggleView) onToggleView(); // Switch to login view
+        } else {
+          toast.error(response.data.message || 'Xác thực thất bại');
+        }
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Có lỗi xảy ra');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -128,38 +158,57 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onToggleView }) => {
             </div>
 
             {/* Password */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-gray-700">
-                {CONTENT.INPUT_PASSWORD_LABEL}
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                  <Lock size={18} />
+            {!showOtp && (
+              <div className="space-y-1.5">
+                <label className="block text-sm font-semibold text-gray-700">
+                  {CONTENT.INPUT_PASSWORD_LABEL}
+                </label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
+                    <Lock size={18} />
+                  </div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    minLength={6}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none hover:bg-white"
+                    placeholder={CONTENT.INPUT_PASSWORD_PLACEHOLDER}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-blue-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  minLength={6}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none hover:bg-white"
-                  placeholder={CONTENT.INPUT_PASSWORD_PLACEHOLDER}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-blue-600 transition-colors"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
               </div>
-            </div>
+            )}
+
+            {showOtp && (
+              <div className="space-y-1.5">
+                <label className="block text-sm font-semibold text-gray-700">Mã xác thực OTP</label>
+                <div className="relative group">
+                  <input
+                    type="text"
+                    required
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none hover:bg-white"
+                    placeholder="Nhập mã OTP đã gửi qua email"
+                  />
+                </div>
+              </div>
+            )}
 
             <button
               type="submit"
-              className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[15px] rounded-xl shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98] mt-4"
+              disabled={isLoading}
+              className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white font-bold text-[15px] rounded-xl shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98] mt-4"
             >
-              {CONTENT.SUBMIT_BUTTON_TEXT}
+              {isLoading ? 'ĐANG XỬ LÝ...' : (showOtp ? 'XÁC NHẬN OTP' : CONTENT.SUBMIT_BUTTON_TEXT)}
             </button>
           </form>
 

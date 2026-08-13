@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { Bus, User, Lock, Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../../../services/api';
+import { useAuthStore } from '../../../store/useAuthStore';
+import toast from 'react-hot-toast';
 
 // === CONSTANTS FOR CONTENT (Fixed UI Skeleton) ===
 const CONTENT = {
   NAV_LINKS: ["Trang chủ", "Đặt vé", "Liên hệ", "Tuyển dụng"],
-  LOGO_TEXT: "VEXEBUS",
+  LOGO_TEXT: "VEXE",
   TITLE: "ĐĂNG NHẬP",
-  SUBTITLE: "Chào mừng bạn trở lại với VEXEBUS.VN - Hệ thống đặt vé xe khách số 1 Việt Nam.",
+  SUBTITLE: "Chào mừng bạn trở lại với VEXE.VN - Hệ thống đặt vé xe khách số 1 Việt Nam.",
   INPUT_IDENTIFIER_LABEL: "Số điện thoại hoặc Email",
   INPUT_IDENTIFIER_PLACEHOLDER: "Nhập số điện thoại của bạn",
   INPUT_PASSWORD_LABEL: "Mật khẩu",
@@ -26,13 +30,31 @@ interface LoginPageProps {
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
   useDocumentTitle(CONTENT.TITLE);
+  const navigate = useNavigate();
+  const { setTokens } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submit:", { identifier, password });
+    setIsLoading(true);
+    try {
+      const response = await api.post('/auth/login', { email: identifier, password });
+      if (response.data.success && response.data.data) {
+        const { accessToken, refreshToken } = response.data.data;
+        setTokens(accessToken, refreshToken);
+        toast.success(response.data.message || 'Đăng nhập thành công!');
+        navigate('/admin');
+      } else {
+        toast.error(response.data.message || 'Đăng nhập thất bại');
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi đăng nhập');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -147,9 +169,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[15px] rounded-xl shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98] mt-2"
+              disabled={isLoading}
+              className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white font-bold text-[15px] rounded-xl shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98] mt-2"
             >
-              {CONTENT.SUBMIT_BUTTON_TEXT}
+              {isLoading ? 'ĐANG ĐĂNG NHẬP...' : CONTENT.SUBMIT_BUTTON_TEXT}
             </button>
           </form>
 

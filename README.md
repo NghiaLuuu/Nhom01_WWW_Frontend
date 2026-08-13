@@ -1,32 +1,74 @@
-# React + TypeScript + Vite
+# 🚌 VEXE - Online Bus Ticket Booking System (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+![React](https://img.shields.io/badge/React-18-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)
+![Vite](https://img.shields.io/badge/Vite-5.0-purple.svg)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.0-38B2AC.svg)
+![Zustand](https://img.shields.io/badge/Zustand-Store-orange.svg)
 
-Currently, two official plugins are available:
+> **Sinh viên thực hiện:** Lưu Trung Nghĩa - MSSV: 21058181  
+> **Môn học:** Đăng ký đề tài WWW  
+> **Mô tả:** Giao diện người dùng hiện đại, Responsive và hiệu suất cao cho Hệ thống Đặt Vé Xe Khách (VEXE).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🏗️ Kiến Trúc Dự Án (Architecture)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Dự án Frontend được xây dựng dựa trên các tiêu chuẩn thiết kế khắt khe để đảm bảo khả năng mở rộng:
 
-## Expanding the Oxlint configuration
+1. **Feature-Sliced Design (FSD)**: Code được chia thành các module theo tính năng (`features/admin`, `features/booking`, `features/auth`), giúp tách biệt hoàn toàn logic kinh doanh giữa luồng của khách hàng và luồng quản lý nội bộ.
+2. **Fixed Skeleton Architecture**: Các trang Dashboard và Public Layout được thiết kế nguyên khối cố định. Chỉ có dữ liệu nội dung, bảng, và form bên trong thay đổi thông qua React Router (`<Outlet />`), đảm bảo ứng dụng không bao giờ bị "vỡ layout" khi chuyển trang và load trang cực kỳ nhanh.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+---
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## 🌟 Tính Năng Nổi Bật (Key Features)
+
+* **Interactive Seat Map (Sơ đồ ghế động)**: Render giao diện ghế ngồi 2 tầng trực quan. Khách hàng có thể tương tác chọn ghế, các ghế đã mua sẽ tự động khóa (màu xám).
+* **Real-time 5-minute Countdown Timer**: Đồng hồ đếm ngược giữ chỗ thanh toán trong 5 phút. Logic tự động dọn sạch giỏ hàng và đá người dùng về trang tìm kiếm nếu hết giờ.
+* **Dynamic RBAC Dashboard**: Bảng điều khiển Admin tự động điều chỉnh các nút thao tác và module hiển thị dựa vào quyền hạn của Staff/Admin nhận được từ Backend.
+* **Floating AI Chatbot Widget**: Tích hợp một bong bóng Chatbot lơ lửng cho phép khách hàng tương tác bằng ngôn ngữ tự nhiên để hỏi về thông tin vé, giờ giấc ngay trên màn hình.
+
+---
+
+## 🛠️ Công Nghệ Sử Dụng (Tech Stack)
+
+* **Core:** ReactJS, TypeScript, Vite
+* **Styling:** Tailwind CSS, Lucide React (Icons)
+* **State Management:** Zustand
+* **Routing:** React Router DOM
+* **API Integration:** Axios (Tích hợp interceptor xử lý Refresh Token 401 tự động)
+* **Toast Notifications:** React Hot Toast
+
+---
+
+## ⚙️ Yêu Cầu Môi Trường (Prerequisites)
+
+* **Node.js**: Phiên bản 18.0.0 hoặc mới hơn.
+* **NPM** hoặc **Yarn** được cài đặt.
+
+---
+
+## 🚀 Hướng Dẫn Cài Đặt (Environment Setup)
+
+Tạo file `.env` tại thư mục gốc của dự án Frontend và cấu hình địa chỉ trỏ tới Backend API của bạn:
+
+```env
+VITE_API_BASE_URL=http://localhost:8080/api
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+---
+
+## 💻 Hướng Dẫn Chạy Dự Án (Run Instructions)
+
+**1. Cài đặt các thư viện phụ thuộc:**
+Mở terminal tại thư mục gốc của project (chứa file `package.json`):
+```bash
+npm install
+```
+
+**2. Khởi động môi trường dev (Vite):**
+```bash
+npm run dev
+```
+
+Hệ thống sẽ tự động khởi động tại: `http://localhost:5173` (hoặc một port khác do Vite cấp phép nếu 5173 bận).

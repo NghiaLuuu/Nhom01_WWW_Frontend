@@ -15,7 +15,7 @@ const MENU_ITEMS = [
   { name: 'Bảng Điều Khiển', icon: LayoutDashboard, path: '/admin' },
   { name: 'Quản Lý Chuyến Xe', icon: Bus, path: '/admin/trips' },
   { name: 'Đơn Đặt Vé', icon: Ticket, path: '/admin/tickets' },
-  { name: 'Hành Khách', icon: Users, path: '/admin/passengers' },
+  { name: 'Tài Khoản & Quyền', icon: Users, path: '/admin/users' },
   { name: 'Xe & Tài Xế', icon: Car, path: '/admin/vehicles-drivers' },
   { name: 'Tuyến Đường', icon: Map, path: '/admin/routes' },
   { name: 'Báo Cáo Thống Kê', icon: BarChart3, path: '/admin/reports' },
@@ -31,7 +31,7 @@ export const Sidebar: React.FC = () => {
       {/* Logo Section */}
       <div className="h-16 min-h-[4rem] flex items-center px-6 bg-slate-900/50 border-b border-slate-700/50">
         <Bus className="text-blue-400 mr-3" size={28} />
-        <span className="text-xl font-bold text-white tracking-wider">VEXEBUS</span>
+        <span className="text-xl font-bold text-white tracking-wider">VEXE</span>
       </div>
       
       {/* Navigation Links */}
