@@ -20,7 +20,6 @@ export const UserManagement: React.FC = () => {
   // Staff Form State
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [roleId, setRoleId] = useState<number | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -50,7 +49,6 @@ export const UserManagement: React.FC = () => {
     setEditingStaff(null);
     setFullName('');
     setEmail('');
-    setPassword('');
     setRoleId(roles.length > 0 ? roles[0].id : '');
     setIsModalOpen(true);
   };
@@ -59,7 +57,6 @@ export const UserManagement: React.FC = () => {
     setEditingStaff(staff);
     setFullName(staff.fullName);
     setEmail(staff.email);
-    setPassword(''); // don't load old password
     setRoleId(staff.role?.id || (roles.length > 0 ? roles[0].id : ''));
     setIsModalOpen(true);
   };
@@ -77,7 +74,6 @@ export const UserManagement: React.FC = () => {
         email,
         roleId: Number(roleId),
       };
-      if (password) payload.password = password; // Only send password if provided
 
       if (editingStaff) {
         await UserService.updateStaff(editingStaff.id, payload);
@@ -110,6 +106,17 @@ export const UserManagement: React.FC = () => {
     }
   };
 
+  const handleResetPassword = async (id: string) => {
+    if (window.confirm("Bạn có chắc chắn muốn reset mật khẩu nhân viên này về mặc định (Vexe@123)?")) {
+      try {
+        await UserService.resetStaffPassword(id);
+        toast.success("Đã reset mật khẩu thành công!");
+      } catch (error: any) {
+        toast.error("Lỗi khi reset mật khẩu");
+      }
+    }
+  };
+
   const staffColumns: Column<User>[] = [
     { header: 'ID', accessor: 'id' },
     { header: 'Họ Tên', accessor: 'fullName' },
@@ -126,12 +133,20 @@ export const UserManagement: React.FC = () => {
     {
       header: 'Thao Tác Nhanh',
       accessor: (row) => (
-        <button 
-          onClick={() => handleToggleStatus(row, true)}
-          className={`text-sm underline ${row.status === 'ACTIVE' ? 'text-red-500 hover:text-red-700' : 'text-green-500 hover:text-green-700'}`}
-        >
-          {row.status === 'ACTIVE' ? 'Khóa' : 'Mở khóa'}
-        </button>
+        <div className="flex space-x-3">
+          <button 
+            onClick={() => handleToggleStatus(row, true)}
+            className={`text-sm underline ${row.status === 'ACTIVE' ? 'text-red-500 hover:text-red-700' : 'text-green-500 hover:text-green-700'}`}
+          >
+            {row.status === 'ACTIVE' ? 'Khóa' : 'Mở khóa'}
+          </button>
+          <button 
+            onClick={() => handleResetPassword(row.id)}
+            className="text-sm underline text-blue-500 hover:text-blue-700"
+          >
+            Reset Pass
+          </button>
+        </div>
       )
     }
   ];
@@ -231,16 +246,11 @@ export const UserManagement: React.FC = () => {
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-gray-700">Mật khẩu {editingStaff && '(Để trống nếu không đổi)'}</label>
-            <input 
-              required={!editingStaff}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-            />
-          </div>
+          {!editingStaff && (
+            <div className="p-3 bg-blue-50 rounded-xl border border-blue-100 mb-2">
+              <p className="text-sm text-blue-700 font-medium">Lưu ý: Mật khẩu mặc định sẽ là <span className="font-bold">Vexe@123</span></p>
+            </div>
+          )}
 
           <div className="space-y-1.5">
             <label className="block text-sm font-semibold text-gray-700">Phân Quyền (Role)</label>

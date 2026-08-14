@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { LoginPage, RegisterPage } from './features/auth';
+import { ForgotPasswordPage } from './features/auth/views/ForgotPasswordPage';
 import { AdminLayout } from './layouts/AdminLayout';
 import { PublicLayout } from './layouts/PublicLayout';
 import { ProtectedRoute } from './routes/ProtectedRoute';
@@ -40,6 +41,7 @@ function App() {
         {/* Auth Routes */}
         <Route path="/login" element={<AuthWrapper isLogin={true} />} />
         <Route path="/register" element={<AuthWrapper isLogin={false} />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         {/* Customer Profile Route */}
         <Route path="/profile" element={

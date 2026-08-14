@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { type Ticket, TicketService } from '../../../services/ticket.service';
 import toast from 'react-hot-toast';
-import { User, Mail, Ticket as TicketIcon, Clock, AlertTriangle } from 'lucide-react';
+import { User, Mail, Ticket as TicketIcon, Clock, AlertTriangle, Key } from 'lucide-react';
+import { ProfileService } from '../../../services/profile.service';
 
 export const ProfilePage: React.FC = () => {
   const { user } = useAuthStore();
@@ -11,6 +12,13 @@ export const ProfilePage: React.FC = () => {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  
+  // Password change state
+  const [activeTab, setActiveTab] = useState<'HISTORY' | 'PASSWORD'>('HISTORY');
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
   const fetchHistory = async () => {
     setIsLoading(true);
@@ -98,6 +106,26 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      toast.error('Mật khẩu xác nhận không khớp');
+      return;
+    }
+    setIsUpdatingPassword(true);
+    try {
+      await ProfileService.updatePassword({ oldPassword, newPassword });
+      toast.success('Đổi mật khẩu thành công!');
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi đổi mật khẩu');
+    } finally {
+      setIsUpdatingPassword(false);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       {/* Profile Card */}
@@ -114,12 +142,31 @@ export const ProfilePage: React.FC = () => {
         </div>
       </div>
 
-      <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
-        <TicketIcon className="text-blue-600" />
-        <span>Lịch sử đặt vé</span>
-      </h2>
+      {/* Tabs */}
+      <div className="flex space-x-6 border-b border-gray-200 mb-8">
+        <button
+          onClick={() => setActiveTab('HISTORY')}
+          className={`pb-4 flex items-center space-x-2 font-semibold transition-colors ${
+            activeTab === 'HISTORY' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          <TicketIcon size={20} />
+          <span>Lịch sử đặt vé</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('PASSWORD')}
+          className={`pb-4 flex items-center space-x-2 font-semibold transition-colors ${
+            activeTab === 'PASSWORD' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          <Key size={20} />
+          <span>Đổi mật khẩu</span>
+        </button>
+      </div>
 
-      {isLoading ? (
+      {activeTab === 'HISTORY' ? (
+        <>
+          {isLoading ? (
         <div className="text-center py-10 text-gray-500">Đang tải lịch sử...</div>
       ) : tickets.length === 0 ? (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-10 text-center text-gray-500">
@@ -161,6 +208,54 @@ export const ProfilePage: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+        </>
+      ) : (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 max-w-2xl">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Đổi mật khẩu</h2>
+          <form onSubmit={handleChangePassword} className="space-y-5">
+            <div className="space-y-1.5">
+              <label className="block text-sm font-semibold text-gray-700">Mật khẩu cũ</label>
+              <input
+                type="password"
+                required
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                placeholder="Nhập mật khẩu hiện tại"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="block text-sm font-semibold text-gray-700">Mật khẩu mới</label>
+              <input
+                type="password"
+                required
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                placeholder="Nhập mật khẩu mới"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="block text-sm font-semibold text-gray-700">Xác nhận mật khẩu mới</label>
+              <input
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                placeholder="Nhập lại mật khẩu mới"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isUpdatingPassword}
+              className="mt-4 px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all"
+            >
+              {isUpdatingPassword ? 'Đang cập nhật...' : 'Cập Nhật Mật Khẩu'}
+            </button>
+          </form>
         </div>
       )}
 

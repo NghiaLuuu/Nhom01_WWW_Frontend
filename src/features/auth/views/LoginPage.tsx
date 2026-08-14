@@ -166,9 +166,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
 
             {/* Forgot Password Link */}
             <div className="flex justify-center pt-2">
-              <a href="#" className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+              <button
+                type="button"
+                onClick={() => navigate('/forgot-password')}
+                className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+              >
                 {CONTENT.FORGOT_PASSWORD_TEXT}
-              </a>
+              </button>
             </div>
 
             {/* Submit Button */}

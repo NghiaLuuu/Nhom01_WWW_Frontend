@@ -46,5 +46,9 @@ export const UserService = {
   updateCustomerStatus: async (id: string, status: string) => {
     const res = await api.patch(`/admin/customers/${id}/status`, { status });
     return res.data;
+  },
+  resetStaffPassword: async (id: string) => {
+    const res = await api.patch(`/admin/staffs/${id}/reset-password`);
+    return res.data;
   }
 };
