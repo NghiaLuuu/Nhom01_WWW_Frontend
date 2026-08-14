@@ -106,10 +106,16 @@ export const UserManagement: React.FC = () => {
     }
   };
 
-  const handleResetPassword = async (id: string) => {
-    if (window.confirm("Bạn có chắc chắn muốn reset mật khẩu nhân viên này về mặc định (Vexe@123)?")) {
+  const handleResetPassword = async (id: string, isStaff: boolean) => {
+    const defaultPass = isStaff ? "Vexe@123" : "123456";
+    const message = isStaff ? "nhân viên" : "khách hàng";
+    if (window.confirm(`Bạn có chắc chắn muốn reset mật khẩu ${message} này về mặc định (${defaultPass})?`)) {
       try {
-        await UserService.resetStaffPassword(id);
+        if (isStaff) {
+          await UserService.resetStaffPassword(id);
+        } else {
+          await UserService.resetCustomerPassword(id);
+        }
         toast.success("Đã reset mật khẩu thành công!");
       } catch (error: any) {
         toast.error("Lỗi khi reset mật khẩu");
@@ -141,7 +147,7 @@ export const UserManagement: React.FC = () => {
             {row.status === 'ACTIVE' ? 'Khóa' : 'Mở khóa'}
           </button>
           <button 
-            onClick={() => handleResetPassword(row.id)}
+            onClick={() => handleResetPassword(row.id, true)}
             className="text-sm underline text-blue-500 hover:text-blue-700"
           >
             Reset Pass
@@ -164,14 +170,22 @@ export const UserManagement: React.FC = () => {
       )
     },
     {
-      header: 'Khóa / Mở Khóa',
+      header: 'Thao Tác Nhanh',
       accessor: (row) => (
-        <button 
-          onClick={() => handleToggleStatus(row, false)}
-          className={`text-sm underline ${row.status === 'ACTIVE' ? 'text-red-500 hover:text-red-700' : 'text-green-500 hover:text-green-700'}`}
-        >
-          {row.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}
-        </button>
+        <div className="flex space-x-3">
+          <button 
+            onClick={() => handleToggleStatus(row, false)}
+            className={`text-sm underline ${row.status === 'ACTIVE' ? 'text-red-500 hover:text-red-700' : 'text-green-500 hover:text-green-700'}`}
+          >
+            {row.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}
+          </button>
+          <button 
+            onClick={() => handleResetPassword(row.id, false)}
+            className="text-sm underline text-blue-500 hover:text-blue-700"
+          >
+            Reset Pass
+          </button>
+        </div>
       )
     }
   ];
