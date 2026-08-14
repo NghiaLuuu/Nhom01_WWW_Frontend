@@ -42,10 +42,22 @@ export const ChatbotWidget: React.FC = () => {
     try {
       // Endpoint /api/chatbot/ask (Text-to-SQL backend)
       const res = await api.post('/chatbot/ask', { question: userMessage.text });
+      
+      let replyText = 'Xin lỗi, tôi không thể trả lời câu hỏi này lúc này.';
+      if (res.data?.data?.answer) {
+        replyText = res.data.data.answer;
+      } else if (res.data?.answer) {
+        replyText = res.data.answer;
+      } else if (typeof res.data?.data === 'string') {
+        replyText = res.data.data;
+      } else if (typeof res.data === 'string') {
+        replyText = res.data;
+      }
+
       const botMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'bot',
-        text: res.data?.answer || res.data?.data || 'Xin lỗi, tôi không thể trả lời câu hỏi này lúc này.'
+        text: replyText
       };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
@@ -101,7 +113,7 @@ export const ChatbotWidget: React.FC = () => {
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.sender === 'user' ? 'bg-blue-100 text-blue-600 ml-2' : 'bg-gray-200 text-gray-600 mr-2'}`}>
                     {msg.sender === 'user' ? <User size={16} /> : <Bot size={16} />}
                   </div>
-                  <div className={`px-4 py-2 rounded-2xl text-sm ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white border border-gray-200 text-gray-800 rounded-tl-none shadow-sm'}`}>
+                  <div className={`px-4 py-2 rounded-2xl text-sm whitespace-pre-wrap ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white border border-gray-200 text-gray-800 rounded-tl-none shadow-sm'}`}>
                     {msg.text}
                   </div>
                 </div>
