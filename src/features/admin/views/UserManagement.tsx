@@ -3,8 +3,9 @@ import { type User, type StaffRequest, UserService } from '../api/user.service';
 import { type Role, RoleService } from '../api/role.service';
 import { DataTable, type Column } from '../../../components/DataTable';
 import { FormModal } from '../../../components/FormModal';
+import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
-import { Plus, Users, UserCheck } from 'lucide-react';
+import { Plus, Users, UserCheck, Search } from 'lucide-react';
 
 export const UserManagement: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'STAFF' | 'CUSTOMER'>('STAFF');
@@ -22,6 +23,10 @@ export const UserManagement: React.FC = () => {
   const [email, setEmail] = useState('');
   const [roleId, setRoleId] = useState<number | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Filters State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('ALL');
 
   const fetchUsers = async () => {
     setIsLoading(true);
@@ -190,21 +195,62 @@ export const UserManagement: React.FC = () => {
     }
   ];
 
-  return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Quản Lý Tài Khoản & Phân Quyền</h2>
-        {activeTab === 'STAFF' && (
-          <button 
-            onClick={handleOpenAdd}
-            className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md shadow-blue-500/20 font-medium"
-          >
-            <Plus size={20} />
-            <span>Thêm Nhân Viên</span>
-          </button>
-        )}
-      </div>
+  const currentData = activeTab === 'STAFF' ? staffs : customers;
+  const filteredData = currentData.filter(user => {
+    const matchesSearch = user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          user.email.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === 'ALL' || user.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
+  const filterContent = (
+    <>
+      <div className="flex-1 min-w-[250px]">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Tìm kiếm</label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search size={18} className="text-gray-400" />
+          </div>
+          <input
+            type="text"
+            placeholder="Tên hoặc Email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          />
+        </div>
+      </div>
+      <div className="w-[200px]">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
+        >
+          <option value="ALL">Tất cả</option>
+          <option value="ACTIVE">Hoạt động (ACTIVE)</option>
+          <option value="LOCKED">Đã khóa (LOCKED)</option>
+        </select>
+      </div>
+    </>
+  );
+
+  const actionButton = activeTab === 'STAFF' ? (
+    <button 
+      onClick={handleOpenAdd}
+      className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md shadow-blue-500/20 font-medium"
+    >
+      <Plus size={20} />
+      <span>Thêm Nhân Viên</span>
+    </button>
+  ) : null;
+
+  return (
+    <AdminPageLayout 
+      title="Quản Lý Tài Khoản & Phân Quyền"
+      actionButton={actionButton}
+      filters={filterContent}
+    >
       {/* Tabs */}
       <div className="flex space-x-4 mb-6 border-b border-gray-100 pb-2">
         <button
@@ -224,7 +270,7 @@ export const UserManagement: React.FC = () => {
       </div>
 
       <DataTable 
-        data={activeTab === 'STAFF' ? staffs : customers} 
+        data={filteredData} 
         columns={activeTab === 'STAFF' ? staffColumns : customerColumns} 
         isLoading={isLoading}
         onEdit={activeTab === 'STAFF' ? handleOpenEdit : undefined}
@@ -299,6 +345,6 @@ export const UserManagement: React.FC = () => {
           </div>
         </form>
       </FormModal>
-    </div>
+    </AdminPageLayout>
   );
 };
