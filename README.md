@@ -72,3 +72,12 @@ npm run dev
 ```
 
 Hệ thống sẽ tự động khởi động tại: `http://localhost:5173` (hoặc một port khác do Vite cấp phép nếu 5173 bận).
+
+---
+
+## ⚠️ Khắc Phục Sự Cố & Lưu Ý (Troubleshooting)
+
+**1. Lỗi không hiển thị dữ liệu / Trắng màn hình ở trang Quản trị (Admin):**
+* Dữ liệu các bảng (Tuyến đường, Xe & Tài xế, Chuyến xe, Vé) được kéo từ Backend API. Hãy đảm bảo Backend đã chạy tính năng `DataSeeder` và không bị lỗi.
+* Các component Admin như `RouteManagement`, `VehicleManagement`, `TripManagement` sử dụng trực tiếp các phương thức `.getAll()` từ service. Nếu API báo lỗi `403 Forbidden`, bạn cần kiểm tra lại tài khoản đang đăng nhập đã được cấp đúng `Permission Code` (ví dụ: `TRIP_MANAGE`, `STAFF_MANAGE`) từ Backend hay chưa.
+* Nếu bảng vé (Ticket) báo lỗi `Cannot read properties of undefined (reading 'join')`, đó là do API Backend trả về thiếu trường `seats`. Frontend đã được thêm Null-Safe Check (`row.seats ? ...`) để tự bảo vệ khỏi lỗi crash ứng dụng.
