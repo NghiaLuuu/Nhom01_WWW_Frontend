@@ -13,13 +13,22 @@ export const SearchPage: React.FC = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const tripId = searchParams.get('tripId');
+
   useEffect(() => {
     const fetchTrips = async () => {
       setIsLoading(true);
       try {
-        const res = await BookingService.searchTrips(departure, arrival, date);
-        if (res.success) {
-          setTrips(res.data);
+        if (tripId) {
+          const res = await BookingService.getTripById(tripId);
+          if (res.success && res.data) {
+            setTrips([res.data]);
+          }
+        } else {
+          const res = await BookingService.searchTrips(departure, arrival, date);
+          if (res.success) {
+            setTrips(res.data);
+          }
         }
       } catch (error) {
         console.error('Lỗi tải chuyến xe:', error);
@@ -29,7 +38,7 @@ export const SearchPage: React.FC = () => {
     };
 
     fetchTrips();
-  }, [departure, arrival, date]);
+  }, [departure, arrival, date, tripId]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">

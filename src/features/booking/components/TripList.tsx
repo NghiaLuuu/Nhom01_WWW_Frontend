@@ -18,6 +18,12 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
   const [seats, setSeats] = useState<Seat[]>([]);
   const [loadingSeats, setLoadingSeats] = useState(false);
 
+  React.useEffect(() => {
+    if (trips.length === 1 && selectedTrip?.id !== trips[0].id) {
+      handleSelectTrip(trips[0]);
+    }
+  }, [trips]);
+
   const handleSelectTrip = async (trip: Trip) => {
     if (selectedTrip?.id === trip.id) {
       setSelectedTrip(null);

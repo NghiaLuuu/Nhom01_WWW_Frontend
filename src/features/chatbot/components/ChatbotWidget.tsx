@@ -6,6 +6,7 @@ interface ChatMessage {
   id: string;
   sender: 'bot' | 'user';
   text: string;
+  actionTripId?: string | null;
 }
 
 export const ChatbotWidget: React.FC = () => {
@@ -54,10 +55,18 @@ export const ChatbotWidget: React.FC = () => {
         replyText = res.data;
       }
 
+      let actionTripId: string | null = null;
+      const bookMatch = replyText.match(/\[\[BOOK_TRIP_ID:\s*(\d+)\s*\]\]/i);
+      if (bookMatch) {
+        actionTripId = bookMatch[1];
+        replyText = replyText.replace(bookMatch[0], '').trim();
+      }
+
       const botMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'bot',
-        text: replyText
+        text: replyText,
+        actionTripId: actionTripId
       };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
@@ -115,6 +124,19 @@ export const ChatbotWidget: React.FC = () => {
                   </div>
                   <div className={`px-4 py-2 rounded-2xl text-sm whitespace-pre-wrap ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white border border-gray-200 text-gray-800 rounded-tl-none shadow-sm'}`}>
                     {msg.text}
+                    {msg.actionTripId && (
+                      <div className="mt-3 pt-3 border-t border-gray-100">
+                        <button 
+                          onClick={() => {
+                            setIsOpen(false);
+                            window.location.href = `/search?tripId=${msg.actionTripId}`;
+                          }}
+                          className="w-full bg-blue-600 text-white py-2 rounded-xl font-bold hover:bg-blue-700 transition-colors text-center block"
+                        >
+                          👉 Đặt vé & Thanh toán chuyến xe này
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

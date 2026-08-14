@@ -15,6 +15,10 @@ export interface TicketRequest {
 }
 
 export const BookingService = {
+  getTripById: async (tripId: number | string) => {
+    const res = await api.get(`/trips/${tripId}`);
+    return res.data;
+  },
   searchTrips: async (departure: string, arrival: string, date: string) => {
     // Calling the endpoint we saw in TripController:
     // /api/trips/search?departureLocation=...&arrivalLocation=...&date=...
