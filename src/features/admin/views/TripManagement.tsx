@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../../services/api';
 import { type Trip, type TripRequest, TripService } from '../api/trip.service';
 import { type Route, RouteService } from '../api/route.service';
 import { type Vehicle, VehicleService } from '../api/vehicle.service';
@@ -28,8 +27,7 @@ export const TripManagement: React.FC = () => {
     setIsLoading(true);
     try {
       const [tripsRes, routesRes, vehiclesRes] = await Promise.all([
-        // Assuming search with empty params returns all trips for now
-        api.get('/trips/search?departureLocation=&arrivalLocation=&date=').then((res: any) => res.data),
+        TripService.getAll(),
         RouteService.getAll(),
         VehicleService.getAll()
       ]);

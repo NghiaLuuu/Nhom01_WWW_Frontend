@@ -71,7 +71,7 @@ export const TicketManagement: React.FC = () => {
     { header: 'Mã Đơn', accessor: 'bookingCode' },
     { header: 'Khách Hàng', accessor: (row) => row.customer?.fullName || 'Khách vãng lai' },
     { header: 'Tuyến Đường', accessor: (row) => `${row.trip.route?.departureLocation} - ${row.trip.route?.arrivalLocation}` },
-    { header: 'Ghế', accessor: (row) => row.seats.join(', ') },
+    { header: 'Ghế', accessor: (row) => row.seats ? row.seats.join(', ') : 'N/A' },
     { header: 'Tổng Tiền', accessor: (row) => new Intl.NumberFormat('vi-VN').format(row.totalPrice) + 'đ' },
     { 
       header: 'Trạng Thái', 
