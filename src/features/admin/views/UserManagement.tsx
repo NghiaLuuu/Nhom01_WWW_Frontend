@@ -246,13 +246,10 @@ export const UserManagement: React.FC = () => {
   ) : null;
 
   return (
-    <AdminPageLayout 
-      title="Quản Lý Tài Khoản & Phân Quyền"
-      actionButton={actionButton}
-      filters={filterContent}
-    >
-      {/* Tabs */}
-      <div className="flex space-x-4 mb-6 border-b border-gray-100 pb-2">
+    <AdminPageLayout filters={filterContent}>
+      {/* Tabs and Actions */}
+      <div className="flex justify-between items-end mb-6 border-b border-gray-100 pb-2">
+        <div className="flex space-x-4">
         <button
           onClick={() => setActiveTab('STAFF')}
           className={`flex items-center space-x-2 pb-2 border-b-2 transition-colors ${activeTab === 'STAFF' ? 'border-blue-600 text-blue-600 font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
@@ -267,6 +264,8 @@ export const UserManagement: React.FC = () => {
           <Users size={18} />
           <span>Khách Hàng (Customer)</span>
         </button>
+        </div>
+        {actionButton}
       </div>
 
       <DataTable 

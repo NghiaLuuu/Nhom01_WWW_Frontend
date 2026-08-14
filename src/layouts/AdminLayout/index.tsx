@@ -24,8 +24,8 @@ export const AdminLayout: React.FC = () => {
       
       {/* Main Content Area Wrapper */}
       <div className="flex-1 ml-64 flex flex-col min-h-screen">
-        {/* Fixed Header Skeleton */}
-        <Header />
+        {/* Fixed Header */}
+        <Header title={titles[location.pathname] || "Quản trị"} />
         
         {/* Dynamic Page Content Skeleton */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50/50 p-6 lg:p-8">

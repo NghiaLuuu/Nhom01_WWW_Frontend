@@ -1,14 +1,12 @@
 import React, { ReactNode } from 'react';
 
 interface AdminPageLayoutProps {
-  title: string;
   actionButton?: ReactNode;
   filters?: ReactNode;
   children: ReactNode;
 }
 
 export const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({
-  title,
   actionButton,
   filters,
   children
@@ -16,14 +14,11 @@ export const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
       {/* Header section */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
-        {actionButton && (
-          <div>
-            {actionButton}
-          </div>
-        )}
-      </div>
+      {actionButton && (
+        <div className="flex justify-end mb-6">
+          {actionButton}
+        </div>
+      )}
 
       {/* Filters section */}
       {filters && (
