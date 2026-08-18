@@ -15,6 +15,7 @@ export const AdminLayout: React.FC = () => {
     "/admin/routes": "Quản lý tuyến đường",
     "/admin/reports": "Báo cáo & thống kê",
     "/admin/settings": "Cài đặt",
+    "/admin/audit-logs": "Nhật Ký Hệ Thống",
   };
   useDocumentTitle(titles[location.pathname] || "Quản trị");
   return (
