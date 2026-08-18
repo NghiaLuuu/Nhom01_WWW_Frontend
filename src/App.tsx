@@ -9,6 +9,7 @@ import { VehicleManagement } from './features/admin/views/VehicleManagement';
 import { TripManagement } from './features/admin/views/TripManagement';
 import { UserManagement } from './features/admin/views/UserManagement';
 import { AuditLogManagement } from './features/admin/views/AuditLogManagement';
+import { AdminProfilePage } from './features/admin/views/AdminProfilePage';
 import { LandingPage } from './features/booking/views/LandingPage';
 import { SearchPage } from './features/booking/views/SearchPage';
 import { CheckoutPage } from './features/booking/views/CheckoutPage';
@@ -74,6 +75,7 @@ function App() {
           <Route path="routes" element={<RouteManagement />} />
           <Route path="vehicles-drivers" element={<VehicleManagement />} />
           <Route path="audit-logs" element={<AuditLogManagement />} />
+          <Route path="profile" element={<AdminProfilePage />} />
           
           {/* Catch all inside admin */}
           <Route path="*" element={
