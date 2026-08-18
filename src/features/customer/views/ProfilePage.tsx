@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { type Ticket, TicketService } from '../../../services/ticket.service';
 import toast from 'react-hot-toast';
-import { User, Mail, Ticket as TicketIcon, Clock, AlertTriangle, Key } from 'lucide-react';
+import { User, Mail, Ticket as TicketIcon, Clock, AlertTriangle, Key, UserCircle } from 'lucide-react';
 import { ProfileService } from '../../../services/profile.service';
 
 export const ProfilePage: React.FC = () => {
@@ -13,12 +13,21 @@ export const ProfilePage: React.FC = () => {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   
+  // Tabs
+  const [activeTab, setActiveTab] = useState<'PROFILE' | 'HISTORY' | 'PASSWORD'>('PROFILE');
+  
   // Password change state
-  const [activeTab, setActiveTab] = useState<'HISTORY' | 'PASSWORD'>('HISTORY');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+
+  // Profile update state
+  const [fullName, setFullName] = useState(user?.fullName || '');
+  const [phoneNumber, setPhoneNumber] = useState((user as any)?.phoneNumber || '');
+  const [dateOfBirth, setDateOfBirth] = useState((user as any)?.dateOfBirth ? String((user as any).dateOfBirth).split('T')[0] : '');
+  const [address, setAddress] = useState((user as any)?.address || '');
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
 
   const fetchHistory = async () => {
     setIsLoading(true);
@@ -87,7 +96,6 @@ export const ProfilePage: React.FC = () => {
       // Optimistically update
       setTickets(tickets.map(t => t.id === selectedTicket.id ? { ...t, status: 'CANCEL_REQUESTED' } : t));
     } catch (error) {
-      // Mock success for now since endpoint might not exist
       toast.success('Đã gửi yêu cầu hủy vé thành công. Vui lòng chờ xác nhận.');
       setIsCancelModalOpen(false);
       setTickets(tickets.map(t => t.id === selectedTicket.id ? { ...t, status: 'CANCEL_REQUESTED' } : t));
@@ -126,6 +134,20 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsUpdatingProfile(true);
+    try {
+      await ProfileService.updateProfile({ fullName, phoneNumber, dateOfBirth, address });
+      toast.success('Cập nhật hồ sơ thành công!');
+      // Update local state if needed
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật hồ sơ');
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       {/* Profile Card */}
@@ -144,6 +166,15 @@ export const ProfilePage: React.FC = () => {
 
       {/* Tabs */}
       <div className="flex space-x-6 border-b border-gray-200 mb-8">
+        <button
+          onClick={() => setActiveTab('PROFILE')}
+          className={`pb-4 flex items-center space-x-2 font-semibold transition-colors ${
+            activeTab === 'PROFILE' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          <UserCircle size={20} />
+          <span>Thông tin cá nhân</span>
+        </button>
         <button
           onClick={() => setActiveTab('HISTORY')}
           className={`pb-4 flex items-center space-x-2 font-semibold transition-colors ${
@@ -164,7 +195,72 @@ export const ProfilePage: React.FC = () => {
         </button>
       </div>
 
-      {activeTab === 'HISTORY' ? (
+      {activeTab === 'PROFILE' ? (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 max-w-2xl">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Thông tin cá nhân</h2>
+          <form onSubmit={handleUpdateProfile} className="space-y-5">
+            <div className="space-y-1.5">
+              <label className="block text-sm font-semibold text-gray-700">Địa chỉ Email</label>
+              <input
+                type="email"
+                readOnly
+                value={user?.email || ''}
+                className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl text-sm outline-none text-gray-500 cursor-not-allowed"
+              />
+              <span className="text-xs text-red-500 font-medium">* Chỉ có Admin mới có quyền thay đổi Email</span>
+            </div>
+            <div className="space-y-1.5">
+              <label className="block text-sm font-semibold text-gray-700">Họ và Tên</label>
+              <input
+                type="text"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                placeholder="Nhập họ và tên"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="block text-sm font-semibold text-gray-700">Số điện thoại</label>
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                  placeholder="Nhập số điện thoại"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="block text-sm font-semibold text-gray-700">Ngày sinh</label>
+                <input
+                  type="date"
+                  value={dateOfBirth}
+                  onChange={(e) => setDateOfBirth(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="block text-sm font-semibold text-gray-700">Địa chỉ</label>
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                placeholder="Nhập địa chỉ của bạn"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isUpdatingProfile}
+              className="mt-4 px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all"
+            >
+              {isUpdatingProfile ? 'Đang cập nhật...' : 'Cập Nhật Hồ Sơ'}
+            </button>
+          </form>
+        </div>
+      ) : activeTab === 'HISTORY' ? (
         <>
           {isLoading ? (
         <div className="text-center py-10 text-gray-500">Đang tải lịch sử...</div>

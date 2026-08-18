@@ -7,7 +7,7 @@ import {
   Car, 
   Map, 
   BarChart3, 
-  Settings 
+  UserCircle 
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -16,11 +16,11 @@ const MENU_ITEMS = [
   { name: 'Bảng Điều Khiển', icon: LayoutDashboard, path: '/admin', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
   { name: 'Quản Lý Chuyến Xe', icon: Bus, path: '/admin/trips', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
   { name: 'Đơn Đặt Vé', icon: Ticket, path: '/admin/tickets', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
-  { name: 'Tài Khoản & Quyền', icon: Users, path: '/admin/users', roles: ['ROLE_ADMIN'] },
   { name: 'Xe & Tài Xế', icon: Car, path: '/admin/vehicles-drivers', roles: ['ROLE_ADMIN'] },
   { name: 'Tuyến Đường', icon: Map, path: '/admin/routes', roles: ['ROLE_ADMIN'] },
   { name: 'Báo Cáo Thống Kê', icon: BarChart3, path: '/admin/reports', roles: ['ROLE_ADMIN'] },
-  { name: 'Cài Đặt', icon: Settings, path: '/admin/settings', roles: ['ROLE_ADMIN'] },
+  { name: 'Tài Khoản & Quyền', icon: Users, path: '/admin/users', roles: ['ROLE_ADMIN'] },
+  { name: 'Hồ Sơ Cá Nhân', icon: UserCircle, path: '/admin/profile', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
 ];
 
 export const Sidebar: React.FC = () => {

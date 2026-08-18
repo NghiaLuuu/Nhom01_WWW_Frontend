@@ -8,5 +8,9 @@ export const ProfileService = {
   updatePassword: async (data: { oldPassword: string; newPassword: string }) => {
     const res = await api.put('/me/password', data);
     return res.data;
+  },
+  updateProfile: async (data: any) => {
+    const res = await api.put('/me/profile', data);
+    return res.data;
   }
 };

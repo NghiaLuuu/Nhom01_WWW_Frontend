@@ -14,6 +14,14 @@ export const UserManagement: React.FC = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   
+  const AVAILABLE_PERMISSIONS = [
+    { id: 'MANAGE_TRIP', label: 'Quản lý chuyến xe' },
+    { id: 'MANAGE_ROUTE', label: 'Quản lý tuyến đường' },
+    { id: 'MANAGE_TICKET', label: 'Quản lý vé' },
+    { id: 'MANAGE_USER', label: 'Quản lý người dùng' },
+    { id: 'VIEW_REPORT', label: 'Xem báo cáo thống kê' }
+  ];
+  
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState<User | null>(null);
@@ -21,7 +29,7 @@ export const UserManagement: React.FC = () => {
   // Staff Form State
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [roleId, setRoleId] = useState<number | ''>('');
+  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Filters State
@@ -54,7 +62,7 @@ export const UserManagement: React.FC = () => {
     setEditingStaff(null);
     setFullName('');
     setEmail('');
-    setRoleId(roles.length > 0 ? roles[0].id : '');
+    setSelectedPermissions([]);
     setIsModalOpen(true);
   };
 
@@ -62,14 +70,22 @@ export const UserManagement: React.FC = () => {
     setEditingStaff(staff);
     setFullName(staff.fullName);
     setEmail(staff.email);
-    setRoleId(staff.role?.id || (roles.length > 0 ? roles[0].id : ''));
+    setSelectedPermissions(staff.permissions || []);
     setIsModalOpen(true);
+  };
+
+  const handleTogglePermission = (permId: string) => {
+    if (selectedPermissions.includes(permId)) {
+      setSelectedPermissions(prev => prev.filter(p => p !== permId));
+    } else {
+      setSelectedPermissions(prev => [...prev, permId]);
+    }
   };
 
   const handleSubmitStaff = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (roleId === '') {
-      toast.error('Vui lòng chọn vai trò');
+    if (selectedPermissions.length === 0) {
+      toast.error('Vui lòng chọn ít nhất một quyền chức năng');
       return;
     }
     setIsSubmitting(true);
@@ -77,7 +93,7 @@ export const UserManagement: React.FC = () => {
       const payload: StaffRequest = {
         fullName,
         email,
-        roleId: Number(roleId),
+        permissions: selectedPermissions,
       };
 
       if (editingStaff) {
@@ -132,7 +148,25 @@ export const UserManagement: React.FC = () => {
     { header: 'ID', accessor: 'id' },
     { header: 'Họ Tên', accessor: 'fullName' },
     { header: 'Email', accessor: 'email' },
-    { header: 'Vai Trò', accessor: (row) => row.role?.name || 'N/A' },
+    { 
+      header: 'Phân Quyền', 
+      accessor: (row) => (
+        <div className="flex flex-wrap gap-1 max-w-[200px]">
+          {row.permissions && row.permissions.length > 0 ? (
+             row.permissions.map(p => {
+               const permDef = AVAILABLE_PERMISSIONS.find(ap => ap.id === p);
+               return (
+                 <span key={p} className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md text-xs border border-blue-100">
+                   {permDef ? permDef.label : p}
+                 </span>
+               );
+             })
+          ) : (
+             <span className="text-gray-400 text-xs italic">Chưa cấp quyền</span>
+          )}
+        </div>
+      ) 
+    },
     { 
       header: 'Trạng Thái', 
       accessor: (row) => (
@@ -311,19 +345,21 @@ export const UserManagement: React.FC = () => {
             </div>
           )}
 
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-gray-700">Phân Quyền (Role)</label>
-            <select
-              required
-              value={roleId}
-              onChange={(e) => setRoleId(Number(e.target.value))}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-            >
-              <option value="" disabled>-- Chọn vai trò --</option>
-              {roles.map(r => (
-                <option key={r.id} value={r.id}>{r.name} - {r.description}</option>
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-700">Phân Quyền Chức Năng</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+              {AVAILABLE_PERMISSIONS.map(perm => (
+                <label key={perm.id} className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedPermissions.includes(perm.id)}
+                    onChange={() => handleTogglePermission(perm.id)}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700 font-medium">{perm.label}</span>
+                </label>
               ))}
-            </select>
+            </div>
           </div>
 
           <div className="pt-4 flex justify-end space-x-3">

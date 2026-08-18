@@ -10,6 +10,7 @@ export interface User {
   staffCode?: string;
   position?: string;
   workStation?: string;
+  permissions?: string[];
 }
 
 export interface StaffRequest {
@@ -19,7 +20,8 @@ export interface StaffRequest {
   staffCode?: string;
   position?: string;
   workStation?: string;
-  roleId: number;
+  roleId?: number;
+  permissions?: string[];
 }
 
 export const UserService = {
