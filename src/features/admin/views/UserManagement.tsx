@@ -33,6 +33,7 @@ export const UserManagement: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
+  const [selectedRoleId, setSelectedRoleId] = useState<number | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Filters State
@@ -66,17 +67,24 @@ export const UserManagement: React.FC = () => {
     setFullName('');
     setEmail('');
     setSelectedPermissions([]);
+    setSelectedRoleId('');
     setIsModalOpen(true);
   };
 
-  const mapOldPermissions = (perms: string[]) => {
+  const mapOldPermissions = (perms: any[]) => {
+    const permStrings = perms.map(p => {
+      if (typeof p === 'string') return p;
+      if (p && typeof p === 'object' && p.code) return p.code;
+      return String(p);
+    });
+
     const mapping: Record<string, string> = {
       'MANAGE_TRIP': 'TRIP_MANAGE',
       'MANAGE_ROUTE': 'ROUTE_MANAGE',
       'MANAGE_USER': 'STAFF_MANAGE',
       'VIEW_REPORT': 'VIEW_STATISTICS',
     };
-    const mapped = perms.map(p => mapping[p] || p);
+    const mapped = permStrings.map(p => mapping[p] || p);
     // Remove duplicates and filter out any unknown ones
     return Array.from(new Set(mapped)).filter(p => AVAILABLE_PERMISSIONS.some(ap => ap.id === p));
   };
@@ -85,7 +93,11 @@ export const UserManagement: React.FC = () => {
     setEditingStaff(staff);
     setFullName(staff.fullName);
     setEmail(staff.email);
-    setSelectedPermissions(mapOldPermissions(staff.permissions || []));
+    // Combine ad-hoc permissions with role permissions so checkboxes reflect all active permissions
+    const adHocPerms = staff.permissions || [];
+    const rolePerms = staff.role?.permissions?.map((p: any) => p.code) || [];
+    setSelectedPermissions(mapOldPermissions([...adHocPerms, ...rolePerms]));
+    setSelectedRoleId(staff.role?.id || '');
     setIsModalOpen(true);
   };
 
@@ -109,6 +121,7 @@ export const UserManagement: React.FC = () => {
         fullName,
         email,
         permissions: selectedPermissions,
+        ...(selectedRoleId && { roleId: Number(selectedRoleId) })
       };
 
       if (editingStaff) {
@@ -164,9 +177,17 @@ export const UserManagement: React.FC = () => {
     { header: 'Họ Tên', accessor: 'fullName' },
     { header: 'Email', accessor: 'email' },
     { 
-      header: 'Phân Quyền', 
+      header: 'Vai Trò', 
+      accessor: (row) => (
+        <span className="font-semibold text-gray-700">{row.role?.name === 'ROLE_ADMIN' ? 'Quản Trị Viên' : row.role?.name === 'ROLE_STAFF' ? 'Nhân Viên' : (row.role?.name || 'N/A')}</span>
+      )
+    },
+    { 
+      header: 'Phân Quyền (Chi tiết)', 
       accessor: (row) => {
-        const displayPerms = mapOldPermissions(row.permissions || []);
+        const adHocPerms = row.permissions || [];
+        const rolePerms = row.role?.permissions?.map((p: any) => p.code) || [];
+        const displayPerms = mapOldPermissions([...adHocPerms, ...rolePerms]);
         return (
           <div className="flex flex-wrap gap-1 max-w-[200px]">
             {displayPerms.length > 0 ? (
@@ -361,6 +382,23 @@ export const UserManagement: React.FC = () => {
               <p className="text-sm text-blue-700 font-medium">Lưu ý: Mật khẩu mặc định sẽ là <span className="font-bold">Vexe@123</span></p>
             </div>
           )}
+
+          <div className="space-y-1.5">
+            <label className="block text-sm font-semibold text-gray-700">Vai Trò (Role)</label>
+            <select
+              value={selectedRoleId}
+              onChange={(e) => setSelectedRoleId(e.target.value ? Number(e.target.value) : '')}
+              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+            >
+              <option value="">-- Chọn vai trò --</option>
+              {roles.map(role => (
+                <option key={role.id} value={role.id}>
+                  {role.name === 'ROLE_ADMIN' ? 'Quản Trị Viên (Admin)' : role.name === 'ROLE_STAFF' ? 'Nhân Viên (Staff)' : role.name}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500">Các quyền của vai trò sẽ được tự động áp dụng. Bạn có thể cấp thêm quyền riêng lẻ ở bên dưới.</p>
+          </div>
 
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">Phân Quyền Chức Năng</label>
