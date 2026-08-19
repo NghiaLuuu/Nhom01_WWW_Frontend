@@ -6,7 +6,7 @@ import { User, Mail, Ticket as TicketIcon, Clock, AlertTriangle, Key, UserCircle
 import { ProfileService } from '../../../services/profile.service';
 
 export const ProfilePage: React.FC = () => {
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
@@ -138,9 +138,11 @@ export const ProfilePage: React.FC = () => {
     e.preventDefault();
     setIsUpdatingProfile(true);
     try {
-      await ProfileService.updateProfile({ fullName, phoneNumber, dateOfBirth, address });
+      const res = await ProfileService.updateProfile({ fullName, phoneNumber, dateOfBirth, address });
       toast.success('Cập nhật hồ sơ thành công!');
-      // Update local state if needed
+      if (res.data) {
+        setUser({ ...user, ...res.data });
+      }
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật hồ sơ');
     } finally {

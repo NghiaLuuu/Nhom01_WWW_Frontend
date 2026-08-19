@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../../../services/api';
 import { useAuthStore } from '../../../store/useAuthStore';
 import toast from 'react-hot-toast';
+import { ProfileService } from '../../../services/profile.service';
 
 // === CONSTANTS FOR CONTENT (Fixed UI Skeleton) ===
 const CONTENT = {
@@ -31,7 +32,7 @@ interface LoginPageProps {
 export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
   useDocumentTitle(CONTENT.TITLE);
   const navigate = useNavigate();
-  const { setTokens } = useAuthStore();
+  const { setTokens, setUser } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -45,6 +46,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
       if (response.data.success && response.data.data) {
         const { accessToken, refreshToken } = response.data.data;
         setTokens(accessToken, refreshToken);
+        
+        try {
+          const profileRes = await ProfileService.getProfile();
+          if (profileRes.success && profileRes.data) {
+            const currentUser = useAuthStore.getState().user;
+            setUser({ ...(currentUser || {}), ...profileRes.data } as any);
+          }
+        } catch (e) {
+          console.error('Failed to fetch profile on login', e);
+        }
+
         toast.success(response.data.message || 'Đăng nhập thành công!');
         const user = useAuthStore.getState().user;
         if (user?.roles?.some((r: string) => r === 'ROLE_ADMIN' || r === 'ROLE_STAFF')) {

@@ -20,6 +20,7 @@ interface AuthState {
   setTokens: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;
+  setUser: (user: User) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -36,16 +37,17 @@ export const useAuthStore = create<AuthState>()(
           // Decode JWT to get user roles and info
           const decoded: any = jwtDecode(accessToken);
           
-          set({
+          set((state) => ({
             accessToken,
             refreshToken,
             isAuthenticated: true,
             user: {
+              ...(state.user || {}),
               id: decoded.sub || '',
               email: decoded.sub || '',
               roles: decoded.roles || [], // Make sure your backend maps roles here
-            },
-          });
+            } as User,
+          }));
         } catch (error) {
           console.error("Failed to decode token", error);
         }
@@ -62,6 +64,10 @@ export const useAuthStore = create<AuthState>()(
 
       setLoading: (isLoading: boolean) => {
         set({ isLoading });
+      },
+
+      setUser: (user: User) => {
+        set({ user });
       },
     }),
     {
