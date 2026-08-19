@@ -15,11 +15,14 @@ export const UserManagement: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   
   const AVAILABLE_PERMISSIONS = [
-    { id: 'MANAGE_TRIP', label: 'Quản lý chuyến xe' },
-    { id: 'MANAGE_ROUTE', label: 'Quản lý tuyến đường' },
-    { id: 'MANAGE_TICKET', label: 'Quản lý vé' },
-    { id: 'MANAGE_USER', label: 'Quản lý người dùng' },
-    { id: 'VIEW_REPORT', label: 'Xem báo cáo thống kê' }
+    { id: 'TRIP_MANAGE', label: 'Quản lý chuyến xe' },
+    { id: 'MANAGE_TICKET', label: 'Quản lý đặt vé' },
+    { id: 'TICKET_MANAGE', label: 'Quản lý vé xe' },
+    { id: 'STAFF_MANAGE', label: 'Quản lý nhân viên' },
+    { id: 'CUSTOMER_MANAGE', label: 'Quản lý khách hàng' },
+    { id: 'VIEW_STATISTICS', label: 'Xem thống kê' },
+    { id: 'ROUTE_MANAGE', label: 'Quản lý tuyến đường' },
+    { id: 'VEHICLE_MANAGE', label: 'Quản lý xe & tài xế' }
   ];
   
   // Modal State
@@ -66,11 +69,23 @@ export const UserManagement: React.FC = () => {
     setIsModalOpen(true);
   };
 
+  const mapOldPermissions = (perms: string[]) => {
+    const mapping: Record<string, string> = {
+      'MANAGE_TRIP': 'TRIP_MANAGE',
+      'MANAGE_ROUTE': 'ROUTE_MANAGE',
+      'MANAGE_USER': 'STAFF_MANAGE',
+      'VIEW_REPORT': 'VIEW_STATISTICS',
+    };
+    const mapped = perms.map(p => mapping[p] || p);
+    // Remove duplicates and filter out any unknown ones
+    return Array.from(new Set(mapped)).filter(p => AVAILABLE_PERMISSIONS.some(ap => ap.id === p));
+  };
+
   const handleOpenEdit = (staff: User) => {
     setEditingStaff(staff);
     setFullName(staff.fullName);
     setEmail(staff.email);
-    setSelectedPermissions(staff.permissions || []);
+    setSelectedPermissions(mapOldPermissions(staff.permissions || []));
     setIsModalOpen(true);
   };
 
@@ -145,27 +160,30 @@ export const UserManagement: React.FC = () => {
   };
 
   const staffColumns: Column<User>[] = [
-    { header: 'ID', accessor: 'id' },
+    { header: 'Mã NV', accessor: (row) => <span className="font-mono font-medium text-gray-600">{row.staffCode || 'N/A'}</span> },
     { header: 'Họ Tên', accessor: 'fullName' },
     { header: 'Email', accessor: 'email' },
     { 
       header: 'Phân Quyền', 
-      accessor: (row) => (
-        <div className="flex flex-wrap gap-1 max-w-[200px]">
-          {row.permissions && row.permissions.length > 0 ? (
-             row.permissions.map(p => {
-               const permDef = AVAILABLE_PERMISSIONS.find(ap => ap.id === p);
-               return (
-                 <span key={p} className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md text-xs border border-blue-100">
-                   {permDef ? permDef.label : p}
-                 </span>
-               );
-             })
-          ) : (
-             <span className="text-gray-400 text-xs italic">Chưa cấp quyền</span>
-          )}
-        </div>
-      ) 
+      accessor: (row) => {
+        const displayPerms = mapOldPermissions(row.permissions || []);
+        return (
+          <div className="flex flex-wrap gap-1 max-w-[200px]">
+            {displayPerms.length > 0 ? (
+               displayPerms.map(p => {
+                 const permDef = AVAILABLE_PERMISSIONS.find(ap => ap.id === p);
+                 return (
+                   <span key={p} className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md text-xs border border-blue-100">
+                     {permDef ? permDef.label : p}
+                   </span>
+                 );
+               })
+            ) : (
+               <span className="text-gray-400 text-xs italic">Chưa cấp quyền</span>
+            )}
+          </div>
+        );
+      } 
     },
     { 
       header: 'Trạng Thái', 
@@ -197,7 +215,6 @@ export const UserManagement: React.FC = () => {
   ];
 
   const customerColumns: Column<User>[] = [
-    { header: 'ID', accessor: 'id' },
     { header: 'Họ Tên', accessor: 'fullName' },
     { header: 'Email', accessor: 'email' },
     { 

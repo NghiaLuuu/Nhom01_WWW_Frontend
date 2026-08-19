@@ -15,12 +15,12 @@ import { useAuthStore } from '../../store/useAuthStore';
 
 const MENU_ITEMS = [
   { name: 'Bảng Điều Khiển', icon: LayoutDashboard, path: '/admin', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
-  { name: 'Quản Lý Chuyến Xe', icon: Bus, path: '/admin/trips', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
-  { name: 'Đơn Đặt Vé', icon: Ticket, path: '/admin/tickets', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
-  { name: 'Xe & Tài Xế', icon: Car, path: '/admin/vehicles-drivers', roles: ['ROLE_ADMIN'] },
-  { name: 'Tuyến Đường', icon: Map, path: '/admin/routes', roles: ['ROLE_ADMIN'] },
-  { name: 'Báo Cáo Thống Kê', icon: BarChart3, path: '/admin/reports', roles: ['ROLE_ADMIN'] },
-  { name: 'Tài Khoản & Quyền', icon: Users, path: '/admin/users', roles: ['ROLE_ADMIN'] },
+  { name: 'Quản Lý Chuyến Xe', icon: Bus, path: '/admin/trips', roles: ['ROLE_ADMIN', 'TRIP_MANAGE'] },
+  { name: 'Đơn Đặt Vé', icon: Ticket, path: '/admin/tickets', roles: ['ROLE_ADMIN', 'MANAGE_TICKET'] },
+  { name: 'Xe & Tài Xế', icon: Car, path: '/admin/vehicles-drivers', roles: ['ROLE_ADMIN', 'VEHICLE_MANAGE'] },
+  { name: 'Tuyến Đường', icon: Map, path: '/admin/routes', roles: ['ROLE_ADMIN', 'ROUTE_MANAGE'] },
+  { name: 'Báo Cáo Thống Kê', icon: BarChart3, path: '/admin/reports', roles: ['ROLE_ADMIN', 'VIEW_STATISTICS'] },
+  { name: 'Tài Khoản & Quyền', icon: Users, path: '/admin/users', roles: ['ROLE_ADMIN', 'STAFF_MANAGE', 'CUSTOMER_MANAGE'] },
   { name: 'Nhật Ký Hệ Thống', icon: FileText, path: '/admin/audit-logs', roles: ['ROLE_ADMIN'] },
   { name: 'Hồ Sơ Cá Nhân', icon: UserCircle, path: '/admin/profile', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
 ];
