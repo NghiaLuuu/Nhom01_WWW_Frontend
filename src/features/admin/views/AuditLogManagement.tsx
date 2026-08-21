@@ -23,6 +23,10 @@ export const AuditLogManagement: React.FC = () => {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [entityNames, setEntityNames] = useState<string[]>([]);
   const [selectedEntity, setSelectedEntity] = useState<string>('');
+  const [userEmail, setUserEmail] = useState<string>('');
+  const [emailSearchTerm, setEmailSearchTerm] = useState<string>('');
+  const [emailSuggestions, setEmailSuggestions] = useState<string[]>([]);
+  const [isEmailDropdownOpen, setIsEmailDropdownOpen] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -44,7 +48,12 @@ export const AuditLogManagement: React.FC = () => {
   const fetchLogs = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await AuditLogService.getAuditLogs(currentPage, pageSize, selectedEntity || undefined);
+      const res = await AuditLogService.getAuditLogs(
+        currentPage,
+        pageSize,
+        selectedEntity || undefined,
+        userEmail || undefined
+      );
       if (res.success) {
         const pageData: PageResponse<AuditLog> = res.data;
         setLogs(pageData.content);
@@ -56,7 +65,7 @@ export const AuditLogManagement: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, selectedEntity]);
+  }, [currentPage, pageSize, selectedEntity, userEmail]);
 
   useEffect(() => {
     fetchEntityNames();
@@ -65,6 +74,25 @@ export const AuditLogManagement: React.FC = () => {
   useEffect(() => {
     fetchLogs();
   }, [fetchLogs]);
+
+  useEffect(() => {
+    if (!emailSearchTerm) {
+      setEmailSuggestions([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await AuditLogService.searchUserEmails(emailSearchTerm);
+        if (res.success) {
+          setEmailSuggestions(res.data);
+          setIsEmailDropdownOpen(true);
+        }
+      } catch (err) {
+        // silently ignore search errors
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [emailSearchTerm]);
 
   const handleEntityChange = (value: string) => {
     setSelectedEntity(value);
@@ -131,6 +159,46 @@ export const AuditLogManagement: React.FC = () => {
               <option key={name} value={name}>{name}</option>
             ))}
           </select>
+        </div>
+
+        {/* Email Filter */}
+        <div className="flex items-center gap-2 relative">
+          <label className="text-sm font-medium text-gray-600 whitespace-nowrap">Email:</label>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Nhập email để tìm..."
+              value={emailSearchTerm}
+              onChange={(e) => {
+                setEmailSearchTerm(e.target.value);
+                if (e.target.value === '') {
+                  setUserEmail('');
+                  setCurrentPage(0);
+                }
+              }}
+              onFocus={() => { if (emailSuggestions.length > 0) setIsEmailDropdownOpen(true); }}
+              onBlur={() => setTimeout(() => setIsEmailDropdownOpen(false), 200)}
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-w-[200px]"
+            />
+            {isEmailDropdownOpen && emailSuggestions.length > 0 && (
+              <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                {emailSuggestions.map(email => (
+                  <li
+                    key={email}
+                    onClick={() => {
+                      setEmailSearchTerm(email);
+                      setUserEmail(email);
+                      setIsEmailDropdownOpen(false);
+                      setCurrentPage(0);
+                    }}
+                    className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 text-gray-700"
+                  >
+                    {email}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
 
         {/* Page Size */}
