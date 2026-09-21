@@ -85,10 +85,10 @@ export const LandingPage: React.FC = () => {
               <span>Tiên phong trải nghiệm du lịch số</span>
             </div>
             
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.15] tracking-tight">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.15] tracking-tight text-balance">
               Khám phá hành trình <br className="hidden md:block"/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 drop-shadow-[0_0_20px_rgba(56,189,248,0.3)]">
-                tuyệt vời nhất
+                tuyệt vời&nbsp;nhất
               </span>
             </h1>
             
