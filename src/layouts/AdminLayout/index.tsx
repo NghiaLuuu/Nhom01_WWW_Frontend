@@ -21,13 +21,13 @@ export const AdminLayout: React.FC = () => {
   useDocumentTitle(titles[location.pathname] || "Quản trị");
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
+    <div className="flex h-screen bg-gray-100 overflow-hidden font-sans">
       <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       
       <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
         <Header title={titles[location.pathname] || "Quản trị"} />
         
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 bg-gray-50">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 bg-gray-100">
           <Outlet />
         </main>
       </div>

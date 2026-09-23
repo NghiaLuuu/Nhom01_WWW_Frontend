@@ -45,16 +45,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
   const userRoles = user?.roles || [];
 
   return (
-    <aside className={`bg-white h-screen flex flex-col fixed left-0 top-0 z-20 border-r border-gray-200 transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}>
+    <aside className={`bg-slate-900 h-screen flex flex-col fixed left-0 top-0 z-20 transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}>
       {/* Header */}
-      <div className="h-14 min-h-[3.5rem] flex items-center justify-between px-4 border-b border-gray-200 bg-gray-50/50">
+      <div className="h-14 min-h-[3.5rem] flex items-center justify-between px-4 border-b border-slate-800 bg-slate-900/50">
         <div className={`flex items-center overflow-hidden transition-all ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
-          <Bus className="text-blue-700 mr-2 shrink-0" size={24} />
-          <span className="text-lg font-bold text-gray-900 tracking-wide">VEXE</span>
+          <Bus className="text-blue-500 mr-2 shrink-0" size={24} />
+          <span className="text-lg font-bold text-white tracking-wide">VEXE</span>
         </div>
         <button 
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1.5 rounded-md hover:bg-gray-200 text-gray-500 transition-colors shrink-0"
+          className="p-1.5 rounded-md hover:bg-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
           title={isCollapsed ? "Mở rộng" : "Thu gọn"}
         >
           {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
@@ -70,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
           return (
             <div key={groupIdx} className="flex flex-col space-y-1">
               {!isCollapsed && (
-                <div className="px-3 mb-1 text-[11px] font-semibold tracking-wider text-gray-500 uppercase">
+                <div className="px-3 mb-1 text-[11px] font-semibold tracking-wider text-slate-500 uppercase">
                   {group.title}
                 </div>
               )}
@@ -85,14 +85,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
                     title={isCollapsed ? item.name : undefined}
                     className={`flex items-center px-3 py-2 rounded-md transition-colors group relative ${
                       isActive 
-                        ? 'bg-blue-50 text-blue-700 font-medium' 
-                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                        ? 'bg-blue-600/10 text-blue-400 font-medium' 
+                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                     }`}
                   >
                     {isActive && !isCollapsed && (
-                      <div className="absolute left-0 top-1 bottom-1 w-1 bg-blue-700 rounded-r-full" />
+                      <div className="absolute left-0 top-1 bottom-1 w-1 bg-blue-500 rounded-r-full" />
                     )}
-                    <Icon size={18} className={`shrink-0 ${isCollapsed ? 'mx-auto' : 'mr-3'} ${isActive ? 'text-blue-700' : 'text-gray-400 group-hover:text-gray-600'}`} />
+                    <Icon size={18} className={`shrink-0 ${isCollapsed ? 'mx-auto' : 'mr-3'} ${isActive ? 'text-blue-400' : 'text-slate-400 group-hover:text-white'}`} />
                     {!isCollapsed && <span className="text-sm truncate">{item.name}</span>}
                   </Link>
                 );
@@ -103,11 +103,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
       </div>
 
       {/* Footer / Logout */}
-      <div className="p-3 border-t border-gray-200 bg-gray-50/50">
+      <div className="p-3 border-t border-slate-800 bg-slate-900/50">
         <button 
           onClick={() => { logout(); window.location.href = '/'; }}
           title={isCollapsed ? "Đăng xuất" : undefined}
-          className="w-full flex items-center px-3 py-2 rounded-md text-red-600 hover:bg-red-50 transition-colors group"
+          className="w-full flex items-center px-3 py-2 rounded-md text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors group"
         >
           <LogOut size={18} className={`shrink-0 ${isCollapsed ? 'mx-auto' : 'mr-3'}`} />
           {!isCollapsed && <span className="text-sm font-medium">Đăng xuất</span>}
