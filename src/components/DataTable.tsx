@@ -52,7 +52,7 @@ export const DataTable = <T,>({
         </thead>
         <tbody className="divide-y divide-gray-200">
           {data.map((row) => (
-            <tr key={keyExtractor(row)} className="hover:bg-gray-50/50 transition-colors group">
+            <tr key={keyExtractor(row)} className="even:bg-slate-50 hover:bg-slate-100 transition-colors group">
               {columns.map((col, idx) => (
                 <td 
                   key={idx} 
@@ -62,7 +62,7 @@ export const DataTable = <T,>({
                 </td>
               ))}
               {(onEdit || onDelete) && (
-                <td className="px-4 py-2.5 text-right whitespace-nowrap sticky right-0 bg-white group-hover:bg-gray-50/50">
+                <td className="px-4 py-2.5 text-right whitespace-nowrap sticky right-0 bg-white group-even:bg-slate-50 group-hover:bg-slate-100 transition-colors">
                   <div className="flex items-center justify-end gap-1">
                     {onEdit && (
                       <button 
