@@ -4,6 +4,8 @@ import { Edit, Trash2 } from 'lucide-react';
 export interface Column<T> {
   header: string;
   accessor: keyof T | ((row: T) => React.ReactNode);
+  align?: 'left' | 'center' | 'right';
+  width?: string;
 }
 
 interface DataTableProps<T> {
@@ -24,44 +26,63 @@ export const DataTable = <T,>({
   keyExtractor
 }: DataTableProps<T>) => {
   if (isLoading) {
-    return <div className="text-center py-10 text-gray-500 font-medium animate-pulse">Đang tải dữ liệu...</div>;
+    return <div className="text-center py-8 text-gray-500 text-sm font-medium animate-pulse">Đang tải dữ liệu...</div>;
   }
 
   if (!data || data.length === 0) {
-    return <div className="text-center py-10 text-gray-500 font-medium bg-gray-50 rounded-xl border border-dashed border-gray-200">Không có dữ liệu.</div>;
+    return <div className="text-center py-8 text-gray-500 text-sm font-medium bg-gray-50 border-t border-gray-200">Không có dữ liệu.</div>;
   }
 
   return (
-    <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
-      <table className="w-full text-left text-sm text-gray-600">
-        <thead className="bg-gray-50 text-gray-700 font-bold border-b border-gray-200">
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm text-gray-700">
+        <thead className="bg-gray-50 text-gray-900 border-b border-gray-200 sticky top-0 z-10">
           <tr>
             {columns.map((col, idx) => (
-              <th key={idx} className="px-6 py-4">{col.header}</th>
+              <th 
+                key={idx} 
+                className={`px-4 py-3 font-semibold whitespace-nowrap ${col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left'}`}
+                style={{ width: col.width }}
+              >
+                {col.header}
+              </th>
             ))}
-            {(onEdit || onDelete) && <th className="px-6 py-4 text-right">Thao tác</th>}
+            {(onEdit || onDelete) && <th className="px-4 py-3 text-right font-semibold whitespace-nowrap sticky right-0 bg-gray-50 w-24">Thao tác</th>}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100">
+        <tbody className="divide-y divide-gray-200">
           {data.map((row) => (
-            <tr key={keyExtractor(row)} className="hover:bg-gray-50 transition-colors">
+            <tr key={keyExtractor(row)} className="hover:bg-gray-50/50 transition-colors group">
               {columns.map((col, idx) => (
-                <td key={idx} className="px-6 py-4">
+                <td 
+                  key={idx} 
+                  className={`px-4 py-2.5 ${col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left'}`}
+                >
                   {typeof col.accessor === 'function' ? col.accessor(row) : (row[col.accessor] as React.ReactNode)}
                 </td>
               ))}
               {(onEdit || onDelete) && (
-                <td className="px-6 py-4 text-right space-x-3 whitespace-nowrap">
-                  {onEdit && (
-                    <button onClick={() => onEdit(row)} className="text-blue-600 hover:text-blue-800 transition-colors p-1 rounded-md hover:bg-blue-50">
-                      <Edit size={18} />
-                    </button>
-                  )}
-                  {onDelete && (
-                    <button onClick={() => onDelete(row)} className="text-red-600 hover:text-red-800 transition-colors p-1 rounded-md hover:bg-red-50">
-                      <Trash2 size={18} />
-                    </button>
-                  )}
+                <td className="px-4 py-2.5 text-right whitespace-nowrap sticky right-0 bg-white group-hover:bg-gray-50/50">
+                  <div className="flex items-center justify-end gap-1">
+                    {onEdit && (
+                      <button 
+                        onClick={() => onEdit(row)} 
+                        title="Chỉnh sửa"
+                        className="text-gray-400 hover:text-blue-600 p-1.5 rounded hover:bg-blue-50 transition-colors flex items-center justify-center min-w-[32px] min-h-[32px]"
+                      >
+                        <Edit size={16} />
+                      </button>
+                    )}
+                    {onDelete && (
+                      <button 
+                        onClick={() => onDelete(row)} 
+                        title="Xóa"
+                        className="text-gray-400 hover:text-red-600 p-1.5 rounded hover:bg-red-50 transition-colors flex items-center justify-center min-w-[32px] min-h-[32px]"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    )}
+                  </div>
                 </td>
               )}
             </tr>

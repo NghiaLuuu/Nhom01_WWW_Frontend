@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { type Route, type RouteRequest, RouteService } from '../api/route.service';
 import { DataTable, type Column } from '../../../components/DataTable';
 import { FormModal } from '../../../components/FormModal';
+import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
 import { Plus } from 'lucide-react';
 
@@ -98,28 +99,29 @@ export const RouteManagement: React.FC = () => {
   };
 
   const columns: Column<Route>[] = [
-    { header: 'ID', accessor: 'id' },
-    { header: 'Điểm Đi', accessor: 'departureLocation' },
-    { header: 'Điểm Đến', accessor: 'arrivalLocation' },
+    { header: 'ID', accessor: 'id', width: '10%' },
+    { header: 'Điểm Đi', accessor: 'departureLocation', width: '35%' },
+    { header: 'Điểm Đến', accessor: 'arrivalLocation', width: '35%' },
     { 
       header: 'Giá Cơ Bản (VNĐ)', 
-      accessor: (row) => new Intl.NumberFormat('vi-VN').format(row.basePrice)
+      accessor: (row) => new Intl.NumberFormat('vi-VN').format(row.basePrice),
+      align: 'right',
+      width: '20%'
     },
   ];
 
-  return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Quản Lý Tuyến Đường</h2>
-        <button 
-          onClick={handleOpenAdd}
-          className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md shadow-blue-500/20 font-medium"
-        >
-          <Plus size={20} />
-          <span>Thêm Tuyến Đường</span>
-        </button>
-      </div>
+  const actionButton = (
+    <button 
+      onClick={handleOpenAdd}
+      className="flex items-center space-x-1.5 bg-blue-700 hover:bg-blue-800 text-white px-3 py-1.5 rounded-md transition-colors text-sm font-medium"
+    >
+      <Plus size={16} />
+      <span>Thêm Tuyến Đường</span>
+    </button>
+  );
 
+  return (
+    <AdminPageLayout actionButton={actionButton}>
       <DataTable 
         data={routes} 
         columns={columns} 
@@ -136,60 +138,60 @@ export const RouteManagement: React.FC = () => {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-gray-700">Điểm Đi</label>
+            <label className="block text-sm font-medium text-gray-700">Điểm Đi</label>
             <input 
               required
               type="text"
               value={departureLocation}
               onChange={(e) => setDepartureLocation(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
               placeholder="VD: TP. Hồ Chí Minh"
             />
           </div>
           
           <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-gray-700">Điểm Đến</label>
+            <label className="block text-sm font-medium text-gray-700">Điểm Đến</label>
             <input 
               required
               type="text"
               value={arrivalLocation}
               onChange={(e) => setArrivalLocation(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
               placeholder="VD: Đà Lạt"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-gray-700">Giá Cơ Bản (VNĐ)</label>
+            <label className="block text-sm font-medium text-gray-700">Giá Cơ Bản (VNĐ)</label>
             <input 
               required
               type="number"
               min="0"
               value={basePrice}
               onChange={(e) => setBasePrice(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
               placeholder="VD: 250000"
             />
           </div>
 
-          <div className="pt-4 flex justify-end space-x-3">
+          <div className="pt-5 mt-2 flex justify-end space-x-2 border-t border-gray-100">
             <button 
               type="button" 
               onClick={() => setIsModalOpen(false)}
-              className="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-xl font-medium transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
             >
               Hủy
             </button>
             <button 
               type="submit" 
               disabled={isSubmitting}
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors disabled:opacity-70 shadow-md shadow-blue-500/20"
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-700 border border-transparent rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70 transition-colors"
             >
               {isSubmitting ? 'Đang lưu...' : 'Lưu Tuyến Đường'}
             </button>
           </div>
         </form>
       </FormModal>
-    </div>
+    </AdminPageLayout>
   );
 };

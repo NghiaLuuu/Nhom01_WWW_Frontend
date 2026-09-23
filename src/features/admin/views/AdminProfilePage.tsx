@@ -60,9 +60,9 @@ export const AdminProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-6">
       {/* Profile Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mb-8 flex items-center space-x-6">
+      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6 flex items-center space-x-6">
         <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center shrink-0">
           <User size={40} />
         </div>
@@ -75,7 +75,7 @@ export const AdminProfilePage: React.FC = () => {
             </div>
             <div className="flex items-center text-gray-600 space-x-2">
               <Briefcase size={16} className="text-gray-400" />
-              <span>Vai trò: <strong className="text-gray-800">{(user as any)?.role?.name?.replace('ROLE_', '') || user?.role || 'Nhân viên'}</strong></span>
+              <span>Vai trò: <strong className="text-gray-800">{(user as any)?.role?.name?.replace('ROLE_', '') || (user as any)?.role || 'Nhân viên'}</strong></span>
             </div>
             <div className="flex items-center text-gray-600 space-x-2">
               <MapPin size={16} className="text-gray-400" />
@@ -112,7 +112,7 @@ export const AdminProfilePage: React.FC = () => {
       </div>
 
       {activeTab === 'PROFILE' ? (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 max-w-2xl">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 max-w-2xl">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Cập nhật thông tin</h2>
           <form onSubmit={handleUpdateProfile} className="space-y-5">
             <div className="space-y-1.5">
@@ -122,7 +122,7 @@ export const AdminProfilePage: React.FC = () => {
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
                 placeholder="Nhập họ và tên"
               />
             </div>
@@ -133,7 +133,7 @@ export const AdminProfilePage: React.FC = () => {
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
                   placeholder="Nhập số điện thoại"
                 />
               </div>
@@ -143,21 +143,21 @@ export const AdminProfilePage: React.FC = () => {
                   type="date"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
                 />
               </div>
             </div>
             <button
               type="submit"
               disabled={isUpdatingProfile}
-              className="mt-4 px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all"
+              className="mt-4 px-6 py-2 bg-blue-700 hover:bg-blue-800 disabled:opacity-70 text-white font-medium rounded-md transition-colors"
             >
               {isUpdatingProfile ? 'Đang cập nhật...' : 'Lưu Thay Đổi'}
             </button>
           </form>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 max-w-2xl">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 max-w-2xl">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Đổi mật khẩu</h2>
           <form onSubmit={handleChangePassword} className="space-y-5">
             <div className="space-y-1.5">
@@ -167,7 +167,7 @@ export const AdminProfilePage: React.FC = () => {
                 required
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
                 placeholder="Nhập mật khẩu hiện tại"
               />
             </div>
@@ -178,7 +178,7 @@ export const AdminProfilePage: React.FC = () => {
                 required
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
                 placeholder="Nhập mật khẩu mới"
               />
             </div>
@@ -189,14 +189,14 @@ export const AdminProfilePage: React.FC = () => {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
                 placeholder="Nhập lại mật khẩu mới"
               />
             </div>
             <button
               type="submit"
               disabled={isUpdatingPassword}
-              className="mt-4 px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all"
+              className="mt-4 px-6 py-2 bg-blue-700 hover:bg-blue-800 disabled:opacity-70 text-white font-medium rounded-md transition-colors"
             >
               {isUpdatingPassword ? 'Đang cập nhật...' : 'Cập Nhật Mật Khẩu'}
             </button>

@@ -1,79 +1,116 @@
 import React from 'react';
 import { 
-  Bus, 
-  LayoutDashboard, 
-  Ticket, 
-  Users, 
-  Car, 
-  Map, 
-  BarChart3, 
-  UserCircle,
-  FileText 
+  Bus, LayoutDashboard, Ticket, Users, Car, Map, 
+  BarChart3, UserCircle, FileText, ChevronLeft, ChevronRight, LogOut 
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
 
-const MENU_ITEMS = [
-  { name: 'Bảng Điều Khiển', icon: LayoutDashboard, path: '/admin', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
-  { name: 'Quản Lý Chuyến Xe', icon: Bus, path: '/admin/trips', roles: ['ROLE_ADMIN', 'TRIP_MANAGE'] },
-  { name: 'Đơn Đặt Vé', icon: Ticket, path: '/admin/tickets', roles: ['ROLE_ADMIN', 'MANAGE_TICKET'] },
-  { name: 'Xe & Tài Xế', icon: Car, path: '/admin/vehicles-drivers', roles: ['ROLE_ADMIN', 'VEHICLE_MANAGE'] },
-  { name: 'Tuyến Đường', icon: Map, path: '/admin/routes', roles: ['ROLE_ADMIN', 'ROUTE_MANAGE'] },
-  { name: 'Báo Cáo Thống Kê', icon: BarChart3, path: '/admin/reports', roles: ['ROLE_ADMIN', 'VIEW_STATISTICS'] },
-  { name: 'Tài Khoản & Quyền', icon: Users, path: '/admin/users', roles: ['ROLE_ADMIN', 'STAFF_MANAGE', 'CUSTOMER_MANAGE'] },
-  { name: 'Nhật Ký Hệ Thống', icon: FileText, path: '/admin/audit-logs', roles: ['ROLE_ADMIN'] },
-  { name: 'Hồ Sơ Cá Nhân', icon: UserCircle, path: '/admin/profile', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
+interface SidebarProps {
+  isCollapsed: boolean;
+  setIsCollapsed: (val: boolean) => void;
+}
+
+const MENU_GROUPS = [
+  {
+    title: 'Tổng Quan',
+    items: [
+      { name: 'Bảng Điều Khiển', icon: LayoutDashboard, path: '/admin', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
+    ]
+  },
+  {
+    title: 'Nghiệp Vụ',
+    items: [
+      { name: 'Quản Lý Chuyến Xe', icon: Bus, path: '/admin/trips', roles: ['ROLE_ADMIN', 'TRIP_MANAGE'] },
+      { name: 'Đơn Đặt Vé', icon: Ticket, path: '/admin/tickets', roles: ['ROLE_ADMIN', 'MANAGE_TICKET'] },
+      { name: 'Xe & Tài Xế', icon: Car, path: '/admin/vehicles-drivers', roles: ['ROLE_ADMIN', 'VEHICLE_MANAGE'] },
+      { name: 'Tuyến Đường', icon: Map, path: '/admin/routes', roles: ['ROLE_ADMIN', 'ROUTE_MANAGE'] },
+    ]
+  },
+  {
+    title: 'Hệ Thống',
+    items: [
+      { name: 'Báo Cáo Thống Kê', icon: BarChart3, path: '/admin/reports', roles: ['ROLE_ADMIN', 'VIEW_STATISTICS'] },
+      { name: 'Tài Khoản & Quyền', icon: Users, path: '/admin/users', roles: ['ROLE_ADMIN', 'STAFF_MANAGE', 'CUSTOMER_MANAGE'] },
+      { name: 'Nhật Ký Hệ Thống', icon: FileText, path: '/admin/audit-logs', roles: ['ROLE_ADMIN'] },
+      { name: 'Hồ Sơ Cá Nhân', icon: UserCircle, path: '/admin/profile', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
+    ]
+  }
 ];
 
-export const Sidebar: React.FC = () => {
+export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed }) => {
   const location = useLocation();
   const currentPath = location.pathname;
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const userRoles = user?.roles || [];
 
-  const visibleItems = MENU_ITEMS.filter(item => 
-    item.roles.some(role => userRoles.includes(role))
-  );
-
   return (
-    <aside className="w-64 bg-slate-800 h-screen flex flex-col shadow-xl fixed left-0 top-0 z-20 text-slate-300">
-      {/* Logo Section */}
-      <div className="h-16 min-h-[4rem] flex items-center px-6 bg-slate-900/50 border-b border-slate-700/50">
-        <Bus className="text-blue-400 mr-3" size={28} />
-        <span className="text-xl font-bold text-white tracking-wider">VEXE</span>
+    <aside className={`bg-white h-screen flex flex-col fixed left-0 top-0 z-20 border-r border-gray-200 transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}>
+      {/* Header */}
+      <div className="h-14 min-h-[3.5rem] flex items-center justify-between px-4 border-b border-gray-200 bg-gray-50/50">
+        <div className={`flex items-center overflow-hidden transition-all ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
+          <Bus className="text-blue-700 mr-2 shrink-0" size={24} />
+          <span className="text-lg font-bold text-gray-900 tracking-wide">VEXE</span>
+        </div>
+        <button 
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="p-1.5 rounded-md hover:bg-gray-200 text-gray-500 transition-colors shrink-0"
+          title={isCollapsed ? "Mở rộng" : "Thu gọn"}
+        >
+          {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+        </button>
       </div>
       
       {/* Navigation Links */}
-      <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1.5 custom-scrollbar">
-        {visibleItems.map((item, index) => {
-          const Icon = item.icon;
-          const isActive = currentPath === item.path || (currentPath.startsWith(item.path) && item.path !== '/admin');
-          
+      <div className="flex-1 overflow-y-auto py-4 px-3 space-y-6 custom-scrollbar">
+        {MENU_GROUPS.map((group, groupIdx) => {
+          const visibleItems = group.items.filter(item => item.roles.some(role => userRoles.includes(role)));
+          if (visibleItems.length === 0) return null;
+
           return (
-            <Link 
-              key={index} 
-              to={item.path}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all group ${
-                isActive 
-                  ? 'bg-blue-600 text-white font-semibold shadow-md shadow-blue-900/20' 
-                  : 'hover:bg-slate-700/50 hover:text-white font-medium'
-              }`}
-            >
-              <Icon size={20} className={isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'} />
-              <span>{item.name}</span>
-            </Link>
+            <div key={groupIdx} className="flex flex-col space-y-1">
+              {!isCollapsed && (
+                <div className="px-3 mb-1 text-[11px] font-semibold tracking-wider text-gray-500 uppercase">
+                  {group.title}
+                </div>
+              )}
+              {visibleItems.map((item, idx) => {
+                const Icon = item.icon;
+                const isActive = currentPath === item.path || (currentPath.startsWith(item.path) && item.path !== '/admin');
+                
+                return (
+                  <Link 
+                    key={idx} 
+                    to={item.path}
+                    title={isCollapsed ? item.name : undefined}
+                    className={`flex items-center px-3 py-2 rounded-md transition-colors group relative ${
+                      isActive 
+                        ? 'bg-blue-50 text-blue-700 font-medium' 
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                  >
+                    {isActive && !isCollapsed && (
+                      <div className="absolute left-0 top-1 bottom-1 w-1 bg-blue-700 rounded-r-full" />
+                    )}
+                    <Icon size={18} className={`shrink-0 ${isCollapsed ? 'mx-auto' : 'mr-3'} ${isActive ? 'text-blue-700' : 'text-gray-400 group-hover:text-gray-600'}`} />
+                    {!isCollapsed && <span className="text-sm truncate">{item.name}</span>}
+                  </Link>
+                );
+              })}
+            </div>
           );
         })}
       </div>
 
-      {/* Logout Button */}
-      <div className="p-4 border-t border-slate-700/50">
+      {/* Footer / Logout */}
+      <div className="p-3 border-t border-gray-200 bg-gray-50/50">
         <button 
-          onClick={() => { useAuthStore.getState().logout(); window.location.href = '/'; }}
-          className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white font-medium transition-all group"
+          onClick={() => { logout(); window.location.href = '/'; }}
+          title={isCollapsed ? "Đăng xuất" : undefined}
+          className="w-full flex items-center px-3 py-2 rounded-md text-red-600 hover:bg-red-50 transition-colors group"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-          <span>Đăng xuất</span>
+          <LogOut size={18} className={`shrink-0 ${isCollapsed ? 'mx-auto' : 'mr-3'}`} />
+          {!isCollapsed && <span className="text-sm font-medium">Đăng xuất</span>}
         </button>
       </div>
     </aside>
