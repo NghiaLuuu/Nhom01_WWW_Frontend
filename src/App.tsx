@@ -38,12 +38,10 @@ function App() {
           <Route path="search" element={<SearchPage />} />
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="booking-success" element={<BookingSuccessPage />} />
+          <Route path="login" element={<AuthWrapper isLogin={true} />} />
+          <Route path="register" element={<AuthWrapper isLogin={false} />} />
+          <Route path="forgot-password" element={<ForgotPasswordPage />} />
         </Route>
-        
-        {/* Auth Routes */}
-        <Route path="/login" element={<AuthWrapper isLogin={true} />} />
-        <Route path="/register" element={<AuthWrapper isLogin={false} />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         {/* Customer Profile Route */}
         <Route path="/profile" element={

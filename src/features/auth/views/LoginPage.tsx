@@ -49,6 +49,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -57,6 +58,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setLoginError(null);
     try {
       const response = await api.post('/auth/login', { email: identifier, password });
       if (response.data.success && response.data.data) {
@@ -81,10 +83,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
           navigate('/');
         }
       } else {
-        toast.error(response.data.message || 'Đăng nhập thất bại');
+        setLoginError(response.data.message || 'Đăng nhập thất bại');
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi đăng nhập');
+      setLoginError(error.response?.data?.message || 'Có lỗi xảy ra khi đăng nhập');
     } finally {
       setIsLoading(false);
     }
@@ -140,53 +142,29 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
         <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-slate-950 to-transparent opacity-90" />
       </div>
 
-      {/* Navbar (Absolute to float over content) */}
-      <nav className={`absolute top-0 left-0 right-0 z-50 flex items-center justify-between p-6 lg:px-12 lg:py-8 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
-        <div 
-          className="flex items-center gap-3 cursor-pointer group"
-          onClick={() => navigate('/')}
-        >
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 group-hover:bg-white/20 transition-all duration-300 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <Bus size={22} className="text-white relative z-10" />
-          </div>
-          <span className="text-2xl font-black tracking-widest text-white uppercase drop-shadow-md">
-            {CONTENT.LOGO_TEXT}
-          </span>
-        </div>
-        
-        <div className="hidden md:flex gap-8 text-sm font-medium">
-          {CONTENT.NAV_LINKS.map((link, idx) => (
-            <a key={idx} href="#" className="text-slate-300 hover:text-white transition-colors relative group">
-              {link}
-              <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-blue-500 group-hover:w-full transition-all duration-300 ease-out"></span>
-            </a>
-          ))}
-        </div>
-      </nav>
-
       {/* Main Content */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center lg:justify-between px-6 lg:px-24">
-        
-        {/* Left Typography - Desktop Only */}
-        <div className={`hidden lg:flex flex-col max-w-xl transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'}`}>
+      <div className="relative z-10 flex min-h-[calc(100vh-64px)] items-center justify-center px-6">
+        <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-32">
+          
+          {/* Left Typography - Desktop Only */}
+        <div className={`hidden lg:flex flex-col max-w-xl transition-all duration-500 delay-100 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'}`}>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-blue-300 text-sm font-semibold mb-6 w-fit animate-float">
             <Compass size={16} />
             <span>Mở ra kỷ nguyên di chuyển mới</span>
           </div>
-          <h1 className="text-6xl xl:text-7xl font-extrabold text-white leading-[1.1] mb-6 tracking-tight">
-            {CONTENT.TITLE.split(' ').slice(0, 2).join(' ')} <br/>
+          <h1 className="text-6xl xl:text-7xl font-extrabold text-white leading-[1.1] mb-6 tracking-tight text-balance">
+            {CONTENT.TITLE.split(' ').slice(0, 2).join(' ')}{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 drop-shadow-[0_0_15px_rgba(56,189,248,0.4)]">
               {CONTENT.TITLE.split(' ').slice(2).join(' ')}
             </span>
           </h1>
-          <p className="text-lg text-slate-300 leading-relaxed max-w-md font-light">
+          <p className="text-lg text-slate-300 leading-relaxed max-w-md font-light text-balance">
             {CONTENT.SUBTITLE}
           </p>
         </div>
 
         {/* Right Form Card - Glassmorphism */}
-        <div className={`w-full max-w-[420px] transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+        <div className={`w-full max-w-[420px] transition-all duration-500 delay-200 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
           <div className="relative group rounded-[2rem]">
             {/* Animated Glow Behind Card */}
             <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-500/30 to-purple-600/30 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-70 transition duration-700 animate-pulse-glow pointer-events-none"></div>
@@ -201,8 +179,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
               <div className="relative z-10">
                 <div className="mb-8 lg:hidden text-center">
                   <h2 className="text-3xl font-bold text-white mb-2">{CONTENT.TITLE}</h2>
-                  <p className="text-sm text-slate-400">{CONTENT.SUBTITLE}</p>
+                  <p className="text-sm text-slate-400 text-balance">{CONTENT.SUBTITLE}</p>
                 </div>
+
+                {loginError && (
+                  <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-xl flex items-start gap-3">
+                    <div className="text-red-400 mt-0.5">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    </div>
+                    <div className="text-sm font-medium text-red-200">
+                      {loginError}
+                    </div>
+                  </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   {/* Identifier Input */}
@@ -248,7 +237,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full pl-11 pr-12 py-3.5 bg-white/5 hover:bg-white/[0.07] focus:bg-white/10 border border-white/10 focus:border-blue-400/50 rounded-xl text-white text-base placeholder:text-slate-500 transition-all outline-none focus:ring-4 focus:ring-blue-500/10 relative z-0"
+                        className="w-full sm:w-[calc(100%-1px)] pl-11 pr-12 py-3.5 bg-white/5 hover:bg-white/[0.07] focus:bg-white/10 border border-white/10 focus:border-blue-400/50 rounded-xl text-white text-base placeholder:text-slate-500 transition-all outline-none focus:ring-4 focus:ring-blue-500/10 relative z-0"
                         placeholder={CONTENT.INPUT_PASSWORD_PLACEHOLDER}
                       />
                       <button
@@ -305,6 +294,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
           </div>
         </div>
 
+        </div>
       </div>
     </div>
   );

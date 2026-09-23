@@ -53,7 +53,7 @@ export const ForgotPasswordPage: React.FC = () => {
 
   return (
     <div 
-      className="min-h-screen relative flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
+      className="min-h-[calc(100vh-64px)] relative flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(https://images.unsplash.com/photo-1464082354059-27db6ce50048?q=80&w=2070&auto=format&fit=crop)` }}
     >
       <div className="absolute inset-0 bg-black/50 sm:bg-gradient-to-tr from-black/80 via-black/40 to-transparent z-0"></div>

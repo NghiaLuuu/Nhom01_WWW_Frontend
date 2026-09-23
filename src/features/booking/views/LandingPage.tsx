@@ -62,7 +62,7 @@ export const LandingPage: React.FC = () => {
       `}</style>
 
       {/* Cinematic Hero Section */}
-      <div className="relative min-h-[100vh] lg:min-h-[800px] flex items-center overflow-hidden pt-20">
+      <div className="relative min-h-[calc(100vh-64px)] lg:min-h-[750px] flex items-center overflow-hidden">
         
         {/* Background Layer */}
         <div className="absolute inset-0 z-0">
@@ -76,17 +76,17 @@ export const LandingPage: React.FC = () => {
           <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent" />
         </div>
 
-        <div className="relative z-10 px-6 sm:px-12 lg:px-24 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="relative z-10 px-6 sm:px-12 lg:px-8 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
           {/* Left Side: Typography */}
-          <div className={`lg:col-span-7 space-y-8 transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'}`}>
+          <div className={`lg:col-span-7 space-y-8 transition-all duration-500 delay-100 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'}`}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-cyan-300 text-sm font-semibold w-fit animate-float">
               <Sparkles size={16} />
               <span>Tiên phong trải nghiệm du lịch số</span>
             </div>
             
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.15] tracking-tight text-balance">
-              Khám phá hành trình <br className="hidden md:block"/>
+              Khám phá hành trình{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 drop-shadow-[0_0_20px_rgba(56,189,248,0.3)]">
                 tuyệt vời&nbsp;nhất
               </span>
@@ -110,7 +110,7 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* Right Side: Glassmorphism Search Box */}
-          <div className={`lg:col-span-5 relative z-20 w-full max-w-[480px] mx-auto lg:ml-auto transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+          <div className={`lg:col-span-5 relative z-20 w-full max-w-[480px] mx-auto transition-all duration-500 delay-200 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
             <div className="relative group rounded-[2.5rem]">
               {/* Glowing aura */}
               <div className="absolute -inset-1 bg-gradient-to-br from-blue-500/40 to-cyan-500/40 rounded-[2.5rem] blur-2xl opacity-60 group-hover:opacity-80 transition duration-1000 animate-pulse-glow pointer-events-none"></div>

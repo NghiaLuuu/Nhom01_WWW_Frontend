@@ -67,37 +67,13 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onToggleView }) => {
 
   return (
     <div 
-      className="min-h-screen relative flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
+      className="min-h-[calc(100vh-64px)] relative flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${CONTENT.BG_IMAGE_URL})` }}
     >
-      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/50 sm:bg-gradient-to-tr from-black/80 via-black/40 to-transparent z-0"></div>
 
-      {/* Header / Navbar */}
-      <header className="absolute top-0 left-0 right-0 z-10 p-4 md:px-8 lg:px-12 backdrop-blur-md bg-white/80 border-b border-gray-200 flex flex-wrap justify-between items-center shadow-sm">
-        <div className="flex items-center space-x-2 cursor-pointer">
-          <Bus size={32} className="text-blue-900" />
-          <span className="text-2xl font-black tracking-wider text-blue-900">
-            {CONTENT.LOGO_TEXT}
-          </span>
-        </div>
-
-        <nav className="hidden md:flex items-center space-x-5 lg:space-x-8 text-sm font-bold text-gray-800">
-          {CONTENT.NAV_LINKS.map((link, index) => (
-            <React.Fragment key={index}>
-              <a href="#" className="hover:text-blue-600 transition-colors">
-                {link}
-              </a>
-              {index < CONTENT.NAV_LINKS.length - 1 && (
-                <span className="text-gray-400 font-normal">|</span>
-              )}
-            </React.Fragment>
-          ))}
-        </nav>
-      </header>
-
       {/* Main Register Card */}
-      <main className="z-10 w-full max-w-md px-4 sm:px-0 mt-20">
+      <main className="z-10 w-full max-w-md px-4 sm:px-0">
         <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-10 border border-white/50">
           
           <div className="flex flex-col items-center mb-8">
