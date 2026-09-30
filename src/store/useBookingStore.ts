@@ -1,41 +1,52 @@
 import { create } from 'zustand';
 import { type Trip } from '../features/admin/api/trip.service';
+import type { BookingItem, SeatItem } from '../features/booking/types/booking.types';
 
 interface BookingState {
   selectedTrip: Trip | null;
-  selectedSeats: string[];
-  holdExpiresAt: number | null; // Timestamp
+  selectedSeats: SeatItem[];
+  currentBooking: BookingItem | null;
+  holdExpiresAt: number | null; // Timestamp (ms)
   
   setSelectedTrip: (trip: Trip | null) => void;
-  toggleSeat: (seatId: string, maxSeats: number) => void;
-  startHoldTimer: () => void;
+  toggleSeatItem: (seat: SeatItem, maxSeats?: number) => void;
+  setCurrentBooking: (booking: BookingItem | null) => void;
+  setHoldExpiresAt: (timestamp: number | null) => void;
   clearBooking: () => void;
 }
 
 export const useBookingStore = create<BookingState>((set, get) => ({
   selectedTrip: null,
   selectedSeats: [],
+  currentBooking: null,
   holdExpiresAt: null,
 
-  setSelectedTrip: (trip) => set({ selectedTrip: trip, selectedSeats: [], holdExpiresAt: null }),
+  setSelectedTrip: (trip) => set({ selectedTrip: trip, selectedSeats: [], currentBooking: null, holdExpiresAt: null }),
   
-  toggleSeat: (seatId, maxSeats) => {
+  toggleSeatItem: (seat, maxSeats = 5) => {
     const { selectedSeats } = get();
-    if (selectedSeats.includes(seatId)) {
-      set({ selectedSeats: selectedSeats.filter(id => id !== seatId) });
+    const exists = selectedSeats.some(s => s.id === seat.id);
+    if (exists) {
+      set({ selectedSeats: selectedSeats.filter(s => s.id !== seat.id) });
     } else {
       if (selectedSeats.length < maxSeats) {
-        set({ selectedSeats: [...selectedSeats, seatId] });
+        set({ selectedSeats: [...selectedSeats, seat] });
       }
     }
   },
 
-  startHoldTimer: () => {
-    // Set timer for 5 minutes from now
-    set({ holdExpiresAt: Date.now() + 5 * 60 * 1000 });
+  setCurrentBooking: (booking) => {
+    let expiresAt: number | null = null;
+    if (booking?.holdExpiresAt) {
+      expiresAt = new Date(booking.holdExpiresAt).getTime();
+    }
+    set({ currentBooking: booking, holdExpiresAt: expiresAt });
   },
 
+  setHoldExpiresAt: (timestamp) => set({ holdExpiresAt: timestamp }),
+
   clearBooking: () => {
-    set({ selectedTrip: null, selectedSeats: [], holdExpiresAt: null });
+    set({ selectedTrip: null, selectedSeats: [], currentBooking: null, holdExpiresAt: null });
   }
 }));
+

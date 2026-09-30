@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { type Ticket, TicketService } from '../../../services/ticket.service';
+import { BookingService } from '../../booking/api/booking.service';
 import toast from 'react-hot-toast';
 import { User, Mail, Ticket as TicketIcon, Clock, AlertTriangle, Key, UserCircle } from 'lucide-react';
 import { ProfileService } from '../../../services/profile.service';
@@ -90,7 +91,10 @@ export const ProfilePage: React.FC = () => {
     if (!selectedTicket) return;
     setIsProcessing(true);
     try {
-      await TicketService.requestCancel(selectedTicket.id);
+      await BookingService.requestCancelBooking({
+        bookingId: selectedTicket.id,
+        reason: 'Khách yêu cầu hủy qua trang cá nhân'
+      });
       toast.success('Đã gửi yêu cầu hủy vé thành công. Vui lòng chờ xác nhận.');
       setIsCancelModalOpen(false);
       // Optimistically update
@@ -287,7 +291,7 @@ export const ProfilePage: React.FC = () => {
                 <div className="flex items-center text-gray-600 text-sm space-x-4">
                   <span className="flex items-center space-x-1"><Clock size={16}/> <span>{new Date(ticket.trip.departureTime).toLocaleString('vi-VN')}</span></span>
                   <span>|</span>
-                  <span>Ghế: <span className="font-semibold text-blue-600">{ticket.seats.join(', ')}</span></span>
+                  <span>Ghế: <span className="font-semibold text-blue-600">{ticket.seats ? ticket.seats.join(', ') : 'Ghế đặt'}</span></span>
                 </div>
               </div>
 

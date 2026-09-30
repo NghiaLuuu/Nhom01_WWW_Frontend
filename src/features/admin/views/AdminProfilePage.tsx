@@ -75,7 +75,7 @@ export const AdminProfilePage: React.FC = () => {
             </div>
             <div className="flex items-center text-gray-600 space-x-2">
               <Briefcase size={16} className="text-gray-400" />
-              <span>Vai trò: <strong className="text-gray-800">{(user as any)?.role?.name?.replace('ROLE_', '') || user?.role || 'Nhân viên'}</strong></span>
+              <span>Vai trò: <strong className="text-gray-800">{(user as any)?.role?.name?.replace('ROLE_', '') || (user as any)?.role || (user?.roles && user.roles[0]?.replace('ROLE_', '')) || 'Nhân viên'}</strong></span>
             </div>
             <div className="flex items-center text-gray-600 space-x-2">
               <MapPin size={16} className="text-gray-400" />

@@ -4,13 +4,14 @@ import { type User } from '../features/admin/api/user.service';
 
 export interface Ticket {
   id: number;
-  bookingCode: string;
+  bookingCode?: string;
   trip: Trip;
   customer?: User;
-  seats: string[];
+  seats?: string[];
   totalPrice: number;
-  status: 'PAID' | 'CANCEL_REQUESTED' | 'CANCELLED' | 'USED';
+  status: 'PENDING_PAYMENT' | 'PAID' | 'CANCEL_REQUESTED' | 'CANCELLED' | 'USED' | 'EXPIRED' | string;
   createdAt: string;
+  tickets?: any[];
 }
 
 export const TicketService = {
@@ -19,22 +20,49 @@ export const TicketService = {
     const res = await api.get('/bookings/my-history');
     return res.data;
   },
-  requestCancel: async (id: number) => {
-    const res = await api.patch(`/bookings/${id}/request-cancel`);
+
+  // Admin/Staff methods
+  getAllBookings: async (phoneNumber?: string, ticketCode?: string) => {
+    const res = await api.get('/bookings/search', {
+      params: { phoneNumber, ticketCode }
+    });
     return res.data;
   },
 
-  // Admin/Staff methods
-  getAllTickets: async () => {
-    const res = await api.get('/admin/bookings'); // Assuming this endpoint for staff
+  getTicketsByBooking: async (bookingId: number) => {
+    const res = await api.get(`/tickets/booking/${bookingId}`);
     return res.data;
   },
-  approveCancel: async (id: number) => {
-    const res = await api.patch(`/admin/bookings/${id}/approve-cancel`);
+
+  getTicketByCode: async (ticketCode: string) => {
+    const res = await api.get(`/tickets/code/${ticketCode}`);
     return res.data;
   },
-  rejectCancel: async (id: number) => {
-    const res = await api.patch(`/admin/bookings/${id}/reject-cancel`);
+
+  updateTicketStatus: async (ticketId: number, status: string) => {
+    const res = await api.patch(`/tickets/${ticketId}/status`, { status });
+    return res.data;
+  },
+
+  getCancelRequests: async () => {
+    const res = await api.get('/cancel-requests');
+    return res.data;
+  },
+
+  approveCancel: async (requestId: number) => {
+    const res = await api.patch(`/cancel-requests/${requestId}/resolve`, {
+      isApproved: true,
+      rejectReason: ''
+    });
+    return res.data;
+  },
+
+  rejectCancel: async (requestId: number, rejectReason: string) => {
+    const res = await api.patch(`/cancel-requests/${requestId}/resolve`, {
+      isApproved: false,
+      rejectReason
+    });
     return res.data;
   }
 };
+

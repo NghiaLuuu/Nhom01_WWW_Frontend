@@ -4,11 +4,15 @@ export interface Vehicle {
   id: number;
   licensePlate: string;
   capacity: number;
+  type?: string;
+  status?: string;
 }
 
 export interface VehicleRequest {
   licensePlate: string;
   capacity: number;
+  type?: string;
+  status?: string;
 }
 
 export const VehicleService = {

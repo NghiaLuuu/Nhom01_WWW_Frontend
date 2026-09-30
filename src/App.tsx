@@ -14,6 +14,9 @@ import { LandingPage } from './features/booking/views/LandingPage';
 import { SearchPage } from './features/booking/views/SearchPage';
 import { CheckoutPage } from './features/booking/views/CheckoutPage';
 import { BookingSuccessPage } from './features/booking/views/BookingSuccessPage';
+import { BookingHistoryPage } from './features/booking/views/BookingHistoryPage';
+import { TicketDetailPage } from './features/booking/views/TicketDetailPage';
+import { ETicketPage } from './features/booking/views/ETicketPage';
 import { ProfilePage } from './features/customer/views/ProfilePage';
 import { TicketManagement } from './features/admin/views/TicketManagement';
 import { Toaster } from 'react-hot-toast';
@@ -38,7 +41,27 @@ function App() {
           <Route path="search" element={<SearchPage />} />
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="booking-success" element={<BookingSuccessPage />} />
+          
+          {/* Protected Customer Booking Routes inside Public Layout */}
+          <Route path="bookings" element={
+            <ProtectedRoute>
+              <BookingHistoryPage />
+            </ProtectedRoute>
+          } />
+          <Route path="bookings/:id" element={
+            <ProtectedRoute>
+              <TicketDetailPage />
+            </ProtectedRoute>
+          } />
+          <Route path="my-tickets" element={<Navigate to="/bookings" replace />} />
         </Route>
+
+        {/* Dedicated E-Ticket Route (Stand-alone for clean boarding pass / print layout) */}
+        <Route path="/bookings/:id/e-ticket" element={
+          <ProtectedRoute>
+            <ETicketPage />
+          </ProtectedRoute>
+        } />
         
         {/* Auth Routes */}
         <Route path="/login" element={<AuthWrapper isLogin={true} />} />
