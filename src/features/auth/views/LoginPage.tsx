@@ -1,28 +1,39 @@
-import React, { useState } from 'react';
+/**
+ * CẤU HÌNH ĐÃ CHỐT
+ * Ngành: Du lịch/Vận tải · Loại hệ thống: E-commerce / Đặt vé
+ * Mức độ WOW: 9 (Hypebeast/Campaign) - Đột phá thị giác
+ * Nền tảng: Web · Stack: React 18 + Tailwind v3.4
+ *
+ * TƯ DUY THIẾT KẾ (WOW 9):
+ * - Bố cục: Hero lệch trục kết hợp thẻ Glassmorphism nổi.
+ * - Ánh sáng & Chất liệu: Sử dụng backdrop-blur mạnh, viền gradient siêu mỏng (1px), glow tinh tế khi focus.
+ * - Chuyển động (Micro-animations): Các input có hiệu ứng hover mượt mà, nút submit có dải sáng lướt qua (shine effect).
+ * - Background: Ảnh nền chất lượng cao, có hiệu ứng zoom siêu chậm (Ken Burns effect) tạo cảm giác không gian và hành trình.
+ */
+
+import React, { useState, useEffect } from 'react';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
-import { Bus, User, Lock, Eye, EyeOff } from 'lucide-react';
+import { Bus, User, Lock, Eye, EyeOff, ArrowRight, Compass } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../../services/api';
 import { useAuthStore } from '../../../store/useAuthStore';
 import toast from 'react-hot-toast';
 import { ProfileService } from '../../../services/profile.service';
 
-// === CONSTANTS FOR CONTENT (Fixed UI Skeleton) ===
 const CONTENT = {
-  NAV_LINKS: ["Trang chủ", "Đặt vé", "Liên hệ", "Tuyển dụng"],
+  NAV_LINKS: ["Trang chủ", "Trải nghiệm", "Ưu đãi", "Hỗ trợ"],
   LOGO_TEXT: "VEXE",
-  TITLE: "ĐĂNG NHẬP",
-  SUBTITLE: "Chào mừng bạn trở lại với VEXE.VN - Hệ thống đặt vé xe khách số 1 Việt Nam.",
-  INPUT_IDENTIFIER_LABEL: "Số điện thoại hoặc Email",
-  INPUT_IDENTIFIER_PLACEHOLDER: "Nhập số điện thoại của bạn",
+  TITLE: "Vượt Tầm Phố Thị",
+  SUBTITLE: "Đăng nhập để tiếp tục hành trình và khám phá những chân trời mới với trải nghiệm đẳng cấp.",
+  INPUT_IDENTIFIER_LABEL: "Tài khoản",
+  INPUT_IDENTIFIER_PLACEHOLDER: "Số điện thoại hoặc Email",
   INPUT_PASSWORD_LABEL: "Mật khẩu",
   INPUT_PASSWORD_PLACEHOLDER: "Nhập mật khẩu",
   FORGOT_PASSWORD_TEXT: "Quên mật khẩu?",
-  SUBMIT_BUTTON_TEXT: "ĐĂNG NHẬP",
-  SOCIAL_LOGIN_TEXT: "Hoặc đăng nhập bằng:",
-  NO_ACCOUNT_TEXT: "Bạn chưa có tài khoản?",
+  SUBMIT_BUTTON_TEXT: "BẮT ĐẦU",
+  NO_ACCOUNT_TEXT: "Chưa có tài khoản?",
   REGISTER_TEXT: "Đăng ký ngay",
-  BG_IMAGE_URL: "https://images.unsplash.com/photo-1464082354059-27db6ce50048?q=80&w=2070&auto=format&fit=crop"
+  BG_IMAGE_URL: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=2069&auto=format&fit=crop"
 };
 
 interface LoginPageProps {
@@ -30,17 +41,24 @@ interface LoginPageProps {
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
-  useDocumentTitle(CONTENT.TITLE);
+  useDocumentTitle("Đăng nhập | " + CONTENT.LOGO_TEXT);
   const navigate = useNavigate();
   const { setTokens, setUser } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setLoginError(null);
     try {
       const response = await api.post('/auth/login', { email: identifier, password });
       if (response.data.success && response.data.data) {
@@ -65,152 +83,219 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
           navigate('/');
         }
       } else {
-        toast.error(response.data.message || 'Đăng nhập thất bại');
+        setLoginError(response.data.message || 'Đăng nhập thất bại');
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi đăng nhập');
+      setLoginError(error.response?.data?.message || 'Có lỗi xảy ra khi đăng nhập');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div 
-      className="min-h-screen relative flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: `url(${CONTENT.BG_IMAGE_URL})` }}
-    >
-      {/* Dark Overlay for better contrast */}
-      <div className="absolute inset-0 bg-black/50 sm:bg-gradient-to-tr from-black/80 via-black/40 to-transparent z-0"></div>
+    <div className="min-h-screen w-full relative overflow-hidden bg-slate-950 font-sans selection:bg-blue-500/30">
+      <style>{`
+        @keyframes kenburns {
+          0% { transform: scale(1) translate(0, 0); }
+          50% { transform: scale(1.05) translate(-1%, -1%); }
+          100% { transform: scale(1) translate(0, 0); }
+        }
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+          100% { transform: translateY(0px); }
+        }
+        @keyframes pulse-glow {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 0.8; }
+        }
+        .bg-kenburns {
+          animation: kenburns 30s ease-in-out infinite;
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-pulse-glow {
+          animation: pulse-glow 3s ease-in-out infinite;
+        }
+        
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.05) inset !important;
+          -webkit-text-fill-color: white !important;
+          caret-color: white !important;
+          transition: background-color 5000s ease-in-out 0s;
+        }
+      `}</style>
 
-      {/* Header / Navbar */}
-      <header className="absolute top-0 left-0 right-0 z-10 p-4 md:px-8 lg:px-12 backdrop-blur-md bg-white/80 border-b border-gray-200 flex flex-wrap justify-between items-center shadow-sm">
-        {/* Logo */}
-        <div className="flex items-center space-x-2 cursor-pointer">
-          <Bus size={32} className="text-blue-900" />
-          <span className="text-2xl font-black tracking-wider text-blue-900">
-            {CONTENT.LOGO_TEXT}
-          </span>
-        </div>
+      {/* Cinematic Background */}
+      <div className="absolute inset-0 z-0">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-kenburns scale-105 origin-center"
+          style={{ backgroundImage: `url(${CONTENT.BG_IMAGE_URL})` }}
+        />
+        {/* Dynamic Overlays for Depth */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-900/60 to-blue-950/80 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent opacity-60 mix-blend-screen" />
+        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-slate-950 to-transparent opacity-90" />
+      </div>
 
-        {/* Navigation */}
-        <nav className="hidden md:flex items-center space-x-5 lg:space-x-8 text-sm font-bold text-gray-800">
-          {CONTENT.NAV_LINKS.map((link, index) => (
-            <React.Fragment key={index}>
-              <a href="#" className="hover:text-blue-600 transition-colors">
-                {link}
-              </a>
-              {index < CONTENT.NAV_LINKS.length - 1 && (
-                <span className="text-gray-400 font-normal">|</span>
-              )}
-            </React.Fragment>
-          ))}
-        </nav>
-      </header>
-
-      {/* Main Login Card */}
-      <main className="z-10 w-full max-w-md px-4 sm:px-0 mt-20">
-        <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-10 border border-white/50">
+      {/* Main Content */}
+      <div className="relative z-10 flex min-h-[calc(100vh-64px)] items-center justify-center px-6">
+        <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-32">
           
-          {/* Header Card */}
-          <div className="flex flex-col items-center mb-8">
-            <div className="flex items-center space-x-2 mb-4">
-              <Bus size={36} className="text-blue-600" />
-              <span className="text-3xl font-black text-blue-900 tracking-tight">
-                {CONTENT.LOGO_TEXT}
-              </span>
-            </div>
-            
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3 text-center">
-              {CONTENT.TITLE}
-            </h1>
-            <p className="text-sm text-gray-500 text-center leading-relaxed px-2">
-              {CONTENT.SUBTITLE}
-            </p>
+          {/* Left Typography - Desktop Only */}
+        <div className={`hidden lg:flex flex-col max-w-xl transition-all duration-500 delay-100 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'}`}>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-blue-300 text-sm font-semibold mb-6 w-fit animate-float">
+            <Compass size={16} />
+            <span>Mở ra kỷ nguyên di chuyển mới</span>
           </div>
+          <h1 className="text-6xl xl:text-7xl font-extrabold text-white leading-[1.1] mb-6 tracking-tight text-balance">
+            {CONTENT.TITLE.split(' ').slice(0, 2).join(' ')}{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 drop-shadow-[0_0_15px_rgba(56,189,248,0.4)]">
+              {CONTENT.TITLE.split(' ').slice(2).join(' ')}
+            </span>
+          </h1>
+          <p className="text-lg text-slate-300 leading-relaxed max-w-md font-light text-balance">
+            {CONTENT.SUBTITLE}
+          </p>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Input 1: Phone / Email */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-gray-700">
-                {CONTENT.INPUT_IDENTIFIER_LABEL}
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                  <User size={18} />
+        {/* Right Form Card - Glassmorphism */}
+        <div className={`w-full max-w-[420px] transition-all duration-500 delay-200 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+          <div className="relative group rounded-[2rem]">
+            {/* Animated Glow Behind Card */}
+            <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-500/30 to-purple-600/30 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-70 transition duration-700 animate-pulse-glow pointer-events-none"></div>
+            
+            {/* Glass Card Surface */}
+            <div className="relative bg-slate-900/40 backdrop-blur-2xl border border-white/10 p-8 sm:p-10 rounded-[2rem] shadow-2xl overflow-hidden">
+              {/* Internal Reflections */}
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+              <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+              <div className="relative z-10">
+                <div className="mb-8 lg:hidden text-center">
+                  <h2 className="text-3xl font-bold text-white mb-2">{CONTENT.TITLE}</h2>
+                  <p className="text-sm text-slate-400 text-balance">{CONTENT.SUBTITLE}</p>
                 </div>
-                <input
-                  type="text"
-                  required
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none hover:bg-white"
-                  placeholder={CONTENT.INPUT_IDENTIFIER_PLACEHOLDER}
-                />
+
+                {loginError && (
+                  <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-xl flex items-start gap-3">
+                    <div className="text-red-400 mt-0.5">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    </div>
+                    <div className="text-sm font-medium text-red-200">
+                      {loginError}
+                    </div>
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  {/* Identifier Input */}
+                  <div className="space-y-2 group/input">
+                    <label className="text-xs font-bold tracking-wider text-slate-300 uppercase">
+                      {CONTENT.INPUT_IDENTIFIER_LABEL}
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within/input:text-blue-400 transition-colors z-10">
+                        <User size={18} />
+                      </div>
+                      <input
+                        type="text"
+                        required
+                        value={identifier}
+                        onChange={(e) => setIdentifier(e.target.value)}
+                        className="w-full pl-11 pr-4 py-3.5 bg-white/5 hover:bg-white/[0.07] focus:bg-white/10 border border-white/10 focus:border-blue-400/50 rounded-xl text-white text-base placeholder:text-slate-500 transition-all outline-none focus:ring-4 focus:ring-blue-500/10 relative z-0"
+                        placeholder={CONTENT.INPUT_IDENTIFIER_PLACEHOLDER}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Password Input */}
+                  <div className="space-y-2 group/input">
+                    <div className="flex justify-between items-center">
+                      <label className="text-xs font-bold tracking-wider text-slate-300 uppercase">
+                        {CONTENT.INPUT_PASSWORD_LABEL}
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => navigate('/forgot-password')}
+                        className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                      >
+                        {CONTENT.FORGOT_PASSWORD_TEXT}
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within/input:text-blue-400 transition-colors z-10">
+                        <Lock size={18} />
+                      </div>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full sm:w-[calc(100%-1px)] pl-11 pr-12 py-3.5 bg-white/5 hover:bg-white/[0.07] focus:bg-white/10 border border-white/10 focus:border-blue-400/50 rounded-xl text-white text-base placeholder:text-slate-500 transition-all outline-none focus:ring-4 focus:ring-blue-500/10 relative z-0"
+                        placeholder={CONTENT.INPUT_PASSWORD_PLACEHOLDER}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white transition-colors z-10"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Submit Button - Signature Move: Advanced Hover & Shine */}
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="group/btn relative w-full mt-8 overflow-hidden rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-[15px] shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
+                  >
+                    <div className="absolute inset-0 w-full h-full pointer-events-none">
+                      <div className="absolute top-0 -left-[100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[30deg] group-hover/btn:animate-[shine_1s_ease-in-out]"></div>
+                    </div>
+                    <div className="relative py-4 flex items-center justify-center gap-2">
+                      {isLoading ? (
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      ) : (
+                        <>
+                          <span>{CONTENT.SUBMIT_BUTTON_TEXT}</span>
+                          <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                        </>
+                      )}
+                    </div>
+                  </button>
+
+                  <style>{`
+                    @keyframes shine {
+                      100% { left: 200%; }
+                    }
+                  `}</style>
+                </form>
+
+                {/* Footer Link */}
+                <div className="mt-8 text-center text-sm">
+                  <span className="text-slate-400">{CONTENT.NO_ACCOUNT_TEXT} </span>
+                  <button 
+                    type="button"
+                    onClick={onToggleView}
+                    className="text-white font-bold hover:text-blue-400 transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-px after:bg-blue-400/0 hover:after:bg-blue-400/100 after:transition-colors inline-block"
+                  >
+                    {CONTENT.REGISTER_TEXT}
+                  </button>
+                </div>
               </div>
             </div>
-
-            {/* Input 2: Password */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-gray-700">
-                {CONTENT.INPUT_PASSWORD_LABEL}
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                  <Lock size={18} />
-                </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none hover:bg-white"
-                  placeholder={CONTENT.INPUT_PASSWORD_PLACEHOLDER}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-blue-600 transition-colors"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-
-            {/* Forgot Password Link */}
-            <div className="flex justify-center pt-2">
-              <button
-                type="button"
-                onClick={() => navigate('/forgot-password')}
-                className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-              >
-                {CONTENT.FORGOT_PASSWORD_TEXT}
-              </button>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white font-bold text-[15px] rounded-xl shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98] mt-2"
-            >
-              {isLoading ? 'ĐANG ĐĂNG NHẬP...' : CONTENT.SUBMIT_BUTTON_TEXT}
-            </button>
-          </form>
-
-
-
-          <div className="mt-8 text-center text-sm border-t border-gray-100 pt-6">
-            <span className="text-gray-600">{CONTENT.NO_ACCOUNT_TEXT} </span>
-            <button 
-              type="button"
-              onClick={onToggleView}
-              className="text-blue-600 font-extrabold hover:text-blue-800 hover:underline transition-colors"
-            >
-              {CONTENT.REGISTER_TEXT}
-            </button>
           </div>
         </div>
-      </main>
+
+        </div>
+      </div>
     </div>
   );
 };

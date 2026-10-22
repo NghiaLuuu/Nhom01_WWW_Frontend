@@ -133,18 +133,18 @@ export const AuditLogManagement: React.FC = () => {
   const endRecord = Math.min((currentPage + 1) * pageSize, totalElements);
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+    <div className="bg-white rounded-lg border border-gray-200">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <Shield className="text-blue-600" size={28} />
+      <div className="flex items-center gap-3 mb-6 p-6 pb-0">
+        <Shield className="text-blue-600" size={24} />
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Nhật Ký Hệ Thống</h2>
+          <h2 className="text-xl font-bold text-gray-900">Nhật Ký Hệ Thống</h2>
           <p className="text-gray-500 text-sm">Theo dõi lịch sử thao tác của người dùng trên hệ thống</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+      <div className="flex flex-wrap items-center gap-4 mb-6 px-6 pb-6 border-b border-gray-200">
         {/* Entity Name Filter */}
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-gray-600 whitespace-nowrap">Lọc theo bảng:</label>
@@ -152,7 +152,7 @@ export const AuditLogManagement: React.FC = () => {
             id="entity-filter"
             value={selectedEntity}
             onChange={(e) => handleEntityChange(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-w-[180px]"
+            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none min-w-[180px]"
           >
             <option value="">Tất cả</option>
             {entityNames.map((name) => (
@@ -178,7 +178,7 @@ export const AuditLogManagement: React.FC = () => {
               }}
               onFocus={() => { if (emailSuggestions.length > 0) setIsEmailDropdownOpen(true); }}
               onBlur={() => setTimeout(() => setIsEmailDropdownOpen(false), 200)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-w-[200px]"
+              className="border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none min-w-[200px]"
             />
             {isEmailDropdownOpen && emailSuggestions.length > 0 && (
               <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
@@ -208,7 +208,7 @@ export const AuditLogManagement: React.FC = () => {
             id="page-size"
             value={pageSize}
             onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none"
           >
             {PAGE_SIZE_OPTIONS.map((s) => (
               <option key={s} value={s}>{s} dòng</option>
@@ -224,27 +224,27 @@ export const AuditLogManagement: React.FC = () => {
 
       {/* Table */}
       {isLoading ? (
-        <div className="text-center py-16 text-gray-500 font-medium animate-pulse">Đang tải dữ liệu...</div>
+        <div className="text-center py-8 text-gray-500 font-medium animate-pulse">Đang tải dữ liệu...</div>
       ) : logs.length === 0 ? (
-        <div className="text-center py-16 text-gray-500 font-medium bg-gray-50 rounded-xl border border-dashed border-gray-200">
+        <div className="text-center py-8 text-gray-500 font-medium bg-gray-50 border-t border-gray-200">
           Chưa có dữ liệu nhật ký.
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-200">
-          <table className="w-full text-left text-sm text-gray-600">
-            <thead className="bg-gray-50 text-gray-700 font-bold border-b border-gray-200">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm text-gray-700">
+            <thead className="bg-gray-50 text-gray-900 border-b border-gray-200">
               <tr>
-                <th className="px-4 py-3.5">Thời gian</th>
-                <th className="px-4 py-3.5">Người thực hiện</th>
-                <th className="px-4 py-3.5">Hành động</th>
-                <th className="px-4 py-3.5">Bảng</th>
-                <th className="px-4 py-3.5">ID Bản ghi</th>
-                <th className="px-4 py-3.5">Endpoint</th>
-                <th className="px-4 py-3.5">IP</th>
-                <th className="px-4 py-3.5 text-center">Chi tiết</th>
+                <th className="px-4 py-3 font-semibold whitespace-nowrap">Thời gian</th>
+                <th className="px-4 py-3 font-semibold whitespace-nowrap">Người thực hiện</th>
+                <th className="px-4 py-3 font-semibold whitespace-nowrap">Hành động</th>
+                <th className="px-4 py-3 font-semibold whitespace-nowrap">Bảng</th>
+                <th className="px-4 py-3 font-semibold whitespace-nowrap">ID Bản ghi</th>
+                <th className="px-4 py-3 font-semibold whitespace-nowrap">Endpoint</th>
+                <th className="px-4 py-3 font-semibold whitespace-nowrap">IP</th>
+                <th className="px-4 py-3 font-semibold whitespace-nowrap text-center">Chi tiết</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-200">
               {logs.map((log) => (
                 <React.Fragment key={log.id}>
                   <tr className="hover:bg-gray-50/80 transition-colors">

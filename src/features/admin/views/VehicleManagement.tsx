@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { type Vehicle, type VehicleRequest, VehicleService } from '../api/vehicle.service';
 import { DataTable, type Column } from '../../../components/DataTable';
 import { FormModal } from '../../../components/FormModal';
+import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
 import { Plus } from 'lucide-react';
 
@@ -94,24 +95,23 @@ export const VehicleManagement: React.FC = () => {
   };
 
   const columns: Column<Vehicle>[] = [
-    { header: 'ID', accessor: 'id' },
-    { header: 'Biển Số Xe', accessor: 'licensePlate' },
-    { header: 'Số Chỗ Ngồi', accessor: 'capacity' },
+    { header: 'ID', accessor: 'id', width: '15%' },
+    { header: 'Biển Số Xe', accessor: 'licensePlate', width: '50%' },
+    { header: 'Số Chỗ Ngồi', accessor: 'capacity', align: 'right', width: '20%' },
   ];
 
-  return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Quản Lý Xe & Tài Xế</h2>
-        <button 
-          onClick={handleOpenAdd}
-          className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md shadow-blue-500/20 font-medium"
-        >
-          <Plus size={20} />
-          <span>Thêm Xe Mới</span>
-        </button>
-      </div>
+  const actionButton = (
+    <button 
+      onClick={handleOpenAdd}
+      className="flex items-center space-x-1.5 bg-blue-700 hover:bg-blue-800 text-white px-3 py-1.5 rounded-md transition-colors text-sm font-medium"
+    >
+      <Plus size={16} />
+      <span>Thêm Xe Mới</span>
+    </button>
+  );
 
+  return (
+    <AdminPageLayout actionButton={actionButton}>
       <DataTable 
         data={vehicles} 
         columns={columns} 
@@ -128,48 +128,48 @@ export const VehicleManagement: React.FC = () => {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-gray-700">Biển Số Xe</label>
+            <label className="block text-sm font-medium text-gray-700">Biển Số Xe</label>
             <input 
               required
               type="text"
               value={licensePlate}
               onChange={(e) => setLicensePlate(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
               placeholder="VD: 51B-123.45"
             />
           </div>
           
           <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-gray-700">Số Chỗ Ngồi</label>
+            <label className="block text-sm font-medium text-gray-700">Số Chỗ Ngồi</label>
             <input 
               required
               type="number"
               min="1"
               value={capacity}
               onChange={(e) => setCapacity(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
               placeholder="VD: 45"
             />
           </div>
 
-          <div className="pt-4 flex justify-end space-x-3">
+          <div className="pt-5 mt-2 flex justify-end space-x-2 border-t border-gray-100">
             <button 
               type="button" 
               onClick={() => setIsModalOpen(false)}
-              className="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-xl font-medium transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
             >
               Hủy
             </button>
             <button 
               type="submit" 
               disabled={isSubmitting}
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors disabled:opacity-70 shadow-md shadow-blue-500/20"
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-700 border border-transparent rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70 transition-colors"
             >
               {isSubmitting ? 'Đang lưu...' : 'Lưu Xe'}
             </button>
           </div>
         </form>
       </FormModal>
-    </div>
+    </AdminPageLayout>
   );
 };
