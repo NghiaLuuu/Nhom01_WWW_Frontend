@@ -6,7 +6,10 @@ export interface Route {
   arrivalLocation: string;
   basePrice: number;
   distance?: number;
+  distanceKm?: number;
   duration?: number;
+  durationMinutes?: number;
+  status?: boolean;
 }
 
 export interface RouteRequest {
@@ -14,7 +17,9 @@ export interface RouteRequest {
   arrivalLocation: string;
   basePrice: number;
   distance?: number;
-  duration?: string;
+  distanceKm?: number;
+  duration?: string | number;
+  durationMinutes?: number;
 }
 
 export const RouteService = {

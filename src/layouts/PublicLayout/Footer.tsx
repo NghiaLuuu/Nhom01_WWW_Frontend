@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Bus, Phone, Mail, MapPin } from 'lucide-react';
 
 export const Footer: React.FC = () => {
@@ -19,7 +20,7 @@ export const Footer: React.FC = () => {
           <div>
             <h3 className="text-white font-semibold mb-4">Về chúng tôi</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Giới thiệu</a></li>
+              <li><Link to="/about" className="hover:text-blue-400 transition-colors">Giới thiệu</Link></li>
               <li><a href="#" className="hover:text-blue-400 transition-colors">Tuyển dụng</a></li>
               <li><a href="#" className="hover:text-blue-400 transition-colors">Tin tức</a></li>
             </ul>

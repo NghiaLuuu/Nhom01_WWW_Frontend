@@ -9,6 +9,9 @@ export interface Trip {
   departureTime: string;
   price: number;
   status?: string;
+  availableSeats?: number;
+  webBookingOpen?: boolean;
+  posBookingOpen?: boolean;
 }
 
 export interface TripRequest {

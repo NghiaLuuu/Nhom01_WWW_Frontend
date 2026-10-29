@@ -11,6 +11,7 @@ import { UserManagement } from './features/admin/views/UserManagement';
 import { AuditLogManagement } from './features/admin/views/AuditLogManagement';
 import { AdminProfilePage } from './features/admin/views/AdminProfilePage';
 import { LandingPage } from './features/booking/views/LandingPage';
+import { AboutPage } from './features/about';
 import { SearchPage } from './features/booking/views/SearchPage';
 import { CheckoutPage } from './features/booking/views/CheckoutPage';
 import { BookingSuccessPage } from './features/booking/views/BookingSuccessPage';
@@ -35,6 +36,7 @@ function App() {
         {/* Public Routes with Public Layout */}
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<LandingPage />} />
+          <Route path="about" element={<AboutPage />} />
           <Route path="search" element={<SearchPage />} />
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="booking-success" element={<BookingSuccessPage />} />

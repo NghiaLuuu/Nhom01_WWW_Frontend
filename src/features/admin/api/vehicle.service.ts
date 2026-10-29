@@ -3,12 +3,16 @@ import { api } from '../../../services/api';
 export interface Vehicle {
   id: number;
   licensePlate: string;
+  type?: string;
   capacity: number;
+  status?: string;
 }
 
 export interface VehicleRequest {
   licensePlate: string;
+  type?: string;
   capacity: number;
+  status?: string;
 }
 
 export const VehicleService = {

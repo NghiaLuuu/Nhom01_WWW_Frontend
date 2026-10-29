@@ -8,7 +8,7 @@ import { Clock, User as UserIcon } from 'lucide-react';
 
 export const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
-  const { selectedTrip, selectedSeats, holdExpiresAt, clearBooking } = useBookingStore();
+  const { selectedTrip, selectedSeats, selectedSeatIds, holdExpiresAt, clearBooking } = useBookingStore();
   const { isAuthenticated, user } = useAuthStore();
   
   const [timeLeft, setTimeLeft] = useState<number>(0);
@@ -55,6 +55,7 @@ export const CheckoutPage: React.FC = () => {
     try {
       const payload = {
         tripId: selectedTrip!.id,
+        seatIds: selectedSeatIds,
         seats: selectedSeats,
         totalPrice: selectedTrip!.price * selectedSeats.length,
         customerName,

@@ -25,6 +25,10 @@ export const Header: React.FC = () => {
               Trang chủ
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-blue-500 group-hover:w-full transition-all duration-300 ease-out"></span>
             </Link>
+            <Link to="/about" className="text-slate-300 hover:text-white font-medium transition-colors relative group">
+              Giới thiệu
+              <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-blue-500 group-hover:w-full transition-all duration-300 ease-out"></span>
+            </Link>
             <Link to="/search" className="text-slate-300 hover:text-white font-medium transition-colors relative group">
               Tra cứu vé
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-blue-500 group-hover:w-full transition-all duration-300 ease-out"></span>
