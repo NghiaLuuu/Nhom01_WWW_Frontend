@@ -30,7 +30,7 @@ const MENU_GROUPS = [
   {
     title: 'Hệ Thống',
     items: [
-      { name: 'Báo Cáo Thống Kê', icon: BarChart3, path: '/admin/reports', roles: ['ROLE_ADMIN', 'VIEW_STATISTICS'] },
+      { name: 'Báo Cáo Thống Kê', icon: BarChart3, path: '/admin/analytics', roles: ['ROLE_ADMIN', 'VIEW_STATISTICS'] },
       { name: 'Tài Khoản & Quyền', icon: Users, path: '/admin/users', roles: ['ROLE_ADMIN', 'STAFF_MANAGE', 'CUSTOMER_MANAGE'] },
       { name: 'Nhật Ký Hệ Thống', icon: FileText, path: '/admin/audit-logs', roles: ['ROLE_ADMIN'] },
       { name: 'Hồ Sơ Cá Nhân', icon: UserCircle, path: '/admin/profile', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },

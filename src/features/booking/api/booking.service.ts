@@ -1,11 +1,26 @@
 import { api } from '../../../services/api';
+import { RouteService, type Route } from '../../admin/api/route.service';
 
-export interface Seat {
-  id: string; // e.g. "A1", "A2"
-  isBooked: boolean;
+export interface RouteLocations {
+  departures: string[];
+  arrivals: string[];
 }
 
-export interface TicketRequest {
+export interface Seat {
+  seatId: number;
+  id: string;
+  seatName: string;
+  floor: number;
+  isBooked: boolean;
+  isHeld: boolean;
+}
+
+export interface BookingRequest {
+  tripId: number;
+  seatIds: number[];
+}
+
+export interface MockPaymentRequest {
   tripId: number;
   seats: string[];
   totalPrice: number;
@@ -31,35 +46,35 @@ export const BookingService = {
     });
     return res.data;
   },
+  getRouteLocations: async (): Promise<{ success: boolean; data: RouteLocations }> => {
+    const res = await RouteService.getAll();
+    const routes = (res.data || []) as Route[];
+    return {
+      success: Boolean(res.success),
+      data: {
+        departures: [...new Set(routes.map(route => route.departureLocation))].sort(),
+        arrivals: [...new Set(routes.map(route => route.arrivalLocation))].sort(),
+      },
+    };
+  },
   
   getSeatLayout: async (tripId: number) => {
-    // Mocking seat layout since backend might not have this endpoint yet.
-    // In a real app, you would fetch /api/trips/{tripId}/seats
-    return new Promise<{ success: boolean; data: Seat[] }>((resolve) => {
-      setTimeout(() => {
-        const mockSeats: Seat[] = Array.from({ length: 36 }, (_, i) => ({
-          id: `${i < 18 ? 'A' : 'B'}${i % 18 + 1}`,
-          isBooked: Math.random() < 0.3 // 30% chance a seat is already booked
-        }));
-        resolve({ success: true, data: mockSeats });
-      }, 500);
-    });
+    const res = await api.get(`/trips/${tripId}/seats`);
+    return res.data;
   },
 
-  createMockPayment: async (data: TicketRequest) => {
-    // Simulate a mock payment processing time
-    return new Promise<{ success: boolean; data: any }>((resolve) => {
+  createMockPayment: async (data: MockPaymentRequest) => {
+    return new Promise<{ success: boolean; data: MockPaymentRequest & { bookingId: string; status: string } }>((resolve) => {
       setTimeout(() => {
-        // Return a mock success response with a fake booking ID
-        resolve({ 
-          success: true, 
+        resolve({
+          success: true,
           data: {
             bookingId: `BKG-${Math.floor(100000 + Math.random() * 900000)}`,
             ...data,
-            status: 'PAID'
-          }
+            status: 'PAID',
+          },
         });
-      }, 1500);
+      }, 800);
     });
   }
 };

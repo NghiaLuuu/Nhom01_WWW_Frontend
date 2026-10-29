@@ -5,6 +5,8 @@ export interface Route {
   departureLocation: string;
   arrivalLocation: string;
   basePrice: number;
+  distanceKm?: number | string;
+  durationMinutes?: number;
   distance?: number;
   duration?: number;
 }

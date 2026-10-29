@@ -16,7 +16,10 @@ import { CheckoutPage } from './features/booking/views/CheckoutPage';
 import { BookingSuccessPage } from './features/booking/views/BookingSuccessPage';
 import { ProfilePage } from './features/customer/views/ProfilePage';
 import { TicketManagement } from './features/admin/views/TicketManagement';
+import { AnalyticsManagement } from './features/admin/views/AnalyticsManagement';
 import { Toaster } from 'react-hot-toast';
+import { AnalyticsTracker } from './features/analytics/components/AnalyticsTracker';
+import { SchedulePage } from './features/booking/views/SchedulePage';
 
 // Wrapper to handle navigation for auth pages
 const AuthWrapper = ({ isLogin }: { isLogin: boolean }) => {
@@ -31,11 +34,13 @@ const AuthWrapper = ({ isLogin }: { isLogin: boolean }) => {
 function App() {
   return (
     <BrowserRouter>
+      <AnalyticsTracker />
       <Routes>
         {/* Public Routes with Public Layout */}
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<LandingPage />} />
           <Route path="search" element={<SearchPage />} />
+          <Route path="schedule" element={<SchedulePage />} />
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="booking-success" element={<BookingSuccessPage />} />
           <Route path="login" element={<AuthWrapper isLogin={true} />} />
@@ -73,6 +78,8 @@ function App() {
           <Route path="routes" element={<RouteManagement />} />
           <Route path="vehicles-drivers" element={<VehicleManagement />} />
           <Route path="audit-logs" element={<AuditLogManagement />} />
+          <Route path="reports" element={<AnalyticsManagement />} />
+          <Route path="analytics" element={<AnalyticsManagement />} />
           <Route path="profile" element={<AdminProfilePage />} />
           
           {/* Catch all inside admin */}

@@ -29,6 +29,10 @@ export const Header: React.FC = () => {
               Tra cứu vé
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-blue-500 group-hover:w-full transition-all duration-300 ease-out"></span>
             </Link>
+            <Link to="/schedule" className="text-slate-300 hover:text-white font-medium transition-colors relative group">
+              Lịch trình
+              <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-blue-500 group-hover:w-full transition-all duration-300 ease-out"></span>
+            </Link>
             <Link to="#" className="text-slate-300 hover:text-white font-medium transition-colors relative group">
               Liên hệ
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-blue-500 group-hover:w-full transition-all duration-300 ease-out"></span>

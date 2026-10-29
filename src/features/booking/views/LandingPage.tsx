@@ -1,21 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Calendar, ArrowRight, Sparkles, Navigation } from 'lucide-react';
+import { AnalyticsService } from '../../analytics/api/analytics.service';
+import { BookingService, type RouteLocations } from '../api/booking.service';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const [departure, setDeparture] = useState('');
   const [arrival, setArrival] = useState('');
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [locations, setLocations] = useState<RouteLocations>({ departures: [], arrivals: [] });
 
   useEffect(() => {
     setIsLoaded(true);
+    BookingService.getRouteLocations()
+      .then(response => {
+        if (response.success) setLocations(response.data);
+      })
+      .catch(error => console.error('Không thể tải danh sách điểm đi/điểm đến:', error));
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (departure && arrival && date) {
+      AnalyticsService.track('SEARCH_TRIPS', {
+        departure,
+        arrival,
+        departureDate: date,
+        searchKeyword: `${departure} - ${arrival}`,
+      });
       navigate(`/search?departure=${encodeURIComponent(departure)}&arrival=${encodeURIComponent(arrival)}&date=${date}`);
     }
   };
@@ -63,6 +77,12 @@ export const LandingPage: React.FC = () => {
 
       {/* Cinematic Hero Section */}
       <div className="relative min-h-[calc(100vh-64px)] lg:min-h-[750px] flex items-center overflow-hidden">
+        <datalist id="departure-locations">
+          {locations.departures.map(location => <option key={location} value={location} />)}
+        </datalist>
+        <datalist id="arrival-locations">
+          {locations.arrivals.map(location => <option key={location} value={location} />)}
+        </datalist>
         
         {/* Background Layer */}
         <div className="absolute inset-0 z-0">
@@ -125,7 +145,6 @@ export const LandingPage: React.FC = () => {
                 <p className="text-sm text-slate-400 mb-8">Điền thông tin chuyến đi của bạn</p>
                 
                 <form onSubmit={handleSearch} className="flex flex-col gap-5">
-                  
                   {/* Departure */}
                   <div className="space-y-2 group/input">
                     <label className="text-xs font-bold tracking-wider text-slate-300 uppercase pl-1">
@@ -135,10 +154,12 @@ export const LandingPage: React.FC = () => {
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within/input:text-blue-400 transition-colors z-10">
                         <Navigation size={18} className="transform -rotate-45" />
                       </div>
+
                       <input 
                         type="text" 
                         required
                         value={departure}
+                        list="departure-locations"
                         onChange={(e) => setDeparture(e.target.value)}
                         placeholder="Ví dụ: Sài Gòn" 
                         className="w-full pl-12 pr-4 py-4 bg-white/5 hover:bg-white/[0.08] focus:bg-white/10 border border-white/10 focus:border-blue-400/60 rounded-2xl text-white text-base placeholder:text-slate-500 transition-all outline-none focus:ring-4 focus:ring-blue-500/15 relative z-0"
@@ -159,6 +180,7 @@ export const LandingPage: React.FC = () => {
                         type="text" 
                         required
                         value={arrival}
+                        list="arrival-locations"
                         onChange={(e) => setArrival(e.target.value)}
                         placeholder="Ví dụ: Đà Lạt" 
                         className="w-full pl-12 pr-4 py-4 bg-white/5 hover:bg-white/[0.08] focus:bg-white/10 border border-white/10 focus:border-blue-400/60 rounded-2xl text-white text-base placeholder:text-slate-500 transition-all outline-none focus:ring-4 focus:ring-blue-500/15 relative z-0"

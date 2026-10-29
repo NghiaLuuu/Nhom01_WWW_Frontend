@@ -69,8 +69,16 @@ useEffect(() => {
 
 ## 3. Checklist Triển Khai
 
-- [ ] Tạo `trackerService.ts` quản lý `visitorId`, `sessionId`, event queue và flush logic.
-- [ ] Xây dựng hook `usePageTracking` tích hợp vào Root Layout / Router.
-- [ ] Gắn event tracker vào các luồng quan trọng: Tìm kiếm chuyến xe, Chọn ghế, Đặt vé.
-- [ ] Thiết kế trang Admin Dashboard (`/admin/analytics`) với biểu đồ trực quan (Recharts / Chart.js / Tailwind cards).
-- [ ] Kiểm thử gửi event khi navigate và khi đóng trình duyệt.
+- [x] Tạo service quản lý `visitorId`, `sessionId`, event queue, batching tối đa 100 event và flush logic.
+- [x] Xây dựng tracking component tích hợp vào Root Router, tự ghi page view và dwell time.
+- [x] Gắn event tracker vào các luồng tìm kiếm chuyến xe, xem/chọn ghế, checkout và đặt vé.
+- [x] Thiết kế trang Admin Dashboard tại `/admin/analytics` với biểu đồ Tailwind và thống kê trực quan.
+- [x] Kiểm thử build TypeScript; hỗ trợ flush khi navigate, chuyển tab, reload và đóng trình duyệt bằng `sendBeacon`.
+- [x] Gắn tracking chatbot: mở, đóng, gửi câu hỏi và nhận phản hồi.
+
+### 3.1. Chi tiết triển khai
+
+- Event được gom trong queue và flush định kỳ mỗi 5 giây hoặc ngay khi đủ 100 event.
+- Khi trang bị ẩn hoặc đóng, event được gửi bằng `navigator.sendBeacon` nếu trình duyệt hỗ trợ.
+- Route `/admin/analytics` là route chính; `/admin/reports` được giữ làm alias tương thích.
+- Dashboard hiển thị biểu đồ thanh cho lượt truy cập theo ngày, funnel và xu hướng tìm kiếm.

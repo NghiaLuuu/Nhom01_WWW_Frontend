@@ -1,6 +1,7 @@
 import React from 'react';
 import { type Seat } from '../api/booking.service';
 import { useBookingStore } from '../../../store/useBookingStore';
+import { AnalyticsService } from '../../analytics/api/analytics.service';
 
 interface SeatMapProps {
   seats: Seat[];
@@ -9,15 +10,25 @@ interface SeatMapProps {
 
 export const SeatMap: React.FC<SeatMapProps> = ({ seats, maxSeats = 5 }) => {
   const { selectedSeats, toggleSeat } = useBookingStore();
+  const activeSeats = selectedSeats;
 
   const handleSeatClick = (seat: Seat) => {
-    if (seat.isBooked) return;
-    toggleSeat(seat.id, maxSeats);
+    if (seat.isBooked || seat.isHeld) return;
+    toggleSeat(seat.seatId, seat.seatName, maxSeats);
+    AnalyticsService.track('SELECT_SEAT', {
+      seatId: seat.id,
+    });
   };
 
-  // Split seats into lower and upper decks
-  const lowerDeck = seats.slice(0, 18);
-  const upperDeck = seats.slice(18, 36);
+  const lowerDeck = seats.filter(seat =>
+    seat.seatName?.toUpperCase().startsWith('A')
+      || (!seat.seatName?.toUpperCase().startsWith('B') && seat.floor === 1)
+  );
+  const upperDeck = seats.filter(seat =>
+    seat.seatName?.toUpperCase().startsWith('B')
+      || (!seat.seatName?.toUpperCase().startsWith('A') && seat.floor === 2)
+  );
+  const actualLowerDeck = lowerDeck.length > 0 ? lowerDeck : seats;
 
   const renderDeck = (deckSeats: Seat[], title: string) => (
     <div className="bg-white p-6 rounded-2xl border border-gray-200">
@@ -26,15 +37,15 @@ export const SeatMap: React.FC<SeatMapProps> = ({ seats, maxSeats = 5 }) => {
       {/* Bus layout simulation: 3 columns (A, B, C) x 6 rows */}
       <div className="grid grid-cols-3 gap-4">
         {deckSeats.map((seat) => {
-          const isSelected = selectedSeats.includes(seat.id);
+          const isSelected = activeSeats.includes(seat.seatName);
           return (
             <button
               key={seat.id}
-              disabled={seat.isBooked}
+              disabled={seat.isBooked || seat.isHeld}
               onClick={() => handleSeatClick(seat)}
               className={`
                 relative h-12 rounded-lg flex items-center justify-center font-medium text-sm transition-all
-                ${seat.isBooked 
+                ${seat.isBooked || seat.isHeld
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed border border-gray-300' 
                   : isSelected 
                     ? 'bg-blue-600 text-white border-2 border-blue-700 shadow-md transform scale-105' 
@@ -42,7 +53,7 @@ export const SeatMap: React.FC<SeatMapProps> = ({ seats, maxSeats = 5 }) => {
                 }
               `}
             >
-              {seat.id}
+              {seat.seatName}
             </button>
           );
         })}
@@ -68,9 +79,9 @@ export const SeatMap: React.FC<SeatMapProps> = ({ seats, maxSeats = 5 }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {renderDeck(lowerDeck, 'Tầng Dưới')}
-        {renderDeck(upperDeck, 'Tầng Trên')}
+      <div className={`grid grid-cols-1 ${actualLowerDeck.length > 0 && upperDeck.length > 0 ? 'md:grid-cols-2' : ''} gap-8`}>
+        {actualLowerDeck.length > 0 && renderDeck(actualLowerDeck, upperDeck.length > 0 ? 'Tầng A - Tầng dưới' : 'Tầng A')}
+        {upperDeck.length > 0 && renderDeck(upperDeck, 'Tầng B - Tầng trên')}
       </div>
     </div>
   );
