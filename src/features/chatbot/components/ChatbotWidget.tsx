@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, User } from 'lucide-react';
 import { api } from '../../../services/api';
+import { AnalyticsService } from '../../analytics/api/analytics.service';
 
 interface ChatMessage {
   id: string;
@@ -37,6 +38,7 @@ export const ChatbotWidget: React.FC = () => {
     };
     
     setMessages(prev => [...prev, userMessage]);
+    AnalyticsService.track('CHATBOT_QUESTION', { questionLength: userMessage.text.length });
     setInput('');
     setIsTyping(true);
 
@@ -69,6 +71,7 @@ export const ChatbotWidget: React.FC = () => {
         actionTripId: actionTripId
       };
       setMessages(prev => [...prev, botMessage]);
+      AnalyticsService.track('CHATBOT_RESPONSE', { hasTripAction: Boolean(actionTripId) });
     } catch (error) {
       // Mock response if endpoint fails
       setTimeout(() => {
@@ -78,6 +81,7 @@ export const ChatbotWidget: React.FC = () => {
           text: 'Xin lỗi, hệ thống AI Chatbot đang bảo trì. Vui lòng thử lại sau.'
         };
         setMessages(prev => [...prev, botMessage]);
+        AnalyticsService.track('CHATBOT_RESPONSE', { fallback: true });
         setIsTyping(false);
       }, 1000);
       return; // Skip the default setIsTyping(false) below since it's in setTimeout
@@ -90,7 +94,10 @@ export const ChatbotWidget: React.FC = () => {
       {/* Floating Button */}
       {!isOpen && (
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setIsOpen(true);
+            AnalyticsService.track('CHATBOT_OPEN');
+          }}
           className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 z-50 animate-bounce"
         >
           <MessageSquare size={28} />
@@ -109,7 +116,10 @@ export const ChatbotWidget: React.FC = () => {
                 <p className="text-xs text-blue-100">Luôn sẵn sàng hỗ trợ</p>
               </div>
             </div>
-            <button onClick={() => setIsOpen(false)} className="text-white hover:text-gray-200 transition-colors">
+            <button onClick={() => {
+              setIsOpen(false);
+              AnalyticsService.track('CHATBOT_CLOSE');
+            }} className="text-white hover:text-gray-200 transition-colors">
               <X size={20} />
             </button>
           </div>

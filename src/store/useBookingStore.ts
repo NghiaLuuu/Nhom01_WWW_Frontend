@@ -4,10 +4,11 @@ import { type Trip } from '../features/admin/api/trip.service';
 interface BookingState {
   selectedTrip: Trip | null;
   selectedSeats: string[];
+  selectedSeatIds: number[];
   holdExpiresAt: number | null; // Timestamp
   
   setSelectedTrip: (trip: Trip | null) => void;
-  toggleSeat: (seatId: string, maxSeats: number) => void;
+  toggleSeat: (seatId: number, seatName: string, maxSeats: number) => void;
   startHoldTimer: () => void;
   clearBooking: () => void;
 }
@@ -15,17 +16,24 @@ interface BookingState {
 export const useBookingStore = create<BookingState>((set, get) => ({
   selectedTrip: null,
   selectedSeats: [],
+  selectedSeatIds: [],
   holdExpiresAt: null,
 
-  setSelectedTrip: (trip) => set({ selectedTrip: trip, selectedSeats: [], holdExpiresAt: null }),
+  setSelectedTrip: (trip) => set({ selectedTrip: trip, selectedSeats: [], selectedSeatIds: [], holdExpiresAt: null }),
   
-  toggleSeat: (seatId, maxSeats) => {
-    const { selectedSeats } = get();
-    if (selectedSeats.includes(seatId)) {
-      set({ selectedSeats: selectedSeats.filter(id => id !== seatId) });
+  toggleSeat: (seatId, seatName, maxSeats) => {
+    const state = get();
+    const seats = state.selectedSeats;
+    const seatIds = state.selectedSeatIds;
+    if (seats.includes(seatName)) {
+      const next = {
+        seats: seats.filter(name => name !== seatName),
+        ids: seatIds.filter(id => id !== seatId),
+      };
+      set({ selectedSeats: next.seats, selectedSeatIds: next.ids });
     } else {
-      if (selectedSeats.length < maxSeats) {
-        set({ selectedSeats: [...selectedSeats, seatId] });
+      if (seats.length < maxSeats) {
+        set({ selectedSeats: [...seats, seatName], selectedSeatIds: [...seatIds, seatId] });
       }
     }
   },
@@ -36,6 +44,8 @@ export const useBookingStore = create<BookingState>((set, get) => ({
   },
 
   clearBooking: () => {
-    set({ selectedTrip: null, selectedSeats: [], holdExpiresAt: null });
+    set({
+      selectedTrip: null, selectedSeats: [], selectedSeatIds: [], holdExpiresAt: null,
+    });
   }
 }));

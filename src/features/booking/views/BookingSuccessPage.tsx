@@ -6,6 +6,7 @@ export const BookingSuccessPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const bookingDetails = location.state?.bookingDetails;
+  const customerDetails = location.state || {};
 
   if (!bookingDetails) {
     return <Navigate to="/" replace />;
@@ -29,21 +30,23 @@ export const BookingSuccessPage: React.FC = () => {
             <div className="flex-1 space-y-6">
               <div>
                 <p className="text-sm text-gray-500 mb-1">Mã đặt vé</p>
-                <p className="text-2xl font-bold text-blue-600">{bookingDetails.bookingId}</p>
+                <p className="text-2xl font-bold text-blue-600">#{bookingDetails.id}</p>
               </div>
               
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Tên khách hàng</p>
-                  <p className="font-semibold text-gray-900">{bookingDetails.customerName}</p>
+                  <p className="font-semibold text-gray-900">{customerDetails.customerName || bookingDetails.customer?.fullName}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Số điện thoại</p>
-                  <p className="font-semibold text-gray-900">{bookingDetails.customerPhone}</p>
+                  <p className="font-semibold text-gray-900">{customerDetails.customerPhone || bookingDetails.customer?.phoneNumber}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Vị trí ghế</p>
-                  <p className="font-semibold text-gray-900">{bookingDetails.seats.join(', ')}</p>
+                  <p className="font-semibold text-gray-900">
+                    {customerDetails.selectedSeats?.join(', ') || bookingDetails.tickets?.map((ticket: { seat?: { seatName?: string } }) => ticket.seat?.seatName).join(', ')}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Tổng tiền</p>

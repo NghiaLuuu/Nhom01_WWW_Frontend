@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBookingStore } from '../../../store/useBookingStore';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { BookingService } from '../api/booking.service';
 import toast from 'react-hot-toast';
 import { Clock, User as UserIcon } from 'lucide-react';
+import { AnalyticsService } from '../../analytics/api/analytics.service';
 
 export const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export const CheckoutPage: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const completedRef = useRef(false);
 
   // User details state
   const [customerName, setCustomerName] = useState(user?.fullName || '');
@@ -35,6 +37,11 @@ export const CheckoutPage: React.FC = () => {
 
       if (remaining === 0) {
         clearInterval(interval);
+        completedRef.current = true;
+        AnalyticsService.track('ABANDON_BOOKING', {
+          tripId: selectedTrip.id,
+          reason: 'hold_expired',
+        });
         toast.error('Thời gian giữ chỗ đã hết. Vui lòng chọn lại.');
         clearBooking();
         navigate('/search');
@@ -44,8 +51,26 @@ export const CheckoutPage: React.FC = () => {
     return () => clearInterval(interval);
   }, [selectedTrip, selectedSeats, holdExpiresAt, navigate, clearBooking]);
 
+  useEffect(() => {
+    return () => {
+      if (selectedTrip && !completedRef.current) {
+        AnalyticsService.track('ABANDON_BOOKING', {
+          tripId: selectedTrip.id,
+          seatCount: selectedSeats.length,
+          reason: 'checkout_left',
+        });
+      }
+    };
+  }, [selectedTrip, selectedSeats.length]);
+
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
+    AnalyticsService.track('FILL_INFO', {
+      tripId: selectedTrip?.id,
+      hasName: Boolean(customerName),
+      hasEmail: Boolean(customerEmail),
+      hasPhone: Boolean(customerPhone),
+    });
     if (!isAuthenticated) {
       setShowAuthModal(true);
       return;
@@ -59,14 +84,20 @@ export const CheckoutPage: React.FC = () => {
         totalPrice: selectedTrip!.price * selectedSeats.length,
         customerName,
         customerEmail,
-        customerPhone
+        customerPhone,
       };
 
       const res = await BookingService.createMockPayment(payload);
       if (res.success) {
+        completedRef.current = true;
+        AnalyticsService.track('BOOK_SUCCESS', {
+          tripId: selectedTrip!.id,
+          seatCount: selectedSeats.length,
+          totalPrice: payload.totalPrice,
+        });
         toast.success('Thanh toán thành công!');
         // Usually we would clearBooking here, but we might want to pass data to Success Page via state
-        navigate('/booking-success', { state: { bookingDetails: res.data } });
+        navigate('/booking-success', { state: { bookingDetails: res.data, customerName, customerEmail, customerPhone, selectedSeats } });
         clearBooking();
       }
     } catch (error) {
