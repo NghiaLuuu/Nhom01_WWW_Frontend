@@ -17,6 +17,7 @@ interface TransportHub {
 
 const TRANSPORT_HUBS: TransportHub[] = [
   { city: 'TP.HCM', displayName: 'TP. Hồ Chí Minh', lat: 10.7769, lng: 106.7009, maxRadiusKm: 90 },
+  { city: 'Phú Yên', displayName: 'Phú Yên (Tuy Hòa)', lat: 13.0882, lng: 109.3148, maxRadiusKm: 60 },
   { city: 'Hà Nội', displayName: 'Hà Nội', lat: 21.0285, lng: 105.8542, maxRadiusKm: 90 },
   { city: 'Đà Nẵng', displayName: 'Đà Nẵng', lat: 16.0544, lng: 108.2022, maxRadiusKm: 60 },
   { city: 'Cần Thơ', displayName: 'Cần Thơ', lat: 10.0452, lng: 105.7469, maxRadiusKm: 70 },
@@ -180,3 +181,4 @@ export const geolocationService = {
     });
   }
 };
+

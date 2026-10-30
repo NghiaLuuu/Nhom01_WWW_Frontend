@@ -5,6 +5,7 @@ import { recommendationService, type RecommendedTrip, type PersonaInfo } from '.
 import { geolocationService, type UserLocationResult } from '../../../services/geolocation.service';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { dispatchTrackAction } from '../../../hooks/useUserTracker';
+import { DEMO_CITIES } from './LocationPermissionModal';
 
 export const PersonalizedDiscoveryShelf: React.FC = () => {
   const navigate = useNavigate();
@@ -93,17 +94,47 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
         {/* Header Bar */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-white/10">
           <div className="space-y-1.5">
-            {userLocation ? (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold shadow-md shadow-emerald-950/30">
-                <MapPin size={13} className="text-emerald-400 animate-pulse" />
-                <span>Khởi hành gần bạn: {userLocation.displayName}</span>
+            <div className="flex flex-wrap items-center gap-2">
+              {userLocation ? (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold shadow-md shadow-emerald-950/30">
+                  <MapPin size={13} className="text-emerald-400 animate-pulse" />
+                  <span>Vị trí hiện tại: {userLocation.displayName}</span>
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold uppercase tracking-wider">
+                  <Sparkles size={14} className="text-cyan-400 animate-pulse" />
+                  <span>Hội Đồng Điệu & AI pgvector Đề Xuất</span>
+                </div>
+              )}
+
+              {/* Demo Location Switcher Combobox */}
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-800/90 border border-cyan-500/40 text-xs text-slate-200 shadow-sm shadow-cyan-950/30">
+                <span className="text-[11px] text-cyan-400 font-bold flex items-center gap-1">
+                  <span>🎯</span>
+                  <span>Giả lập vị trí:</span>
+                </span>
+                <select
+                  value={userLocation?.city || ''}
+                  onChange={(e) => {
+                    const c = DEMO_CITIES.find(item => item.city === e.target.value);
+                    if (c) {
+                      geolocationService.setManualCity(c.city, c.label);
+                    }
+                  }}
+                  className="bg-transparent text-xs text-cyan-200 font-semibold focus:outline-none cursor-pointer py-0.5"
+                  title="Chọn vị trí khác để demo thuật toán gợi ý"
+                >
+                  <option value="" disabled className="bg-slate-900 text-slate-400">
+                    -- Chọn đổi vị trí demo --
+                  </option>
+                  {DEMO_CITIES.map(c => (
+                    <option key={c.city} value={c.city} className="bg-slate-900 text-slate-100">
+                      📍 {c.label} ({c.note})
+                    </option>
+                  ))}
+                </select>
               </div>
-            ) : (
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold uppercase tracking-wider">
-                <Sparkles size={14} className="text-cyan-400 animate-pulse" />
-                <span>Hội Đồng Điệu & AI pgvector Đề Xuất</span>
-              </div>
-            )}
+            </div>
 
             <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-3">
               <span>
