@@ -10,8 +10,12 @@ export const PublicLayout: React.FC = () => {
   const { isAuthenticated, user } = useAuthStore();
   
   // Strict Separation: Admin & Staff must only operate in /admin
-  const roles = user?.roles || [];
-  if (isAuthenticated && (roles.includes('ROLE_ADMIN') || roles.includes('ROLE_STAFF'))) {
+  const roles: string[] = Array.isArray(user?.roles) ? user.roles : [];
+  const singleRole = typeof (user as any)?.role === 'string' ? (user as any).role : (user as any)?.role?.name;
+  const allRoles = [...roles, singleRole].filter(Boolean).map(r => String(r).toUpperCase());
+  const isAdminOrStaff = allRoles.some(r => r.includes('ADMIN') || r.includes('STAFF'));
+
+  if (isAuthenticated && isAdminOrStaff) {
     return <Navigate to="/admin" replace />;
   }
   

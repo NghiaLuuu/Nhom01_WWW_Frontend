@@ -16,9 +16,18 @@ import {
   ShieldCheck,
   RefreshCw,
   User,
-  Filter
+  Filter,
+  CheckCircle2,
+  AlertTriangle,
+  Route
 } from 'lucide-react';
-import { trackingService, type TrackingAnalyticsResponse, type CustomerJourneyTimelineDto, type RecentSessionDto } from '../../../services/tracking.service';
+import { 
+  trackingService, 
+  type TrackingAnalyticsResponse, 
+  type CustomerJourneyTimelineDto, 
+  type RecentSessionDto,
+  type JourneyClusterDto 
+} from '../../../services/tracking.service';
 import toast from 'react-hot-toast';
 
 export const UserBehaviorAnalytics: React.FC = () => {
@@ -29,6 +38,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
   // Journey Explorer State
   const [searchIdentifier, setSearchIdentifier] = useState('');
   const [selectedJourney, setSelectedJourney] = useState<CustomerJourneyTimelineDto | null>(null);
+  const [selectedClusterId, setSelectedClusterId] = useState<string>('ALL');
   const [loadingJourney, setLoadingJourney] = useState(false);
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'JOURNEY'>('OVERVIEW');
 
@@ -56,6 +66,11 @@ export const UserBehaviorAnalytics: React.FC = () => {
     try {
       const data = await trackingService.getCustomerJourney(identifier.trim());
       setSelectedJourney(data);
+      if (data?.journeys && data.journeys.length > 0) {
+        setSelectedClusterId(data.journeys[0].journeyId);
+      } else {
+        setSelectedClusterId('ALL');
+      }
     } catch (err: any) {
       toast.error('Lỗi khi tải dòng thời gian hành vi: ' + (err.message || 'Lỗi server'));
     } finally {
@@ -384,83 +399,250 @@ export const UserBehaviorAnalytics: React.FC = () => {
           </form>
 
           {/* Journey Header Profile Card */}
-          {selectedJourney && (
-            <div className="p-6 rounded-3xl bg-white border border-gray-200 shadow-sm space-y-4">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg">
-                    <User size={22} />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900">{selectedJourney.customerName}</h2>
-                    <p className="text-xs text-gray-500 font-mono">Định danh: {selectedJourney.identifier}</p>
-                  </div>
-                </div>
+          {selectedJourney && (() => {
+            const journeysList: JourneyClusterDto[] = selectedJourney.journeys || [];
+            const activeCluster = journeysList.find(j => j.journeyId === selectedClusterId);
+            const displayEvents = (selectedClusterId === 'ALL' || !activeCluster)
+              ? selectedJourney.events
+              : activeCluster.events;
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="px-3 py-1.5 rounded-xl bg-purple-50 border border-purple-200 text-purple-700 text-xs font-semibold flex items-center gap-1.5">
-                    <Sparkles size={13} className="text-purple-600" />
-                    <span>Gu AI gán: <strong>{selectedJourney.matchedPersona}</strong></span>
-                  </div>
-                  <div className="px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold">
-                    {selectedJourney.totalSessions} phiên • {selectedJourney.totalPageViews} trang • {selectedJourney.totalActions} tương tác
-                  </div>
-                </div>
-              </div>
-
-              {/* Chronological Timeline */}
-              <div className="pt-2">
-                <h3 className="font-bold text-gray-900 text-sm mb-4">
-                  Dòng thời gian sự kiện hoàn chỉnh từ A - Z:
-                </h3>
-
-                <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
-                  {selectedJourney.events.map((evt, eIdx) => {
-                    const isSession = evt.type === 'SESSION_START';
-                    const isPageView = evt.type === 'PAGE_VIEW';
-                    const isAction = evt.type === 'ACTION';
-
-                    return (
-                      <div key={eIdx} className="relative group">
-                        {/* Dot on line */}
-                        <div className={`absolute -left-6 top-1.5 w-3 h-3 rounded-full border-2 border-white ring-2 ring-gray-100 ${
-                          isSession ? 'bg-blue-600 ring-blue-100' : isPageView ? 'bg-emerald-500 ring-emerald-100' : 'bg-purple-600 ring-purple-100'
-                        }`} />
-
-                        {/* Event Card */}
-                        <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:border-blue-200 transition-colors space-y-1.5">
-                          <div className="flex items-center justify-between text-xs">
-                            <span className={`font-bold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded ${
-                              isSession ? 'bg-blue-100 text-blue-700' : isPageView ? 'bg-emerald-100 text-emerald-700' : 'bg-purple-100 text-purple-700'
-                            }`}>
-                              {evt.type}
+            return (
+              <div className="p-6 rounded-3xl bg-white border border-gray-200 shadow-sm space-y-6">
+                
+                {/* 1. Customer Identity Stitching Banner */}
+                {selectedJourney.isRegisteredCustomer ? (
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-blue-500/10 to-indigo-500/10 border border-emerald-500/20 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-600 flex items-center justify-center">
+                        <ShieldCheck size={22} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-gray-900 text-sm">Hồ Sơ Khách Hàng Có Tài Khoản</span>
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                            Identity Stitched
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-600">
+                          Họ tên: <strong className="text-gray-900">{selectedJourney.customerName}</strong> • Email: <strong className="text-gray-900">{selectedJourney.customerEmail}</strong>
+                          {selectedJourney.linkedAnonymousIds && selectedJourney.linkedAnonymousIds.length > 0 && (
+                            <span className="text-gray-500 ml-2">
+                              (Đã xâu chuỗi {selectedJourney.linkedAnonymousIds.length} phiên thiết bị vãng lai trước khi đăng nhập)
                             </span>
-                            <span className="font-mono text-gray-400 text-[11px]">{evt.timestamp}</span>
-                          </div>
-
-                          <div className="font-bold text-gray-900 text-sm">
-                            {evt.title}
-                          </div>
-
-                          <div className="text-xs text-gray-600 font-mono">
-                            {evt.description}
-                          </div>
-
-                          {(((evt.activeSeconds || 0) > 0) || ((evt.idleSeconds || 0) > 0)) && (
-                            <div className="flex items-center gap-3 text-[11px] text-gray-500 pt-1">
-                              <span className="text-emerald-600 font-semibold">Tương tác: {evt.activeSeconds || 0}s</span>
-                              {(evt.idleSeconds || 0) > 0 && <span className="text-gray-400">Treo tab: {evt.idleSeconds}s</span>}
-                            </div>
                           )}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-xs text-gray-500 font-mono">
+                      Định danh UUID: {selectedJourney.identifier}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-600 flex items-center justify-center">
+                      <Compass size={22} />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-gray-900 text-sm">Khách Vãng Lai (Chưa Đăng Nhập)</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
+                          Guest Tracking
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600">
+                        Đang theo dõi theo Anonymous Fingerprint & IP ({selectedJourney.identifier}). Ngay khi khách đăng nhập hoặc đặt vé, toàn bộ lịch sử này sẽ tự động gộp vào tài khoản khách!
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. Overview Stats & Persona */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg">
+                      <User size={22} />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900">{selectedJourney.customerName}</h2>
+                      <p className="text-xs text-gray-500 font-mono">Định danh: {selectedJourney.identifier}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="px-3 py-1.5 rounded-xl bg-purple-50 border border-purple-200 text-purple-700 text-xs font-semibold flex items-center gap-1.5">
+                      <Sparkles size={13} className="text-purple-600" />
+                      <span>Gu AI gán: <strong>{selectedJourney.matchedPersona}</strong></span>
+                    </div>
+                    <div className="px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold">
+                      {selectedJourney.totalSessions} phiên • {selectedJourney.totalPageViews} trang • {selectedJourney.totalActions} tương tác
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Journey Selector (Intent-Aware Dynamic Segmentation) */}
+                {journeysList.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-gray-900 text-sm flex items-center gap-2">
+                        <Route size={16} className="text-blue-600" />
+                        <span>Các Hành Trình Đã Phân Đoạn (Intent-Aware Dynamic Journeys):</span>
+                      </h3>
+                      <span className="text-xs text-gray-500">
+                        Tìm thấy <strong>{journeysList.length}</strong> hành trình riêng biệt
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedClusterId('ALL')}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          selectedClusterId === 'ALL'
+                            ? 'bg-gray-900 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        Tất cả sự kiện ({selectedJourney.events.length})
+                      </button>
+
+                      {journeysList.map((j) => {
+                        const isSelected = selectedClusterId === j.journeyId;
+                        const isConv = j.status === 'CONVERTED';
+                        const isAban = j.status === 'ABANDONED';
+                        return (
+                          <button
+                            key={j.journeyId}
+                            type="button"
+                            onClick={() => setSelectedClusterId(j.journeyId)}
+                            className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+                              isSelected
+                                ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-300'
+                                : 'bg-white border border-gray-200 text-gray-700 hover:border-blue-400'
+                            }`}
+                          >
+                            {isConv ? (
+                              <CheckCircle2 size={14} className={isSelected ? 'text-white' : 'text-emerald-500'} />
+                            ) : isAban ? (
+                              <AlertTriangle size={14} className={isSelected ? 'text-white' : 'text-amber-500'} />
+                            ) : (
+                              <Clock size={14} className={isSelected ? 'text-white' : 'text-cyan-500'} />
+                            )}
+                            <span>{j.title}</span>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded ${
+                              isSelected 
+                                ? 'bg-white/20 text-white' 
+                                : isConv 
+                                  ? 'bg-emerald-100 text-emerald-800' 
+                                  : isAban 
+                                    ? 'bg-amber-100 text-amber-800' 
+                                    : 'bg-cyan-100 text-cyan-800'
+                            }`}>
+                              {isConv ? 'Đã chốt vé' : isAban ? 'Bỏ rơi' : 'Đang tìm'}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Selected Journey Cluster Deep-dive Info Box */}
+                    {activeCluster && (
+                      <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200/80 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+                        <div>
+                          <span className="text-gray-500 block text-[11px]">Chặng xe mục tiêu:</span>
+                          <span className="font-bold text-gray-900 text-sm flex items-center gap-1 mt-0.5">
+                            <MapPin size={13} className="text-red-500" />
+                            {activeCluster.targetRoute}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500 block text-[11px]">Trạng thái hành trình:</span>
+                          <span className={`font-bold inline-block px-2 py-0.5 rounded text-[11px] mt-1 ${
+                            activeCluster.status === 'CONVERTED'
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : activeCluster.status === 'ABANDONED'
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-cyan-100 text-cyan-800'
+                          }`}>
+                            {activeCluster.status === 'CONVERTED' ? '✅ Chuyển đổi thành công' : activeCluster.status === 'ABANDONED' ? '⚠️ Bỏ rơi giỏ hàng' : '⏳ Đang tương tác'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500 block text-[11px]">Nguồn vào ban đầu:</span>
+                          <span className="font-bold text-gray-900 capitalize block mt-1">
+                            {activeCluster.trafficSource}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500 block text-[11px]">Thời lượng & Dwell:</span>
+                          <span className="font-mono text-gray-900 block mt-1">
+                            <strong>{activeCluster.durationMinutes}m</strong> ({activeCluster.activeSeconds}s tích cực / {activeCluster.idleSeconds}s treo tab)
+                          </span>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
+                    )}
+                  </div>
+                )}
 
-            </div>
-          )}
+                {/* 4. Chronological Timeline */}
+                <div className="pt-2">
+                  <h3 className="font-bold text-gray-900 text-sm mb-4 flex items-center justify-between">
+                    <span>
+                      {selectedClusterId === 'ALL'
+                        ? 'Dòng thời gian sự kiện trọn đời (A - Z):'
+                        : `Dòng thời gian chi tiết cho ${activeCluster?.title || 'Hành trình'}:`}
+                    </span>
+                    <span className="text-xs text-gray-500 font-normal">
+                      Hiển thị <strong>{displayEvents.length}</strong> sự kiện
+                    </span>
+                  </h3>
+
+                  <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
+                    {displayEvents.map((evt, eIdx) => {
+                      const isSession = evt.type === 'SESSION_START';
+                      const isPageView = evt.type === 'PAGE_VIEW';
+
+                      return (
+                        <div key={eIdx} className="relative group">
+                          {/* Dot on line */}
+                          <div className={`absolute -left-6 top-1.5 w-3 h-3 rounded-full border-2 border-white ring-2 ring-gray-100 ${
+                            isSession ? 'bg-blue-600 ring-blue-100' : isPageView ? 'bg-emerald-500 ring-emerald-100' : 'bg-purple-600 ring-purple-100'
+                          }`} />
+
+                          {/* Event Card */}
+                          <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:border-blue-200 transition-colors space-y-1.5">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className={`font-bold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded ${
+                                isSession ? 'bg-blue-100 text-blue-700' : isPageView ? 'bg-emerald-100 text-emerald-700' : 'bg-purple-100 text-purple-700'
+                              }`}>
+                                {evt.type}
+                              </span>
+                              <span className="font-mono text-gray-400 text-[11px]">{evt.timestamp}</span>
+                            </div>
+
+                            <div className="font-bold text-gray-900 text-sm">
+                              {evt.title}
+                            </div>
+
+                            <div className="text-xs text-gray-600 font-mono">
+                              {evt.description}
+                            </div>
+
+                            {(((evt.activeSeconds || 0) > 0) || ((evt.idleSeconds || 0) > 0)) && (
+                              <div className="flex items-center gap-3 text-[11px] text-gray-500 pt-1">
+                                <span className="text-emerald-600 font-semibold">Tương tác: {evt.activeSeconds || 0}s</span>
+                                {(evt.idleSeconds || 0) > 0 && <span className="text-gray-400">Treo tab: {evt.idleSeconds}s</span>}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+              </div>
+            );
+          })()}
 
         </div>
       )}

@@ -69,15 +69,33 @@ export interface JourneyEventDto {
   metadata?: string;
 }
 
+export interface JourneyClusterDto {
+  journeyId: string;
+  title: string;
+  status: 'CONVERTED' | 'ABANDONED' | 'IN_PROGRESS' | string;
+  targetRoute: string;
+  trafficSource: string;
+  startTime: string;
+  endTime: string;
+  durationMinutes: number;
+  activeSeconds: number;
+  idleSeconds: number;
+  customerIdentified: boolean;
+  events: JourneyEventDto[];
+}
+
 export interface CustomerJourneyTimelineDto {
   identifier: string;
   customerName: string;
   customerEmail: string;
+  isRegisteredCustomer?: boolean;
+  linkedAnonymousIds?: string[];
   totalSessions: number;
   totalPageViews: number;
   totalActions: number;
   matchedPersona: string;
   events: JourneyEventDto[];
+  journeys?: JourneyClusterDto[];
 }
 
 export const trackingService = {

@@ -66,8 +66,21 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading });
       },
 
-      setUser: (user: User) => {
-        set({ user });
+      setUser: (newUser: any) => {
+        set((state) => {
+          const prevRoles = state.user?.roles || [];
+          const incomingRoles = Array.isArray(newUser?.roles)
+            ? newUser.roles
+            : (newUser?.role?.name ? [newUser.role.name] : (typeof newUser?.role === 'string' ? [newUser.role] : []));
+          const mergedRoles = Array.from(new Set([...prevRoles, ...incomingRoles].filter(Boolean)));
+          return {
+            user: {
+              ...(state.user || {}),
+              ...newUser,
+              roles: mergedRoles.length > 0 ? mergedRoles : (state.user?.roles || [])
+            } as User
+          };
+        });
       },
     }),
     {
