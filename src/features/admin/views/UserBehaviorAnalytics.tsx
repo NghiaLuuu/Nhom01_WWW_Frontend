@@ -35,11 +35,14 @@ export const UserBehaviorAnalytics: React.FC = () => {
   const formatPersonaLabel = (persona: string | undefined) => {
     switch (persona) {
       case 'COMMUTER_HABIT': return 'Thường Lệ (TP.HCM ⇌ Phú Yên)';
+      case 'DALAT_LIMOUSINE':
       case 'LUXURY_VIP': return 'VIP Limousine';
+      case 'BUDGET_SAVER':
       case 'BUDGET_SAVING': return 'Tiết Kiệm';
-      case 'WEEKEND_EXPLORER': return 'Phượt / Du Lịch';
-      case 'STUDENT_SAVER': return 'Sinh Viên';
-      case 'BUSINESS_FREQUENT': return 'Công Tác';
+      case 'NHATRANG_FAMILY':
+      case 'WEEKEND_EXPLORER': return 'Du Lịch Biển / Gia Đình';
+      case 'STUDENT_SAVER': return 'Sinh Viên Tiết Kiệm';
+      case 'BUSINESS_FREQUENT': return 'Công Tác Thường Xuyên';
       case 'POPULAR_TRENDING': return 'Phổ Biến';
       default: return persona || 'Khách tìm chuyến nhanh';
     }

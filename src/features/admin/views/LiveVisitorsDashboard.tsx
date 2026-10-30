@@ -127,22 +127,25 @@ export const LiveVisitorsDashboard: React.FC = () => {
             <Navigation size={11} className="text-indigo-400" /> Thường Lệ (TP.HCM ⇌ Phú Yên)
           </span>
         );
+      case 'DALAT_LIMOUSINE':
       case 'LUXURY_VIP':
         return (
           <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-300 bg-amber-950/70 border border-amber-500/40 px-2.5 py-0.5 rounded-full shadow-sm">
             <Sparkles size={11} className="text-amber-400" /> VIP Limousine
           </span>
         );
+      case 'BUDGET_SAVER':
       case 'BUDGET_SAVING':
         return (
           <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-300 bg-emerald-950/70 border border-emerald-500/40 px-2.5 py-0.5 rounded-full shadow-sm">
             <Sparkles size={11} className="text-emerald-400" /> Tiết Kiệm
           </span>
         );
+      case 'NHATRANG_FAMILY':
       case 'WEEKEND_EXPLORER':
         return (
           <span className="inline-flex items-center gap-1 text-[11px] font-bold text-orange-300 bg-orange-950/80 border border-orange-500/40 px-2.5 py-0.5 rounded-full shadow-sm">
-            <Compass size={11} className="text-orange-400" /> Phượt / Du Lịch
+            <Compass size={11} className="text-orange-400" /> Du Lịch Biển / Gia Đình
           </span>
         );
       case 'STUDENT_SAVER':
