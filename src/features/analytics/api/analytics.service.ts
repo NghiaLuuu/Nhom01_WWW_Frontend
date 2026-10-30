@@ -1,7 +1,9 @@
 import { api } from '../../../services/api';
+import { useAuthStore } from '../../../store/useAuthStore';
 
 export type AnalyticsAction =
   | 'PAGE_VIEW'
+  | 'TAB_SWITCH'
   | 'DWELL_TIME'
   | 'CLICK_EVENT'
   | 'SEARCH_TRIP'
@@ -20,6 +22,8 @@ export type AnalyticsAction =
 export interface AnalyticsEvent {
   sessionId: string;
   visitorId: string;
+  userId?: string;
+  userEmail?: string;
   actionType: AnalyticsAction;
   pageUrl?: string;
   pageTitle?: string;
@@ -61,14 +65,34 @@ export const AnalyticsService = {
     actionType: AnalyticsAction,
     eventData?: Record<string, unknown>,
     dwellTimeSeconds?: number,
+    referrerOverride?: string,
   ) => {
+    if (typeof window === 'undefined') return;
+
+    // Do not track admin management views to avoid polluting customer behavior analytics
+    const pathname = window.location.pathname;
+    if (pathname.startsWith('/admin')) {
+      return;
+    }
+
+    // Do not track actions performed by Admin or Staff members
+    const currentUser = useAuthStore.getState().user;
+    const isStaffOrAdmin = currentUser?.roles?.some(
+      (r) => r === 'ROLE_ADMIN' || r === 'ROLE_STAFF' || r === 'ADMIN' || r === 'STAFF',
+    );
+    if (isStaffOrAdmin) {
+      return;
+    }
+
     const ids = getIds();
     const event: AnalyticsEvent = {
       ...ids,
+      userId: currentUser?.id,
+      userEmail: currentUser?.email,
       actionType,
       pageUrl: `${window.location.pathname}${window.location.search}`,
       pageTitle: document.title.slice(0, 255),
-      referrer: document.referrer.slice(0, 2048) || undefined,
+      referrer: referrerOverride || (document.referrer.slice(0, 2048) || undefined),
       dwellTimeSeconds,
       eventData,
     };
