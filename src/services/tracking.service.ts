@@ -1,0 +1,123 @@
+import { api } from './api';
+
+export interface TrackSessionPayload {
+  anonymousId: string;
+  customerId?: string;
+  trafficSource?: string;
+  utmCampaign?: string;
+  userAgent?: string;
+}
+
+export interface TrackPageViewPayload {
+  sessionId: string;
+  pageUrl: string;
+  pageTitle: string;
+  previousPageUrl?: string;
+}
+
+export interface TrackHeartbeatPayload {
+  sessionId?: string;
+  pageViewId?: string;
+  additionalActiveSeconds: number;
+  additionalIdleSeconds: number;
+}
+
+export interface TrackActionPayload {
+  sessionId: string;
+  pageViewId?: string;
+  actionType: string;
+  payload?: string;
+}
+
+export interface PageStatDto {
+  pageUrl: string;
+  viewCount: number;
+  avgActiveSeconds: number;
+  avgIdleSeconds: number;
+}
+
+export interface RecentSessionDto {
+  sessionId: string;
+  anonymousId: string;
+  customerId?: string;
+  ipAddress: string;
+  trafficSource: string;
+  totalDurationSeconds: number;
+  createdAt: string;
+  pageViewCount: number;
+  actionCount: number;
+}
+
+export interface TrackingAnalyticsResponse {
+  totalSessions: number;
+  uniqueVisitors: number;
+  avgSessionDurationSeconds: number;
+  trafficSources: Record<string, number>;
+  actionBreakdown: Record<string, number>;
+  topPages: PageStatDto[];
+  recentSessions: RecentSessionDto[];
+}
+
+export interface JourneyEventDto {
+  id: string;
+  type: string;
+  title: string;
+  description: string;
+  timestamp: string;
+  activeSeconds?: number;
+  idleSeconds?: number;
+  metadata?: string;
+}
+
+export interface CustomerJourneyTimelineDto {
+  identifier: string;
+  customerName: string;
+  customerEmail: string;
+  totalSessions: number;
+  totalPageViews: number;
+  totalActions: number;
+  matchedPersona: string;
+  events: JourneyEventDto[];
+}
+
+export const trackingService = {
+  trackSession: async (payload: TrackSessionPayload) => {
+    const res = await api.post('/tracking/session', payload);
+    return res.data?.data;
+  },
+
+  trackPageView: async (payload: TrackPageViewPayload) => {
+    const res = await api.post('/tracking/pageview', payload);
+    return res.data?.data;
+  },
+
+  sendHeartbeat: async (payload: TrackHeartbeatPayload) => {
+    const res = await api.post('/tracking/heartbeat', payload);
+    return res.data?.data;
+  },
+
+  trackAction: async (payload: TrackActionPayload) => {
+    const res = await api.post('/tracking/action', payload);
+    return res.data?.data;
+  },
+
+  mergeCustomer: async (sessionId: string, customerId: string) => {
+    const res = await api.post('/tracking/merge-customer', { sessionId, customerId });
+    return res.data?.data;
+  },
+
+  getAnalyticsOverview: async (): Promise<TrackingAnalyticsResponse> => {
+    const res = await api.get('/admin/tracking/analytics');
+    return res.data?.data;
+  },
+
+  getCustomerJourney: async (identifier: string): Promise<CustomerJourneyTimelineDto> => {
+    const res = await api.get(`/admin/tracking/journey/${identifier}`);
+    return res.data?.data;
+  },
+
+  getRecentSessions: async (limit = 30) => {
+    const res = await api.get(`/admin/tracking/sessions?limit=${limit}`);
+    return res.data?.data;
+  }
+};
