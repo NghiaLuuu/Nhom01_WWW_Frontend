@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Bus, LayoutDashboard, Ticket, Users, Car, Map, 
-  BarChart3, UserCircle, FileText, ChevronLeft, ChevronRight, LogOut 
+  BarChart3, UserCircle, FileText, ChevronLeft, ChevronRight, LogOut, Activity 
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -30,6 +30,7 @@ const MENU_GROUPS = [
   {
     title: 'Hệ Thống',
     items: [
+      { name: 'Hành Vi & Tracking Khách', icon: Activity, path: '/admin/behavior-analytics', roles: ['ROLE_ADMIN'] },
       { name: 'Báo Cáo Thống Kê', icon: BarChart3, path: '/admin/reports', roles: ['ROLE_ADMIN', 'VIEW_STATISTICS'] },
       { name: 'Tài Khoản & Quyền', icon: Users, path: '/admin/users', roles: ['ROLE_ADMIN', 'STAFF_MANAGE', 'CUSTOMER_MANAGE'] },
       { name: 'Nhật Ký Hệ Thống', icon: FileText, path: '/admin/audit-logs', roles: ['ROLE_ADMIN'] },

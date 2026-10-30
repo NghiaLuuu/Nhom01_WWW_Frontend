@@ -5,7 +5,7 @@ import { trackingService } from '../services/tracking.service';
 
 const ANON_KEY = 'vexe_anon_id';
 const SESSION_KEY = 'vexe_session_id';
-const IDLE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes idle threshold (as required by master plan)
+const IDLE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes idle threshold
 const HEARTBEAT_INTERVAL_MS = 20 * 1000; // Heartbeat every 20s
 
 function getOrCreateAnonymousId(): string {
@@ -41,6 +41,8 @@ function detectTrafficSource(): { source: string; campaign?: string } {
   return { source: 'direct' };
 }
 
+const isValidUuid = (val?: string) => !!val && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val);
+
 // Global hook & action dispatcher
 export function useUserTracker() {
   const location = useLocation();
@@ -60,7 +62,7 @@ export function useUserTracker() {
     try {
       const anonId = getOrCreateAnonymousId();
       const { source, campaign } = detectTrafficSource();
-      const customerId = user?.id;
+      const customerId = isValidUuid(user?.id) ? user?.id : undefined;
 
       const data = await trackingService.trackSession({
         anonymousId: anonId,
@@ -81,7 +83,7 @@ export function useUserTracker() {
 
   // Merge customer when login state changes
   useEffect(() => {
-    if (isAuthenticated && user?.id && sessionIdRef.current) {
+    if (isAuthenticated && user?.id && isValidUuid(user.id) && sessionIdRef.current) {
       trackingService.mergeCustomer(sessionIdRef.current, user.id).catch(() => {});
     }
   }, [isAuthenticated, user?.id]);
@@ -114,6 +116,89 @@ export function useUserTracker() {
 
     handleRouteChange();
   }, [location.pathname, location.search, initSession]);
+
+  // Section Dwell Time Observation (IntersectionObserver)
+  useEffect(() => {
+    const sectionDwellMap = new Map<string, number>();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const now = Date.now();
+        entries.forEach((entry) => {
+          const sectionId = entry.target.id || entry.target.getAttribute('data-track-section');
+          if (!sectionId) return;
+
+          if (entry.isIntersecting) {
+            sectionDwellMap.set(sectionId, now);
+          } else {
+            const enterTime = sectionDwellMap.get(sectionId);
+            if (enterTime) {
+              const dwellMs = now - enterTime;
+              const dwellSeconds = Math.round(dwellMs / 1000);
+              sectionDwellMap.delete(sectionId);
+
+              // If user paused to read for 2 seconds or more
+              if (dwellSeconds >= 2 && sessionIdRef.current) {
+                trackingService.trackAction({
+                  sessionId: sessionIdRef.current,
+                  pageViewId: pageViewIdRef.current || undefined,
+                  actionType: 'SECTION_DWELL',
+                  payload: JSON.stringify({
+                    sectionId,
+                    dwellSeconds,
+                    pageUrl: location.pathname
+                  })
+                }).catch(() => {});
+              }
+            }
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+
+    // Observe all sections and data-track-section elements
+    const elements = document.querySelectorAll('section[id], [data-track-section]');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [location.pathname]);
+
+  // Transition & Click Attribution Listener
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target || !sessionIdRef.current) return;
+
+      const buttonOrLink = target.closest('button, a, [role="button"]');
+      if (buttonOrLink) {
+        const el = buttonOrLink as HTMLElement;
+        const sourceElement = el.id || el.getAttribute('data-track') || el.innerText?.trim().slice(0, 40) || 'unknown_element';
+        const sourceType = el.tagName.toLowerCase();
+        const href = (el as HTMLAnchorElement).href;
+
+        // Track click element
+        trackingService.trackAction({
+          sessionId: sessionIdRef.current,
+          pageViewId: pageViewIdRef.current || undefined,
+          actionType: 'CLICK_ELEMENT',
+          payload: JSON.stringify({
+            sourceElement,
+            sourceType,
+            fromUrl: location.pathname,
+            toUrl: href || undefined
+          })
+        }).catch(() => {});
+      }
+    };
+
+    window.addEventListener('click', handleGlobalClick, { capture: true, passive: true });
+    return () => {
+      window.removeEventListener('click', handleGlobalClick, { capture: true });
+    };
+  }, [location.pathname]);
 
   // User Activity & Idle Detection (5-minute rule)
   useEffect(() => {
@@ -194,6 +279,7 @@ export function useUserTracker() {
         actionType,
         payload: payloadStr
       });
+      window.dispatchEvent(new CustomEvent('vexe_tracking_action', { detail: { actionType, payload } }));
     } catch (e) {
       console.warn('[useUserTracker] trackAction warning:', e);
     }
@@ -213,8 +299,8 @@ export async function dispatchTrackAction(actionType: string, payload?: any) {
       actionType,
       payload: payloadStr
     });
+    window.dispatchEvent(new CustomEvent('vexe_tracking_action', { detail: { actionType, payload } }));
   } catch (e) {
     // silent
   }
 }
-
