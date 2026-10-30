@@ -4,7 +4,8 @@ import { BookingService, type Seat } from '../api/booking.service';
 import { useBookingStore } from '../../../store/useBookingStore';
 import { SeatMap } from './SeatMap';
 import { useNavigate } from 'react-router-dom';
-import { Clock, MapPin, Bus as BusIcon } from 'lucide-react';
+import { Clock, MapPin, Bus as BusIcon, Sparkles } from 'lucide-react';
+import { recommendationService, type RecommendedTrip } from '../../../services/recommendation.service';
 import toast from 'react-hot-toast';
 
 interface TripListProps {
@@ -17,6 +18,20 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
   const { selectedTrip, setSelectedTrip, selectedSeats, startHoldTimer } = useBookingStore();
   const [seats, setSeats] = useState<Seat[]>([]);
   const [loadingSeats, setLoadingSeats] = useState(false);
+  const [recMap, setRecMap] = useState<Record<number, string>>({});
+
+  React.useEffect(() => {
+    const anonId = localStorage.getItem('vexe_anon_id') || undefined;
+    recommendationService.getRecommendations(anonId, undefined, 5)
+      .then(recs => {
+        if (Array.isArray(recs)) {
+          const map: Record<number, string> = {};
+          recs.forEach(r => { if (r && r.tripId) map[r.tripId] = r.badgeText; });
+          setRecMap(map);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   React.useEffect(() => {
     if (trips.length === 1 && selectedTrip?.id !== trips[0].id) {
@@ -79,6 +94,12 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
         <div key={trip.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
           <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex-1 space-y-4">
+              {recMap[trip.id] && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-800 text-xs font-bold tracking-wide">
+                  <Sparkles size={13} className="text-cyan-600 animate-pulse" />
+                  <span>{recMap[trip.id]}</span>
+                </div>
+              )}
               <div className="flex items-center space-x-3 text-lg font-bold text-gray-900">
                 <Clock className="text-blue-600" size={24} />
                 <span>{new Date(trip.departureTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>

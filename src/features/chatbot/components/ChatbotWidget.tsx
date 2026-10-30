@@ -18,6 +18,21 @@ const QUICK_SUGGESTIONS = [
 
 export const ChatbotWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [bubbleText, setBubbleText] = useState<string | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const anonId = localStorage.getItem('vexe_anon_id');
+      if (anonId?.includes('dalat')) {
+        setBubbleText("Em có chuyến Đà Lạt Limousine tối nay đúng gu bạn nè! ✨");
+      } else if (anonId?.includes('nhatrang')) {
+        setBubbleText("Em có chuyến Nha Trang giá ưu đãi cho gia đình nè! 🏖️");
+      } else {
+        setBubbleText("Cần em gợi ý chuyến xe phù hợp theo gu của bạn không? 🚌");
+      }
+    }, 3500);
+    return () => clearTimeout(timer);
+  }, []);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -154,19 +169,41 @@ export const ChatbotWidget: React.FC = () => {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Button with Smart Recommendation Bubble */}
       {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 z-50 animate-bounce group"
-          title="Mở trợ lý AI"
-        >
-          <MessageSquare size={26} className="group-hover:rotate-6 transition-transform" />
-          <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-white"></span>
-          </span>
-        </button>
+        <div className="fixed bottom-6 right-6 flex items-end gap-3 z-50">
+          {bubbleText && (
+            <div 
+              onClick={() => setIsOpen(true)}
+              className="cursor-pointer relative mb-1.5 hidden sm:flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-cyan-500/40 text-white shadow-2xl shadow-cyan-950/50 animate-in fade-in slide-in-from-right-4 duration-300 max-w-xs group hover:border-cyan-400"
+            >
+              <Sparkles size={16} className="text-cyan-400 shrink-0 animate-pulse group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-medium leading-snug">{bubbleText}</span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setBubbleText(null);
+                }}
+                className="text-slate-400 hover:text-white p-0.5 rounded-full shrink-0 transition-colors"
+                title="Đóng thông báo"
+              >
+                <X size={12} />
+              </button>
+            </div>
+          )}
+
+          <button
+            onClick={() => setIsOpen(true)}
+            className="w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 animate-bounce group relative"
+            title="Mở trợ lý AI"
+          >
+            <MessageSquare size={26} className="group-hover:rotate-6 transition-transform text-white" />
+            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-white"></span>
+            </span>
+          </button>
+        </div>
       )}
 
       {/* Chat Window */}

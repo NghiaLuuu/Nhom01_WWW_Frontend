@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Calendar, ArrowRight, Sparkles, Navigation } from 'lucide-react';
 
+import { PersonalizedDiscoveryShelf } from '../components/PersonalizedDiscoveryShelf';
+
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const [departure, setDeparture] = useState('');
@@ -207,6 +209,9 @@ export const LandingPage: React.FC = () => {
         </div>
       </div>
       
+      {/* AI & Persona Personalized Discovery Shelf */}
+      <PersonalizedDiscoveryShelf />
+
       {/* Decorative transition to next section (if any) */}
       <div className="h-24 bg-slate-950"></div>
     </div>
