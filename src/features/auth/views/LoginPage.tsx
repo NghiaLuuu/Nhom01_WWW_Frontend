@@ -60,7 +60,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
     setIsLoading(true);
     setLoginError(null);
     try {
-      const response = await api.post('/auth/login', { email: identifier, password });
+      const response = await api.post('/auth/web-login', { email: identifier, password });
       if (response.data.success && response.data.data) {
         const { accessToken, refreshToken } = response.data.data;
         setTokens(accessToken, refreshToken);

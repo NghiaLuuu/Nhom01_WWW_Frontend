@@ -62,7 +62,7 @@ export const TripManagement: React.FC = () => {
     setRouteId(trip.route?.id || '');
     setVehicleId(trip.vehicle?.id || '');
     // Format LocalDateTime for input type="datetime-local" (YYYY-MM-DDTHH:mm)
-    const formattedDate = trip.departureTime ? new Date(trip.departureTime).toISOString().slice(0, 16) : '';
+    const formattedDate = trip.departureTime ? trip.departureTime.slice(0, 16) : '';
     setDepartureTime(formattedDate);
     setPrice(trip.price.toString());
     setStatus(trip.status || 'PENDING');
@@ -81,7 +81,7 @@ export const TripManagement: React.FC = () => {
       const payload: TripRequest = {
         routeId: Number(routeId),
         vehicleId: Number(vehicleId),
-        departureTime: new Date(departureTime).toISOString(),
+        departureTime: departureTime.length === 16 ? `${departureTime}:00` : departureTime,
         price: Number(price),
         status
       };

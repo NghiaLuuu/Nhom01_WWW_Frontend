@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { type Ticket, TicketService } from '../../../services/ticket.service';
 import toast from 'react-hot-toast';
 import { User, Mail, Ticket as TicketIcon, Clock, AlertTriangle, Key, UserCircle } from 'lucide-react';
 import { ProfileService } from '../../../services/profile.service';
+import { CancelRequestPage } from '../../cancelrequest/views/CancelRequestPage';
+import { CancelRequestService } from '../../../services/cancelrequest.service';
 
 export const ProfilePage: React.FC = () => {
   const { user, setUser } = useAuthStore();
@@ -12,9 +14,11 @@ export const ProfilePage: React.FC = () => {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
+  const submittingCancel = useRef(false);
   
   // Tabs
-  const [activeTab, setActiveTab] = useState<'PROFILE' | 'HISTORY' | 'PASSWORD'>('PROFILE');
+  const [activeTab, setActiveTab] = useState<'PROFILE' | 'HISTORY' | 'PASSWORD' | 'CANCEL'>('PROFILE');
   
   // Password change state
   const [oldPassword, setOldPassword] = useState('');
@@ -33,41 +37,7 @@ export const ProfilePage: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await TicketService.getMyHistory();
-      // Since it's currently a mock that returns [], let's populate some mock data if empty
-      if (res.success && res.data.length === 0) {
-        setTickets([
-          {
-            id: 1,
-            bookingCode: 'BKG-123456',
-            trip: {
-              id: 1,
-              route: { id: 1, departureLocation: 'Sài Gòn', arrivalLocation: 'Đà Lạt', basePrice: 250000, distance: 300, duration: 6 },
-              vehicle: { id: 1, licensePlate: '51B-123.45', capacity: 36 },
-              departureTime: new Date(Date.now() + 86400000).toISOString(),
-              price: 250000
-            },
-            seats: ['A1', 'A2'],
-            totalPrice: 500000,
-            status: 'PAID',
-            createdAt: new Date().toISOString()
-          },
-          {
-            id: 2,
-            bookingCode: 'BKG-987654',
-            trip: {
-              id: 2,
-              route: { id: 2, departureLocation: 'Sài Gòn', arrivalLocation: 'Nha Trang', basePrice: 350000, distance: 400, duration: 8 },
-              vehicle: { id: 2, licensePlate: '51B-999.99', capacity: 36 },
-              departureTime: new Date(Date.now() - 86400000).toISOString(),
-              price: 350000
-            },
-            seats: ['B5'],
-            totalPrice: 350000,
-            status: 'USED',
-            createdAt: new Date(Date.now() - 100000000).toISOString()
-          }
-        ]);
-      } else {
+      if (res.success) {
         setTickets(res.data);
       }
     } catch (error) {
@@ -83,23 +53,30 @@ export const ProfilePage: React.FC = () => {
 
   const handleOpenCancelModal = (ticket: Ticket) => {
     setSelectedTicket(ticket);
+    setCancelReason('');
     setIsCancelModalOpen(true);
   };
 
   const handleConfirmCancel = async () => {
-    if (!selectedTicket) return;
+    if (!selectedTicket || submittingCancel.current) return;
+    if (!cancelReason.trim()) { toast.error('Vui lòng nhập lý do hủy'); return; }
+    submittingCancel.current = true;
     setIsProcessing(true);
     try {
-      await TicketService.requestCancel(selectedTicket.id);
+      await CancelRequestService.submit(selectedTicket.id, cancelReason.trim());
       toast.success('Đã gửi yêu cầu hủy vé thành công. Vui lòng chờ xác nhận.');
       setIsCancelModalOpen(false);
-      // Optimistically update
-      setTickets(tickets.map(t => t.id === selectedTicket.id ? { ...t, status: 'CANCEL_REQUESTED' } : t));
-    } catch (error) {
-      toast.success('Đã gửi yêu cầu hủy vé thành công. Vui lòng chờ xác nhận.');
-      setIsCancelModalOpen(false);
-      setTickets(tickets.map(t => t.id === selectedTicket.id ? { ...t, status: 'CANCEL_REQUESTED' } : t));
+      await fetchHistory();
+      setActiveTab('CANCEL');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Không thể gửi yêu cầu hủy vé');
+      if (error.response?.status === 409) {
+        await fetchHistory();
+        setIsCancelModalOpen(false);
+        setActiveTab('CANCEL');
+      }
     } finally {
+      submittingCancel.current = false;
       setIsProcessing(false);
     }
   };
@@ -167,7 +144,7 @@ export const ProfilePage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-6 border-b border-gray-200 mb-8">
+      <div className="flex flex-wrap gap-x-6 gap-y-3 border-b border-gray-200 mb-8">
         <button
           onClick={() => setActiveTab('PROFILE')}
           className={`pb-4 flex items-center space-x-2 font-semibold transition-colors ${
@@ -178,7 +155,7 @@ export const ProfilePage: React.FC = () => {
           <span>Thông tin cá nhân</span>
         </button>
         <button
-          onClick={() => setActiveTab('HISTORY')}
+          onClick={() => { setActiveTab('HISTORY'); fetchHistory(); }}
           className={`pb-4 flex items-center space-x-2 font-semibold transition-colors ${
             activeTab === 'HISTORY' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'
           }`}
@@ -186,6 +163,7 @@ export const ProfilePage: React.FC = () => {
           <TicketIcon size={20} />
           <span>Lịch sử đặt vé</span>
         </button>
+        <button onClick={() => setActiveTab('CANCEL')} className={`pb-4 font-semibold ${activeTab === 'CANCEL' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>Yêu cầu hủy vé</button>
         <button
           onClick={() => setActiveTab('PASSWORD')}
           className={`pb-4 flex items-center space-x-2 font-semibold transition-colors ${
@@ -287,7 +265,7 @@ export const ProfilePage: React.FC = () => {
                 <div className="flex items-center text-gray-600 text-sm space-x-4">
                   <span className="flex items-center space-x-1"><Clock size={16}/> <span>{new Date(ticket.trip.departureTime).toLocaleString('vi-VN')}</span></span>
                   <span>|</span>
-                  <span>Ghế: <span className="font-semibold text-blue-600">{ticket.seats.join(', ')}</span></span>
+                  <span>Ghế: <span className="font-semibold text-blue-600">{ticket.seats?.join(', ') || 'N/A'}</span></span>
                 </div>
               </div>
 
@@ -295,7 +273,10 @@ export const ProfilePage: React.FC = () => {
                 <div className="text-xl font-bold text-blue-600 mb-4">
                   {new Intl.NumberFormat('vi-VN').format(ticket.totalPrice)}đ
                 </div>
-                {ticket.status === 'PAID' && (
+                {ticket.cancelRequestStatus === 'REJECTED' && (
+                  <p className="text-sm text-red-600 mb-3">Yêu cầu hủy bị từ chối: {ticket.rejectReason}</p>
+                )}
+                {ticket.canCancel && (
                   <button 
                     onClick={() => handleOpenCancelModal(ticket)}
                     className="text-red-500 hover:text-red-700 font-semibold text-sm underline transition-colors"
@@ -309,6 +290,8 @@ export const ProfilePage: React.FC = () => {
         </div>
       )}
         </>
+      ) : activeTab === 'CANCEL' ? (
+        <CancelRequestPage mode="customer" />
       ) : (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 max-w-2xl">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Đổi mật khẩu</h2>
@@ -366,9 +349,13 @@ export const ProfilePage: React.FC = () => {
             </div>
             <h3 className="text-xl font-bold text-center text-gray-900 mb-2">Xác nhận hủy vé?</h3>
             <p className="text-center text-gray-500 mb-6">Bạn có chắc chắn muốn gửi yêu cầu hủy vé cho mã <strong>{selectedTicket?.bookingCode}</strong> không? Quá trình phê duyệt có thể mất thời gian.</p>
+            <label className="block text-sm text-gray-700 mb-4">Lý do hủy
+              <textarea maxLength={2000} value={cancelReason} onChange={e => setCancelReason(e.target.value)} className="w-full border rounded-lg p-2 mt-1" placeholder="Nhập lý do (tối đa 2000 ký tự)" />
+            </label>
             
             <div className="flex space-x-3">
               <button 
+                disabled={isProcessing}
                 onClick={() => setIsCancelModalOpen(false)}
                 className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors"
               >

@@ -3,7 +3,7 @@ import { type Ticket, TicketService } from '../../../services/ticket.service';
 import { DataTable, type Column } from '../../../components/DataTable';
 import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const TicketManagement: React.FC = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -13,32 +13,8 @@ export const TicketManagement: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await TicketService.getAllTickets();
-      if (res.success && res.data.length > 0) {
+      if (res.success) {
         setTickets(res.data);
-      } else {
-        // Mock data for display if API empty
-        setTickets([
-          {
-            id: 1,
-            bookingCode: 'BKG-111111',
-            trip: { id: 1, route: { id: 1, departureLocation: 'Sài Gòn', arrivalLocation: 'Đà Lạt', basePrice: 250000, distance: 300, duration: 6 }, vehicle: { id: 1, licensePlate: '51B-123', capacity: 36 }, departureTime: new Date(Date.now() + 86400000).toISOString(), price: 250000 },
-            customer: { id: 'c1', fullName: 'Nguyễn Văn A', email: 'a@gmail.com', status: 'ACTIVE' },
-            seats: ['A1', 'A2'],
-            totalPrice: 500000,
-            status: 'CANCEL_REQUESTED',
-            createdAt: new Date().toISOString()
-          },
-          {
-            id: 2,
-            bookingCode: 'BKG-222222',
-            trip: { id: 2, route: { id: 2, departureLocation: 'Sài Gòn', arrivalLocation: 'Nha Trang', basePrice: 350000, distance: 400, duration: 8 }, vehicle: { id: 2, licensePlate: '51B-999', capacity: 36 }, departureTime: new Date(Date.now() + 186400000).toISOString(), price: 350000 },
-            customer: { id: 'c2', fullName: 'Trần Thị B', email: 'b@gmail.com', status: 'ACTIVE' },
-            seats: ['B5'],
-            totalPrice: 350000,
-            status: 'PAID',
-            createdAt: new Date().toISOString()
-          }
-        ]);
       }
     } catch (error) {
       toast.error('Lỗi khi tải dữ liệu đơn đặt vé');
@@ -50,24 +26,6 @@ export const TicketManagement: React.FC = () => {
   useEffect(() => {
     fetchTickets();
   }, []);
-
-  const handleAction = async (id: number, action: 'approve' | 'reject') => {
-    try {
-      if (action === 'approve') {
-        await TicketService.approveCancel(id);
-        toast.success('Đã duyệt hủy vé.');
-      } else {
-        await TicketService.rejectCancel(id);
-        toast.success('Đã từ chối hủy vé.');
-      }
-      // Optimistic Update
-      setTickets(tickets.map(t => t.id === id ? { ...t, status: action === 'approve' ? 'CANCELLED' : 'PAID' } : t));
-    } catch (error) {
-      // Mock success if endpoint doesn't exist
-      toast.success(action === 'approve' ? 'Đã duyệt hủy vé.' : 'Đã từ chối hủy vé.');
-      setTickets(tickets.map(t => t.id === id ? { ...t, status: action === 'approve' ? 'CANCELLED' : 'PAID' } : t));
-    }
-  };
 
   const columns: Column<Ticket>[] = [
     { header: 'Mã Đơn', accessor: 'bookingCode', width: '15%' },
@@ -93,24 +51,9 @@ export const TicketManagement: React.FC = () => {
     {
       header: 'Thao Tác (Staff)',
       accessor: (row) => {
-        if (row.status === 'CANCEL_REQUESTED') {
+        if (row.cancelRequestId) {
           return (
-            <div className="flex space-x-1 items-center justify-end">
-              <button 
-                onClick={() => handleAction(row.id, 'approve')} 
-                title="Duyệt Hủy"
-                className="text-gray-400 hover:text-green-600 p-1.5 rounded hover:bg-green-50 transition-colors flex items-center justify-center min-w-[32px] min-h-[32px]"
-              >
-                <CheckCircle size={16} />
-              </button>
-              <button 
-                onClick={() => handleAction(row.id, 'reject')} 
-                title="Từ chối"
-                className="text-gray-400 hover:text-red-600 p-1.5 rounded hover:bg-red-50 transition-colors flex items-center justify-center min-w-[32px] min-h-[32px]"
-              >
-                <XCircle size={16} />
-              </button>
-            </div>
+            <Link to={`/admin/cancel-requests?requestId=${row.cancelRequestId}`} className="text-blue-700 hover:underline text-sm">Xem yêu cầu hủy</Link>
           );
         }
         return <div className="text-gray-400 text-xs italic text-right pr-4">Không</div>;

@@ -9,32 +9,37 @@ export interface Ticket {
   customer?: User;
   seats: string[];
   totalPrice: number;
-  status: 'PAID' | 'CANCEL_REQUESTED' | 'CANCELLED' | 'USED';
+  status: 'PENDING_PAYMENT' | 'PAID' | 'CANCEL_REQUESTED' | 'CANCELLED' | 'USED';
   createdAt: string;
+  cancelRequestId?: number;
+  cancelRequestStatus?: 'PENDING' | 'APPROVED' | 'REJECTED';
+  cancelReason?: string;
+  rejectReason?: string;
+  canCancel: boolean;
 }
 
 export const TicketService = {
   // Customer methods
   getMyHistory: async () => {
-    const res = await api.get('/bookings/my-history');
+    const res = await api.get('/web/bookings/my-history');
     return res.data;
   },
-  requestCancel: async (id: number) => {
-    const res = await api.patch(`/bookings/${id}/request-cancel`);
+  requestCancel: async (id: number, reason: string) => {
+    const res = await api.post('/cancel-requests', { bookingId: id, reason });
     return res.data;
   },
 
   // Admin/Staff methods
   getAllTickets: async () => {
-    const res = await api.get('/admin/bookings'); // Assuming this endpoint for staff
+    const res = await api.get('/web/bookings');
     return res.data;
   },
   approveCancel: async (id: number) => {
-    const res = await api.patch(`/admin/bookings/${id}/approve-cancel`);
+    const res = await api.patch(`/cancel-requests/${id}/resolve`, { isApproved: true });
     return res.data;
   },
-  rejectCancel: async (id: number) => {
-    const res = await api.patch(`/admin/bookings/${id}/reject-cancel`);
+  rejectCancel: async (id: number, rejectReason: string) => {
+    const res = await api.patch(`/cancel-requests/${id}/resolve`, { isApproved: false, rejectReason });
     return res.data;
   }
 };

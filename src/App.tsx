@@ -16,6 +16,8 @@ import { CheckoutPage } from './features/booking/views/CheckoutPage';
 import { BookingSuccessPage } from './features/booking/views/BookingSuccessPage';
 import { ProfilePage } from './features/customer/views/ProfilePage';
 import { TicketManagement } from './features/admin/views/TicketManagement';
+import { RevenueReportPage } from './features/admin/views/RevenueReportPage';
+import { CancelRequestPage } from './features/cancelrequest/views/CancelRequestPage';
 import { Toaster } from 'react-hot-toast';
 
 // Wrapper to handle navigation for auth pages
@@ -69,6 +71,16 @@ function App() {
           <Route path="trips" element={<TripManagement />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="tickets" element={<TicketManagement />} />
+          <Route path="cancel-requests" element={
+            <ProtectedRoute allowedRoles={['ROLE_ADMIN', 'ADMIN', 'TICKET_MANAGE', 'MANAGE_TICKET']}>
+              <CancelRequestPage />
+            </ProtectedRoute>
+          } />
+          <Route path="reports" element={
+            <ProtectedRoute allowedRoles={['ROLE_ADMIN', 'ADMIN', 'VIEW_STATISTICS']}>
+              <RevenueReportPage />
+            </ProtectedRoute>
+          } />
 
           <Route path="routes" element={<RouteManagement />} />
           <Route path="vehicles-drivers" element={<VehicleManagement />} />

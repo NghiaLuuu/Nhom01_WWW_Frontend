@@ -11,6 +11,7 @@ export const AdminLayout: React.FC = () => {
     "/admin": "Bảng điều khiển",
     "/admin/trips": "Quản lý chuyến xe",
     "/admin/tickets": "Quản lý đặt vé",
+    "/admin/cancel-requests": "Tiếp nhận & xử lý yêu cầu hủy vé",
     "/admin/users": "Tài khoản & quyền",
     "/admin/profile": "Hồ sơ cá nhân",
     "/admin/vehicles-drivers": "Quản lý xe & tài xế",

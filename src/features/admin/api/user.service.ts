@@ -24,14 +24,45 @@ export interface StaffRequest {
   permissions?: string[];
 }
 
-export const UserService = {
-  getStaffs: async () => {
-    const res = await api.get('/admin/staffs');
-    return res.data;
+export interface UserPage {
+  content: User[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+interface StaffView extends Omit<User, 'role'> {
+  roleId: number | null;
+  roleName: string | null;
+}
+
+const normalizeStaff = (staff: StaffView): User => ({
+  ...staff,
+  role: staff.roleId == null ? undefined : {
+    id: staff.roleId,
+    name: staff.roleName || '',
+    description: '',
   },
-  getCustomers: async () => {
-    const res = await api.get('/admin/customers');
-    return res.data;
+});
+
+export interface UserSearch {
+  keyword?: string;
+  status?: string;
+  page?: number;
+  size?: number;
+}
+
+export const UserService = {
+  getStaffs: async (params: UserSearch = {}) => {
+    const res = await api.get('/admin/staffs', { params });
+    return { ...res.data, data: { ...res.data.data, content: res.data.data.content.map(normalizeStaff) } } as {
+      success: boolean; data: UserPage;
+    };
+  },
+  getCustomers: async (params: UserSearch = {}) => {
+    const res = await api.get('/admin/customers', { params });
+    return res.data as { success: boolean; data: UserPage };
   },
   createStaff: async (data: StaffRequest) => {
     const res = await api.post('/admin/staffs', data);
@@ -49,12 +80,12 @@ export const UserService = {
     const res = await api.patch(`/admin/customers/${id}/status`, { status });
     return res.data;
   },
-  resetStaffPassword: async (id: string) => {
-    const res = await api.patch(`/admin/staffs/${id}/reset-password`);
+  resetStaffPassword: async (id: string, newPassword: string) => {
+    const res = await api.patch(`/admin/staffs/${id}/reset-password`, { newPassword });
     return res.data;
   },
-  resetCustomerPassword: async (id: string) => {
-    const res = await api.patch(`/admin/customers/${id}/reset-password`);
+  resetCustomerPassword: async (id: string, newPassword: string) => {
+    const res = await api.patch(`/admin/customers/${id}/reset-password`, { newPassword });
     return res.data;
   }
 };

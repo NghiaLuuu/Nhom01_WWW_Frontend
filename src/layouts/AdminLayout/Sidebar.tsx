@@ -22,7 +22,8 @@ const MENU_GROUPS = [
     title: 'Nghiệp Vụ',
     items: [
       { name: 'Quản Lý Chuyến Xe', icon: Bus, path: '/admin/trips', roles: ['ROLE_ADMIN', 'TRIP_MANAGE'] },
-      { name: 'Đơn Đặt Vé', icon: Ticket, path: '/admin/tickets', roles: ['ROLE_ADMIN', 'MANAGE_TICKET'] },
+      { name: 'Đơn Đặt Vé', icon: Ticket, path: '/admin/tickets', roles: ['ROLE_ADMIN', 'MANAGE_TICKET', 'TICKET_MANAGE'] },
+      { name: 'Yêu Cầu Hủy Vé', icon: FileText, path: '/admin/cancel-requests', roles: ['ROLE_ADMIN', 'MANAGE_TICKET', 'TICKET_MANAGE'] },
       { name: 'Xe & Tài Xế', icon: Car, path: '/admin/vehicles-drivers', roles: ['ROLE_ADMIN', 'VEHICLE_MANAGE'] },
       { name: 'Tuyến Đường', icon: Map, path: '/admin/routes', roles: ['ROLE_ADMIN', 'ROUTE_MANAGE'] },
     ]
@@ -31,7 +32,7 @@ const MENU_GROUPS = [
     title: 'Hệ Thống',
     items: [
       { name: 'Báo Cáo Thống Kê', icon: BarChart3, path: '/admin/reports', roles: ['ROLE_ADMIN', 'VIEW_STATISTICS'] },
-      { name: 'Tài Khoản & Quyền', icon: Users, path: '/admin/users', roles: ['ROLE_ADMIN', 'STAFF_MANAGE', 'CUSTOMER_MANAGE'] },
+      { name: 'Tài Khoản & Quyền', icon: Users, path: '/admin/users', roles: ['ROLE_ADMIN', 'CUSTOMER_MANAGE'] },
       { name: 'Nhật Ký Hệ Thống', icon: FileText, path: '/admin/audit-logs', roles: ['ROLE_ADMIN'] },
       { name: 'Hồ Sơ Cá Nhân', icon: UserCircle, path: '/admin/profile', roles: ['ROLE_ADMIN', 'ROLE_STAFF'] },
     ]

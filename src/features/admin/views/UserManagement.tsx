@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { type User, type StaffRequest, UserService } from '../api/user.service';
 import { type Role, RoleService } from '../api/role.service';
 import { DataTable, type Column } from '../../../components/DataTable';
@@ -6,9 +6,13 @@ import { FormModal } from '../../../components/FormModal';
 import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
 import { Plus, Users, UserCheck, Search } from 'lucide-react';
+import { useAuthStore } from '../../../store/useAuthStore';
 
 export const UserManagement: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'STAFF' | 'CUSTOMER'>('STAFF');
+  const currentUser = useAuthStore(state => state.user);
+  const userRoles = currentUser?.roles || [];
+  const isAdmin = userRoles.includes('ROLE_ADMIN') || userRoles.includes('ADMIN');
+  const [activeTab, setActiveTab] = useState<'STAFF' | 'CUSTOMER'>(isAdmin ? 'STAFF' : 'CUSTOMER');
   const [staffs, setStaffs] = useState<User[]>([]);
   const [customers, setCustomers] = useState<User[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -32,6 +36,10 @@ export const UserManagement: React.FC = () => {
   // Staff Form State
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [resetTarget, setResetTarget] = useState<{ id: string; isStaff: boolean } | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const [selectedRoleId, setSelectedRoleId] = useState<number | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,33 +47,48 @@ export const UserManagement: React.FC = () => {
   // Filters State
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [staffsRes, customersRes, rolesRes] = await Promise.all([
-        UserService.getStaffs().catch(() => ({ success: false, data: [] })),
-        UserService.getCustomers().catch(() => ({ success: false, data: [] })),
-        RoleService.getAll().catch(() => ({ success: false, data: [] }))
-      ]);
-      if (staffsRes.success) setStaffs(staffsRes.data);
-      if (customersRes.success) setCustomers(customersRes.data);
-      if (rolesRes.success) setRoles(rolesRes.data);
-    } catch (error) {
-      toast.error('Lỗi khi tải dữ liệu người dùng');
+      const params = { keyword: searchQuery, status: statusFilter === 'ALL' ? undefined : statusFilter, page, size: 20 };
+      const res = activeTab === 'STAFF' && isAdmin
+        ? await UserService.getStaffs(params)
+        : await UserService.getCustomers(params);
+      if (activeTab === 'STAFF' && isAdmin) setStaffs(res.data.content);
+      else setCustomers(res.data.content);
+      setTotalPages(res.data.totalPages);
+      setTotalElements(res.data.totalElements);
+    } catch (error: any) {
+      setStaffs([]);
+      setCustomers([]);
+      setTotalPages(0);
+      setTotalElements(0);
+      toast.error(error.response?.data?.message || 'Lỗi khi tải dữ liệu người dùng');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [activeTab, isAdmin, searchQuery, statusFilter, page]);
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    const timer = setTimeout(fetchUsers, 300);
+    return () => clearTimeout(timer);
+  }, [fetchUsers]);
+
+  useEffect(() => {
+    if (isAdmin) {
+      RoleService.getAll().then(res => setRoles(res.data)).catch(() => toast.error('Không thể tải vai trò'));
+    }
+  }, [isAdmin]);
 
   const handleOpenAdd = () => {
     setEditingStaff(null);
     setFullName('');
     setEmail('');
+    setPassword('');
     setSelectedPermissions([]);
     setSelectedRoleId('');
     setIsModalOpen(true);
@@ -93,10 +116,8 @@ export const UserManagement: React.FC = () => {
     setEditingStaff(staff);
     setFullName(staff.fullName);
     setEmail(staff.email);
-    // Combine ad-hoc permissions with role permissions so checkboxes reflect all active permissions
-    const adHocPerms = staff.permissions || [];
-    const rolePerms = staff.role?.permissions?.map((p: any) => p.code) || [];
-    setSelectedPermissions(mapOldPermissions([...adHocPerms, ...rolePerms]));
+    // Only edit individual permissions; inherited permissions remain on the role.
+    setSelectedPermissions(mapOldPermissions(staff.permissions || []));
     setSelectedRoleId(staff.role?.id || '');
     setIsModalOpen(true);
   };
@@ -111,15 +132,12 @@ export const UserManagement: React.FC = () => {
 
   const handleSubmitStaff = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedPermissions.length === 0) {
-      toast.error('Vui lòng chọn ít nhất một quyền chức năng');
-      return;
-    }
     setIsSubmitting(true);
     try {
       const payload: StaffRequest = {
         fullName,
         email,
+        ...(!editingStaff && { password }),
         permissions: selectedPermissions,
         ...(selectedRoleId && { roleId: Number(selectedRoleId) })
       };
@@ -156,19 +174,34 @@ export const UserManagement: React.FC = () => {
   };
 
   const handleResetPassword = async (id: string, isStaff: boolean) => {
-    const defaultPass = isStaff ? "Vexe@123" : "123456";
-    const message = isStaff ? "nhân viên" : "khách hàng";
-    if (window.confirm(`Bạn có chắc chắn muốn reset mật khẩu ${message} này về mặc định (${defaultPass})?`)) {
-      try {
-        if (isStaff) {
-          await UserService.resetStaffPassword(id);
-        } else {
-          await UserService.resetCustomerPassword(id);
-        }
-        toast.success("Đã reset mật khẩu thành công!");
-      } catch (error: any) {
-        toast.error("Lỗi khi reset mật khẩu");
-      }
+    setNewPassword('');
+    setConfirmPassword('');
+    setResetTarget({ id, isStaff });
+  };
+
+  const submitResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetTarget) return;
+    if (newPassword !== confirmPassword) {
+      toast.error('Mật khẩu xác nhận không khớp');
+      return;
+    }
+    if (new TextEncoder().encode(newPassword).length > 72) {
+      toast.error('Mật khẩu tối đa 72 byte UTF-8');
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      if (resetTarget.isStaff) await UserService.resetStaffPassword(resetTarget.id, newPassword);
+      else await UserService.resetCustomerPassword(resetTarget.id, newPassword);
+      toast.success('Đã đặt lại mật khẩu. Hãy cung cấp mật khẩu mới qua kênh an toàn.');
+      setResetTarget(null);
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Không thể đặt lại mật khẩu');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -187,7 +220,7 @@ export const UserManagement: React.FC = () => {
       header: 'Phân Quyền (Chi tiết)', 
       accessor: (row) => {
         const adHocPerms = row.permissions || [];
-        const rolePerms = row.role?.permissions?.map((p: any) => p.code) || [];
+        const rolePerms = roles.find(role => role.id === row.role?.id)?.permissions?.map(p => p.code) || [];
         const displayPerms = mapOldPermissions([...adHocPerms, ...rolePerms]);
         return (
           <div className="flex flex-wrap gap-1 max-w-[250px]">
@@ -262,12 +295,12 @@ export const UserManagement: React.FC = () => {
           >
             {row.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}
           </button>
-          <button 
+          {isAdmin && <button 
             onClick={() => handleResetPassword(row.id, false)}
             className="text-xs font-medium hover:underline text-blue-600"
           >
             Reset Pass
-          </button>
+          </button>}
         </div>
       ),
       align: 'right'
@@ -275,12 +308,7 @@ export const UserManagement: React.FC = () => {
   ];
 
   const currentData = activeTab === 'STAFF' ? staffs : customers;
-  const filteredData = currentData.filter(user => {
-    const matchesSearch = user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          user.email.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'ALL' || user.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const filteredData = currentData;
 
   const filterContent = (
     <>
@@ -293,7 +321,7 @@ export const UserManagement: React.FC = () => {
             type="text"
             placeholder="Tìm theo tên, email..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => { setSearchQuery(e.target.value); setPage(0); }}
             className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none"
           />
         </div>
@@ -301,7 +329,7 @@ export const UserManagement: React.FC = () => {
       <div className="w-[160px]">
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(e) => { setStatusFilter(e.target.value); setPage(0); }}
           className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
         >
           <option value="ALL">Tất cả trạng thái</option>
@@ -312,7 +340,7 @@ export const UserManagement: React.FC = () => {
     </>
   );
 
-  const actionButton = activeTab === 'STAFF' ? (
+  const actionButton = activeTab === 'STAFF' && isAdmin ? (
     <button 
       onClick={handleOpenAdd}
       className="flex items-center space-x-1.5 bg-blue-700 hover:bg-blue-800 text-white px-3 py-1.5 rounded-md transition-colors text-sm font-medium"
@@ -326,15 +354,15 @@ export const UserManagement: React.FC = () => {
     <AdminPageLayout filters={filterContent} actionButton={actionButton}>
       {/* Tabs */}
       <div className="flex items-center border-b border-gray-200 px-4 bg-gray-50/50">
-        <button
-          onClick={() => setActiveTab('STAFF')}
+        {isAdmin && <button
+          onClick={() => { setActiveTab('STAFF'); setPage(0); }}
           className={`flex items-center space-x-2 px-4 py-3 border-b-2 text-sm transition-colors ${activeTab === 'STAFF' ? 'border-blue-700 text-blue-700 font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
         >
           <UserCheck size={16} />
           <span>Nhân Viên</span>
-        </button>
+        </button>}
         <button
-          onClick={() => setActiveTab('CUSTOMER')}
+          onClick={() => { setActiveTab('CUSTOMER'); setPage(0); }}
           className={`flex items-center space-x-2 px-4 py-3 border-b-2 text-sm transition-colors ${activeTab === 'CUSTOMER' ? 'border-blue-700 text-blue-700 font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
         >
           <Users size={16} />
@@ -346,9 +374,29 @@ export const UserManagement: React.FC = () => {
         data={filteredData} 
         columns={activeTab === 'STAFF' ? staffColumns : customerColumns} 
         isLoading={isLoading}
-        onEdit={activeTab === 'STAFF' ? handleOpenEdit : undefined}
+        onEdit={activeTab === 'STAFF' && isAdmin ? handleOpenEdit : undefined}
         keyExtractor={(row) => row.id}
       />
+
+      <div className="flex items-center justify-between p-4 border-t text-sm">
+        <span>Tổng: {totalElements} tài khoản · Trang {totalPages ? page + 1 : 0}/{totalPages}</span>
+        <div className="flex gap-3">
+          <button disabled={page === 0 || isLoading} onClick={() => setPage(p => p - 1)} className="disabled:opacity-40">Trước</button>
+          <button disabled={page + 1 >= totalPages || isLoading} onClick={() => setPage(p => p + 1)} className="disabled:opacity-40">Sau</button>
+        </div>
+      </div>
+
+      <FormModal isOpen={resetTarget !== null} onClose={() => setResetTarget(null)} title="Đặt lại mật khẩu">
+        <form onSubmit={submitResetPassword} className="space-y-4">
+          <label className="block text-sm">Mật khẩu mới (ít nhất 8 ký tự)
+            <input type="password" required minLength={8} maxLength={72} autoComplete="new-password" value={newPassword} onChange={e => setNewPassword(e.target.value)} className="w-full border rounded p-2 mt-1" />
+          </label>
+          <label className="block text-sm">Xác nhận mật khẩu
+            <input type="password" required minLength={8} maxLength={72} autoComplete="new-password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className="w-full border rounded p-2 mt-1" />
+          </label>
+          <button disabled={isSubmitting} type="submit" className="bg-blue-700 text-white rounded px-4 py-2 disabled:opacity-50">{isSubmitting ? 'Đang lưu...' : 'Đặt lại mật khẩu'}</button>
+        </form>
+      </FormModal>
 
       <FormModal 
         isOpen={isModalOpen} 
@@ -383,9 +431,9 @@ export const UserManagement: React.FC = () => {
           </div>
 
           {!editingStaff && (
-            <div className="px-3 py-2 bg-blue-50 rounded-md border border-blue-100">
-              <p className="text-sm text-blue-800">Lưu ý: Mật khẩu mặc định sẽ là <span className="font-semibold">Vexe@123</span></p>
-            </div>
+            <label className="block text-sm font-medium text-gray-700">Mật khẩu ban đầu (ít nhất 8 ký tự)
+              <input type="password" required minLength={8} maxLength={72} autoComplete="new-password" value={password} onChange={e => setPassword(e.target.value)} className="w-full border rounded-md px-3 py-2 mt-1" />
+            </label>
           )}
 
           <div className="space-y-1.5">
@@ -405,7 +453,7 @@ export const UserManagement: React.FC = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Phân Quyền Chức Năng</label>
+            <label className="block text-sm font-medium text-gray-700">Quyền bổ sung (ngoài quyền kế thừa từ vai trò)</label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 p-3 bg-gray-50/50 border border-gray-200 rounded-md">
               {AVAILABLE_PERMISSIONS.map(perm => (
                 <label key={perm.id} className="flex items-center space-x-2 cursor-pointer group">
