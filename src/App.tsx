@@ -19,6 +19,7 @@ import { BookingSuccessPage } from './features/booking/views/BookingSuccessPage'
 import { ProfilePage } from './features/customer/views/ProfilePage';
 import { TicketManagement } from './features/admin/views/TicketManagement';
 import { UserBehaviorAnalytics } from './features/admin/views/UserBehaviorAnalytics';
+import { LiveVisitorsDashboard } from './features/admin/views/LiveVisitorsDashboard';
 import { AboutPage } from './features/public/views/AboutPage';
 import { AchievementsPage } from './features/public/views/AchievementsPage';
 import { ContactPage } from './features/public/views/ContactPage';
@@ -88,6 +89,7 @@ function App() {
           <Route path="vehicles-drivers" element={<VehicleManagement />} />
           <Route path="audit-logs" element={<AuditLogManagement />} />
           <Route path="profile" element={<AdminProfilePage />} />
+          <Route path="live-visitors" element={<LiveVisitorsDashboard />} />
           <Route path="behavior-analytics" element={<UserBehaviorAnalytics />} />
           
           {/* Catch all inside admin */}

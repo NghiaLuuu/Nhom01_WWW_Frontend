@@ -98,6 +98,45 @@ export interface CustomerJourneyTimelineDto {
   journeys?: JourneyClusterDto[];
 }
 
+export interface LiveRecommendedTripDto {
+  tripId: number;
+  route: string;
+  departureTime: string;
+  price: string;
+  vehicleType: string;
+}
+
+export interface LiveVisitorDto {
+  sessionId: string;
+  anonymousId: string;
+  customerId?: string;
+  isRegisteredCustomer: boolean;
+  customerName?: string;
+  customerEmail?: string;
+  ipAddress: string;
+  userAgent?: string;
+  deviceType?: string;
+  trafficSource?: string;
+  utmCampaign?: string;
+  currentPageUrl?: string;
+  currentPageTitle?: string;
+  activeSecondsOnPage: number;
+  idleSecondsOnPage: number;
+  lastActivityTime?: string;
+  lastActionType?: string;
+  lastActionPayload?: string;
+  matchedPersona?: string;
+  recommendedTrips?: LiveRecommendedTripDto[];
+}
+
+export interface LiveVisitorsSummaryResponse {
+  totalOnline: number;
+  registeredOnline: number;
+  guestOnline: number;
+  checkedAt: string;
+  visitors: LiveVisitorDto[];
+}
+
 export const trackingService = {
   trackSession: async (payload: TrackSessionPayload) => {
     const res = await api.post('/tracking/session', payload);
@@ -131,6 +170,11 @@ export const trackingService = {
 
   getCustomerJourney: async (identifier: string): Promise<CustomerJourneyTimelineDto> => {
     const res = await api.get(`/admin/tracking/journey/${identifier}`);
+    return res.data?.data;
+  },
+
+  getLiveVisitors: async (minutes = 5): Promise<LiveVisitorsSummaryResponse> => {
+    const res = await api.get(`/admin/tracking/live-visitors?minutes=${minutes}`);
     return res.data?.data;
   },
 

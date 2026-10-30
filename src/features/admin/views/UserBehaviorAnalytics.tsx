@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { 
   Activity, 
   Users, 
@@ -31,6 +32,7 @@ import {
 import toast from 'react-hot-toast';
 
 export const UserBehaviorAnalytics: React.FC = () => {
+  const [searchParams] = useSearchParams();
   const [analytics, setAnalytics] = useState<TrackingAnalyticsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -47,8 +49,11 @@ export const UserBehaviorAnalytics: React.FC = () => {
       const data = await trackingService.getAnalyticsOverview();
       setAnalytics(data);
 
-      // Auto-load first recent session journey if none selected
-      if (!selectedJourney && data?.recentSessions && data.recentSessions.length > 0) {
+      const queryId = searchParams.get('id');
+      if (queryId) {
+        setActiveTab('JOURNEY');
+        loadJourney(queryId);
+      } else if (!selectedJourney && data?.recentSessions && data.recentSessions.length > 0) {
         loadJourney(data.recentSessions[0].anonymousId || data.recentSessions[0].ipAddress);
       }
     } catch (err: any) {
