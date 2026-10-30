@@ -6,7 +6,21 @@ import { trackingService } from '../services/tracking.service';
 const ANON_KEY = 'vexe_anon_id';
 const SESSION_KEY = 'vexe_session_id';
 const IDLE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes idle threshold
-const HEARTBEAT_INTERVAL_MS = 20 * 1000; // Heartbeat every 20s
+const HEARTBEAT_INTERVAL_MS = 8 * 1000; // Heartbeat every 8s for live real-time sync
+
+function getPageTitleForUrl(pathname: string): string {
+  if (pathname === '/') return 'Trang Chủ - Đặt Vé Xe Khách VEXE';
+  if (pathname.startsWith('/search')) return 'Tìm Kiếm & Tra Cứu Chuyến Xe';
+  if (pathname.startsWith('/checkout')) return 'Thanh Toán & Đặt Chỗ';
+  if (pathname.startsWith('/booking-success')) return 'Đặt Vé Thành Công';
+  if (pathname.startsWith('/profile')) return 'Hồ Sơ Thành Viên & Vé Của Tôi';
+  if (pathname.startsWith('/login')) return 'Đăng Nhập Khách Hàng';
+  if (pathname.startsWith('/register')) return 'Đăng Ký Tài Khoản';
+  if (pathname.startsWith('/about')) return 'Giới Thiệu VEXE 5 Sao';
+  if (pathname.startsWith('/contact')) return 'Liên Hệ & Hỗ Trợ 24/7';
+  if (pathname.startsWith('/faq')) return 'Câu Hỏi Thường Gặp & Chính Sách';
+  return document.title || 'VEXE - Chuẩn Mực Vận Tải 5 Sao';
+}
 
 function getOrCreateAnonymousId(): string {
   let id = localStorage.getItem(ANON_KEY);
@@ -97,11 +111,26 @@ export function useUserTracker() {
 
       if (!sessionIdRef.current) return;
 
+      // Flush accumulated dwell time for prior pageview before switching
+      if (pageViewIdRef.current && (deltaActiveSecondsRef.current > 0 || deltaIdleSecondsRef.current > 0)) {
+        const act = deltaActiveSecondsRef.current;
+        const idle = deltaIdleSecondsRef.current;
+        deltaActiveSecondsRef.current = 0;
+        deltaIdleSecondsRef.current = 0;
+        trackingService.sendHeartbeat({
+          sessionId: sessionIdRef.current,
+          pageViewId: pageViewIdRef.current,
+          additionalActiveSeconds: act,
+          additionalIdleSeconds: idle
+        }).catch(() => {});
+      }
+
       try {
+        const currentTitle = getPageTitleForUrl(location.pathname);
         const pv = await trackingService.trackPageView({
           sessionId: sessionIdRef.current,
           pageUrl: location.pathname + location.search,
-          pageTitle: document.title || 'VEXE - Đặt vé xe khách',
+          pageTitle: currentTitle,
           previousPageUrl: previousUrlRef.current || undefined
         });
 

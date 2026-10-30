@@ -426,9 +426,24 @@ export const LiveVisitorDetailView: React.FC = () => {
                   <p className="text-xs text-slate-500 italic text-center py-6">Chưa có lượt xem trang nào được ghi nhận.</p>
                 ) : (
                   detail.pageViews.map((pv, idx) => (
-                    <div key={idx} className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-3 flex items-center justify-between text-xs">
+                    <div 
+                      key={idx} 
+                      className={`border rounded-xl p-3 flex items-center justify-between text-xs transition-all ${
+                        idx === 0 
+                          ? 'bg-indigo-950/40 border-indigo-500/50 shadow-md shadow-indigo-500/10' 
+                          : 'bg-slate-950/70 border-slate-800/80'
+                      }`}
+                    >
                       <div className="min-w-0 space-y-0.5">
-                        <p className="font-bold text-white truncate max-w-sm">{pv.pageTitle}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-bold text-white truncate max-w-sm">{pv.pageTitle}</p>
+                          {idx === 0 && (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-1.5 py-0.2 rounded-full animate-pulse">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                              Hiện Tại
+                            </span>
+                          )}
+                        </div>
                         <p className="font-mono text-[11px] text-indigo-300 truncate">{pv.pageUrl}</p>
                         <p className="text-[10px] text-slate-500">Bắt đầu: {pv.enteredAt}</p>
                       </div>
@@ -453,11 +468,25 @@ export const LiveVisitorDetailView: React.FC = () => {
                   <p className="text-xs text-slate-500 italic text-center py-6">Chưa có thao tác click/chọn nào được ghi nhận.</p>
                 ) : (
                   detail.actions.map((act, idx) => (
-                    <div key={idx} className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-3 text-xs space-y-1.5">
+                    <div 
+                      key={idx} 
+                      className={`border rounded-xl p-3 text-xs space-y-1.5 transition-all ${
+                        idx === 0 
+                          ? 'bg-purple-950/40 border-purple-500/50 shadow-md shadow-purple-500/10' 
+                          : 'bg-slate-950/70 border-slate-800/80'
+                      }`}
+                    >
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-purple-300 bg-purple-950/80 border border-purple-500/40 px-2 py-0.5 rounded text-[11px]">
-                          {act.actionType}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-purple-300 bg-purple-950/80 border border-purple-500/40 px-2 py-0.5 rounded text-[11px]">
+                            {act.actionType}
+                          </span>
+                          {idx === 0 && (
+                            <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-1.5 py-0.2 rounded-full animate-pulse">
+                              Vừa Làm
+                            </span>
+                          )}
+                        </div>
                         <span className="text-[10px] text-slate-500">{act.createdAt}</span>
                       </div>
                       {act.payload && (
@@ -476,3 +505,4 @@ export const LiveVisitorDetailView: React.FC = () => {
     </div>
   );
 };
+

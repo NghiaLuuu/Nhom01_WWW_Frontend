@@ -63,8 +63,13 @@ export const LiveVisitorsDashboard: React.FC = () => {
     return () => clearInterval(interval);
   }, [autoRefresh, timeWindow]);
 
-  // Filter visitors
-  const visitors = data?.visitors || [];
+  // Filter visitors & sort newest activity on top
+  const visitors = (data?.visitors || []).slice().sort((a, b) => {
+    const timeA = a.lastActivityTime || '';
+    const timeB = b.lastActivityTime || '';
+    return timeB.localeCompare(timeA);
+  });
+
   const filteredVisitors = visitors.filter(v => {
     if (filterType === 'REGISTERED' && !v.isRegisteredCustomer) return false;
     if (filterType === 'GUEST' && v.isRegisteredCustomer) return false;
@@ -80,6 +85,27 @@ export const LiveVisitorsDashboard: React.FC = () => {
     }
     return true;
   });
+
+  const formatRelativeActivity = (timeStr?: string) => {
+    if (!timeStr) return 'Đang xem';
+    try {
+      const actTime = new Date(timeStr.replace(' ', 'T')).getTime();
+      const diffSec = Math.floor((Date.now() - actTime) / 1000);
+      if (diffSec < 15) {
+        return (
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-full shadow-sm animate-pulse">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            Vừa thao tác
+          </span>
+        );
+      }
+      if (diffSec < 60) return `${diffSec}s trước`;
+      if (diffSec < 3600) return `${Math.floor(diffSec / 60)} phút trước`;
+      return new Date(timeStr).toLocaleTimeString('vi-VN');
+    } catch {
+      return timeStr;
+    }
+  };
 
   const formatDwellTime = (activeSec: number, idleSec: number) => {
     const total = activeSec + idleSec;
@@ -283,19 +309,21 @@ export const LiveVisitorsDashboard: React.FC = () => {
           <table className="w-full text-left text-sm text-slate-300">
             <thead className="text-xs uppercase bg-slate-950/80 text-slate-400 border-b border-slate-800 font-semibold tracking-wider">
               <tr>
-                <th className="px-5 py-4 w-12 text-center">Status</th>
-                <th className="px-5 py-4">Địa Chỉ IP & Thiết Bị (Bắt Buộc)</th>
-                <th className="px-5 py-4">Định Danh Khách Hàng</th>
-                <th className="px-5 py-4">Trang Đang Xem</th>
-                <th className="px-5 py-4">Thời Gian Dừng (Dwell)</th>
-                <th className="px-5 py-4">Phân Khúc AI</th>
-                <th className="px-5 py-4 text-right">Chi Tiết Realtime</th>
+                <th className="px-4 py-4 w-12 text-center">Status</th>
+                <th className="px-4 py-4">Địa Chỉ IP & Thiết Bị (Bắt Buộc)</th>
+                <th className="px-4 py-4">Định Danh Khách Hàng</th>
+                <th className="px-4 py-4">Trang Đang Xem</th>
+                <th className="px-4 py-4">Vừa Làm Gì</th>
+                <th className="px-4 py-4">Hoạt Động</th>
+                <th className="px-4 py-4">Thời Gian Dừng</th>
+                <th className="px-4 py-4">Phân Khúc AI</th>
+                <th className="px-4 py-4 text-right">Chi Tiết Realtime</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-16 text-center text-slate-400">
+                  <td colSpan={9} className="px-6 py-16 text-center text-slate-400">
                     <div className="flex flex-col items-center justify-center gap-3">
                       <RefreshCw size={24} className="animate-spin text-indigo-500" />
                       <span>Đang quét các kết nối trực tuyến realtime...</span>
@@ -304,7 +332,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
                 </tr>
               ) : filteredVisitors.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-16 text-center text-slate-400">
+                  <td colSpan={9} className="px-6 py-16 text-center text-slate-400">
                     <div className="flex flex-col items-center justify-center gap-2">
                       <Users size={32} className="text-slate-600" />
                       <p className="font-semibold text-slate-300">Không có khách nào trực tuyến trong {timeWindow} phút qua</p>
@@ -389,8 +417,8 @@ export const LiveVisitorsDashboard: React.FC = () => {
                     </td>
 
                     {/* 3. Current Page */}
-                    <td className="px-5 py-4 align-middle">
-                      <div className="min-w-0 max-w-[220px]">
+                    <td className="px-4 py-4 align-middle">
+                      <div className="min-w-0 max-w-[200px]">
                         <p className="text-xs font-semibold text-white truncate" title={visitor.currentPageTitle}>
                           {visitor.currentPageTitle || 'Trang đặt vé'}
                         </p>
@@ -400,21 +428,42 @@ export const LiveVisitorsDashboard: React.FC = () => {
                       </div>
                     </td>
 
-                    {/* 4. Dwell Time */}
-                    <td className="px-5 py-4 align-middle">
+                    {/* 4. Last Action */}
+                    <td className="px-4 py-4 align-middle">
+                      <div className="min-w-0 max-w-[170px] space-y-1">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-purple-300 bg-purple-950/80 border border-purple-500/30 px-2 py-0.5 rounded truncate max-w-full">
+                          {visitor.lastActionType || 'XEM_TRANG'}
+                        </span>
+                        {visitor.lastActionPayload && (
+                          <p className="text-[10px] text-slate-400 font-mono truncate" title={visitor.lastActionPayload}>
+                            {visitor.lastActionPayload}
+                          </p>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* 5. Relative Time (Newest First Indicator) */}
+                    <td className="px-4 py-4 align-middle">
+                      <div className="text-xs font-medium">
+                        {formatRelativeActivity(visitor.lastActivityTime)}
+                      </div>
+                    </td>
+
+                    {/* 6. Dwell Time */}
+                    <td className="px-4 py-4 align-middle">
                       <div className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
                         <Clock size={13} className="text-amber-400 shrink-0" />
                         <span>{formatDwellTime(visitor.activeSecondsOnPage, visitor.idleSecondsOnPage)}</span>
                       </div>
                     </td>
 
-                    {/* 5. Persona */}
-                    <td className="px-5 py-4 align-middle">
+                    {/* 7. Persona */}
+                    <td className="px-4 py-4 align-middle">
                       {getPersonaBadge(visitor.matchedPersona)}
                     </td>
 
-                    {/* 6. Action Button */}
-                    <td className="px-5 py-4 align-middle text-right">
+                    {/* 8. Action Button */}
+                    <td className="px-4 py-4 align-middle text-right">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
