@@ -32,6 +32,19 @@ import {
 import toast from 'react-hot-toast';
 
 export const UserBehaviorAnalytics: React.FC = () => {
+  const formatPersonaLabel = (persona: string | undefined) => {
+    switch (persona) {
+      case 'COMMUTER_HABIT': return 'Thường Lệ (TP.HCM ⇌ Phú Yên)';
+      case 'LUXURY_VIP': return 'VIP Limousine';
+      case 'BUDGET_SAVING': return 'Tiết Kiệm';
+      case 'WEEKEND_EXPLORER': return 'Phượt / Du Lịch';
+      case 'STUDENT_SAVER': return 'Sinh Viên';
+      case 'BUSINESS_FREQUENT': return 'Công Tác';
+      case 'POPULAR_TRENDING': return 'Phổ Biến';
+      default: return persona || 'Khách tìm chuyến nhanh';
+    }
+  };
+
   const [searchParams] = useSearchParams();
   const [analytics, setAnalytics] = useState<TrackingAnalyticsResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -477,7 +490,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="px-3 py-1.5 rounded-xl bg-purple-50 border border-purple-200 text-purple-700 text-xs font-semibold flex items-center gap-1.5">
                       <Sparkles size={13} className="text-purple-600" />
-                      <span>Gu AI gán: <strong>{selectedJourney.matchedPersona}</strong></span>
+                      <span>Gu AI gán: <strong>{formatPersonaLabel(selectedJourney.matchedPersona)}</strong></span>
                     </div>
                     <div className="px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold">
                       {selectedJourney.totalSessions} phiên • {selectedJourney.totalPageViews} trang • {selectedJourney.totalActions} tương tác

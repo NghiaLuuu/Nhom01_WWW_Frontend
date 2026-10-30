@@ -14,7 +14,11 @@ import {
   X,
   ExternalLink,
   Shield,
-  Eye
+  Eye,
+  Navigation,
+  Compass,
+  GraduationCap,
+  Briefcase
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -117,22 +121,46 @@ export const LiveVisitorsDashboard: React.FC = () => {
 
   const getPersonaBadge = (persona: string | undefined) => {
     switch (persona) {
+      case 'COMMUTER_HABIT':
+        return (
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-300 bg-indigo-950/80 border border-indigo-500/50 px-2.5 py-0.5 rounded-full shadow-sm">
+            <Navigation size={11} className="text-indigo-400" /> Thường Lệ (TP.HCM ⇌ Phú Yên)
+          </span>
+        );
       case 'LUXURY_VIP':
         return (
           <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-300 bg-amber-950/70 border border-amber-500/40 px-2.5 py-0.5 rounded-full shadow-sm">
-            <Sparkles size={11} /> VIP Limousine
+            <Sparkles size={11} className="text-amber-400" /> VIP Limousine
           </span>
         );
       case 'BUDGET_SAVING':
         return (
           <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-300 bg-emerald-950/70 border border-emerald-500/40 px-2.5 py-0.5 rounded-full shadow-sm">
-            <Sparkles size={11} /> Tiết Kiệm
+            <Sparkles size={11} className="text-emerald-400" /> Tiết Kiệm
+          </span>
+        );
+      case 'WEEKEND_EXPLORER':
+        return (
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-orange-300 bg-orange-950/80 border border-orange-500/40 px-2.5 py-0.5 rounded-full shadow-sm">
+            <Compass size={11} className="text-orange-400" /> Phượt / Du Lịch
+          </span>
+        );
+      case 'STUDENT_SAVER':
+        return (
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-teal-300 bg-teal-950/80 border border-teal-500/40 px-2.5 py-0.5 rounded-full shadow-sm">
+            <GraduationCap size={11} className="text-teal-400" /> Sinh Viên
+          </span>
+        );
+      case 'BUSINESS_FREQUENT':
+        return (
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-300 bg-blue-950/80 border border-blue-500/40 px-2.5 py-0.5 rounded-full shadow-sm">
+            <Briefcase size={11} className="text-blue-400" /> Công Tác
           </span>
         );
       default:
         return (
           <span className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-300 bg-cyan-950/70 border border-cyan-500/40 px-2.5 py-0.5 rounded-full shadow-sm">
-            <Sparkles size={11} /> Phổ Biến
+            <Sparkles size={11} className="text-cyan-400" /> Phổ Biến
           </span>
         );
     }

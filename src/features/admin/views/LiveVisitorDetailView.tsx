@@ -35,6 +35,19 @@ export const LiveVisitorDetailView: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
 
+  const getPersonaLabel = (persona: string | undefined) => {
+    switch (persona) {
+      case 'COMMUTER_HABIT': return 'Thường Lệ (TP.HCM ⇌ Phú Yên)';
+      case 'LUXURY_VIP': return 'VIP Limousine';
+      case 'BUDGET_SAVING': return 'Tiết Kiệm';
+      case 'WEEKEND_EXPLORER': return 'Phượt / Du Lịch';
+      case 'STUDENT_SAVER': return 'Sinh Viên';
+      case 'BUSINESS_FREQUENT': return 'Công Tác';
+      case 'POPULAR_TRENDING': return 'Phổ Biến';
+      default: return persona || 'Khách tìm chuyến nhanh';
+    }
+  };
+
   const [detail, setDetail] = useState<LiveVisitorDetailDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -351,7 +364,7 @@ export const LiveVisitorDetailView: React.FC = () => {
                 Đang Đề Xuất Gì Cho Khách (AI Engine)
               </span>
               <span className="text-xs bg-cyan-950/90 text-cyan-300 border border-cyan-500/40 px-2.5 py-0.5 rounded-full font-bold">
-                {v.matchedPersona || 'Khách tìm chuyến nhanh'}
+                {getPersonaLabel(v.matchedPersona)}
               </span>
             </div>
 
