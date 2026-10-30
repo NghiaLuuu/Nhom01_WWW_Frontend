@@ -22,11 +22,17 @@ import {
 } from 'lucide-react';
 
 import { PersonalizedDiscoveryShelf } from '../components/PersonalizedDiscoveryShelf';
+import { LocationPermissionModal } from '../components/LocationPermissionModal';
+import { geolocationService, type UserLocationResult } from '../../../services/geolocation.service';
 import { dispatchTrackAction } from '../../../hooks/useUserTracker';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
-  const [departure, setDeparture] = useState('');
+  const [userLocation, setUserLocation] = useState<UserLocationResult | null>(geolocationService.getStoredLocation());
+  const [departure, setDeparture] = useState(() => {
+    const loc = geolocationService.getStoredLocation();
+    return loc ? loc.city : '';
+  });
   const [arrival, setArrival] = useState('');
   const [date, setDate] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
@@ -35,6 +41,16 @@ export const LandingPage: React.FC = () => {
 
   useEffect(() => {
     setIsLoaded(true);
+
+    const handleLocationUpdate = (e: any) => {
+      const loc = e.detail as UserLocationResult | null;
+      setUserLocation(loc);
+      if (loc?.city) {
+        setDeparture(loc.city);
+      }
+    };
+
+    window.addEventListener('vexe_location_updated', handleLocationUpdate);
 
     const handleScroll = () => {
       if (window.scrollY > 400) {
@@ -45,7 +61,10 @@ export const LandingPage: React.FC = () => {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('vexe_location_updated', handleLocationUpdate);
+    };
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -488,7 +507,14 @@ export const LandingPage: React.FC = () => {
 
             <form onSubmit={handleSearch} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300 uppercase">Điểm khởi hành</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-slate-300 uppercase">Điểm khởi hành</label>
+                  {userLocation && (
+                    <span className="text-[11px] text-cyan-400 flex items-center gap-1 font-medium">
+                      <MapPin size={11} /> Gần bạn: {userLocation.displayName}
+                    </span>
+                  )}
+                </div>
                 <div className="relative">
                   <MapPin size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-cyan-400" />
                   <input 
@@ -543,6 +569,9 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Location Permission & Realtime Geolocation Prompt */}
+      <LocationPermissionModal onLocationGranted={(loc) => setDeparture(loc.city)} />
 
       {/* Decorative Bottom Spacing */}
       <div className="h-20 bg-slate-950"></div>

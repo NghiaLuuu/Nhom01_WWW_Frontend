@@ -23,10 +23,11 @@ export interface PersonaInfo {
 }
 
 export const recommendationService = {
-  getRecommendations: async (anonymousId?: string, customerId?: string, limit = 5): Promise<RecommendedTrip[]> => {
+  getRecommendations: async (anonymousId?: string, customerId?: string, limit = 5, currentCity?: string): Promise<RecommendedTrip[]> => {
     const params = new URLSearchParams();
     if (anonymousId) params.append('anonymousId', anonymousId);
     if (customerId) params.append('customerId', customerId);
+    if (currentCity) params.append('currentCity', currentCity);
     params.append('limit', limit.toString());
 
     const res = await api.get(`/recommendations?${params.toString()}`);

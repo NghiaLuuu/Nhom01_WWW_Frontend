@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ArrowRight, Bus, Clock, Users, X, ShieldCheck, HeartHandshake } from 'lucide-react';
+import { Sparkles, ArrowRight, Bus, Clock, Users, X, ShieldCheck, HeartHandshake, MapPin } from 'lucide-react';
 import { recommendationService, type RecommendedTrip, type PersonaInfo } from '../../../services/recommendation.service';
+import { geolocationService, type UserLocationResult } from '../../../services/geolocation.service';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { dispatchTrackAction } from '../../../hooks/useUserTracker';
 
@@ -10,31 +11,43 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
   const { user } = useAuthStore();
   const [recommendations, setRecommendations] = useState<RecommendedTrip[]>([]);
   const [personaInfo, setPersonaInfo] = useState<PersonaInfo | null>(null);
+  const [userLocation, setUserLocation] = useState<UserLocationResult | null>(geolocationService.getStoredLocation());
   const [isVisible, setIsVisible] = useState(true);
   const [loading, setLoading] = useState(true);
 
+  const fetchRecs = useCallback(async (loc?: UserLocationResult | null) => {
+    try {
+      setLoading(true);
+      const anonId = localStorage.getItem('vexe_anon_id') || undefined;
+      const customerId = user?.id;
+      const targetCity = loc?.city || userLocation?.city;
+
+      const [trips, persona] = await Promise.all([
+        recommendationService.getRecommendations(anonId, customerId, 4, targetCity),
+        recommendationService.inferPersona(anonId, customerId)
+      ]);
+
+      setRecommendations(trips);
+      setPersonaInfo(persona);
+    } catch (err) {
+      console.warn('Failed loading recommendations:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [user?.id, userLocation?.city]);
+
   useEffect(() => {
-    const fetchRecs = async () => {
-      try {
-        const anonId = localStorage.getItem('vexe_anon_id') || undefined;
-        const customerId = user?.id;
+    fetchRecs(userLocation);
 
-        const [trips, persona] = await Promise.all([
-          recommendationService.getRecommendations(anonId, customerId, 4),
-          recommendationService.inferPersona(anonId, customerId)
-        ]);
-
-        setRecommendations(trips);
-        setPersonaInfo(persona);
-      } catch (err) {
-        console.warn('Failed loading recommendations:', err);
-      } finally {
-        setLoading(false);
-      }
+    const handleLocationUpdate = (e: any) => {
+      const newLoc = e.detail as UserLocationResult | null;
+      setUserLocation(newLoc);
+      fetchRecs(newLoc);
     };
 
-    fetchRecs();
-  }, [user?.id]);
+    window.addEventListener('vexe_location_updated', handleLocationUpdate);
+    return () => window.removeEventListener('vexe_location_updated', handleLocationUpdate);
+  }, [fetchRecs]);
 
   if (!isVisible || loading || recommendations.length === 0) {
     return null;
@@ -80,14 +93,25 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
         {/* Header Bar */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-white/10">
           <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold uppercase tracking-wider">
-              <Sparkles size={14} className="text-cyan-400 animate-pulse" />
-              <span>Hội Đồng Điệu & AI pgvector Đề Xuất</span>
-            </div>
+            {userLocation ? (
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold shadow-md shadow-emerald-950/30">
+                <MapPin size={13} className="text-emerald-400 animate-pulse" />
+                <span>Khởi hành gần bạn: {userLocation.displayName}</span>
+              </div>
+            ) : (
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold uppercase tracking-wider">
+                <Sparkles size={14} className="text-cyan-400 animate-pulse" />
+                <span>Hội Đồng Điệu & AI pgvector Đề Xuất</span>
+              </div>
+            )}
 
             <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-3">
-              <span>Chuyến Đi Phù Hợp Nhất Với Gu Của Bạn</span>
-              {personaInfo?.displayName && (
+              <span>
+                {userLocation
+                  ? `Chuyến Xe Khởi Hành Từ ${userLocation.city}`
+                  : 'Chuyến Đi Phù Hợp Nhất Với Gu Của Bạn'}
+              </span>
+              {personaInfo?.displayName && !userLocation && (
                 <span className="hidden lg:inline-block text-xs font-medium px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 font-mono">
                   {personaInfo.displayName}
                 </span>
@@ -95,11 +119,28 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
             </h2>
 
             <p className="text-slate-400 text-xs sm:text-sm font-light">
-              Hệ thống AI phân tích thời gian tương tác và so khớp khoảng cách Cosine pgvector để đề xuất chuyến xe tối ưu nhất.
+              {userLocation
+                ? `Hệ thống AI tự động ưu tiên các chuyến xe xuất phát từ ${userLocation.displayName} đến các điểm du lịch & công tác nổi bật.`
+                : 'Hệ thống AI phân tích thời gian tương tác và so khớp khoảng cách Cosine pgvector để đề xuất chuyến xe tối ưu nhất.'}
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0 self-end md:self-auto">
+          <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
+            {userLocation && (
+              <button
+                onClick={() => {
+                  geolocationService.clearLocation();
+                  setUserLocation(null);
+                  fetchRecs(null);
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-cyan-300 hover:text-white text-xs font-medium transition-colors border border-cyan-500/30 cursor-pointer"
+                title="Thay đổi hoặc bỏ chọn vị trí hiện tại"
+              >
+                <MapPin size={13} />
+                <span>Đổi vị trí</span>
+              </button>
+            )}
+
             <button
               onClick={() => setIsVisible(false)}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white text-xs font-medium transition-colors border border-white/10 cursor-pointer"
