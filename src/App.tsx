@@ -1,9 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { LoginPage, RegisterPage } from './features/auth';
+import { AdminLoginPage } from './features/auth/views/AdminLoginPage';
 import { ForgotPasswordPage } from './features/auth/views/ForgotPasswordPage';
 import { AdminLayout } from './layouts/AdminLayout';
 import { PublicLayout } from './layouts/PublicLayout';
 import { ProtectedRoute } from './routes/ProtectedRoute';
+import { AdminRoute } from './routes/AdminRoute';
 import { RouteManagement } from './features/admin/views/RouteManagement';
 import { VehicleManagement } from './features/admin/views/VehicleManagement';
 import { TripManagement } from './features/admin/views/TripManagement';
@@ -16,6 +18,10 @@ import { CheckoutPage } from './features/booking/views/CheckoutPage';
 import { BookingSuccessPage } from './features/booking/views/BookingSuccessPage';
 import { ProfilePage } from './features/customer/views/ProfilePage';
 import { TicketManagement } from './features/admin/views/TicketManagement';
+import { AboutPage } from './features/public/views/AboutPage';
+import { AchievementsPage } from './features/public/views/AchievementsPage';
+import { ContactPage } from './features/public/views/ContactPage';
+import { FaqPage } from './features/public/views/FaqPage';
 import { Toaster } from 'react-hot-toast';
 
 // Wrapper to handle navigation for auth pages
@@ -32,12 +38,19 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Dedicated Admin Login Portal */}
+        <Route path="/login/admin" element={<AdminLoginPage />} />
+
         {/* Public Routes with Public Layout */}
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<LandingPage />} />
           <Route path="search" element={<SearchPage />} />
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="booking-success" element={<BookingSuccessPage />} />
+          <Route path="about" element={<AboutPage />} />
+          <Route path="achievements" element={<AchievementsPage />} />
+          <Route path="contact" element={<ContactPage />} />
+          <Route path="faq" element={<FaqPage />} />
           <Route path="login" element={<AuthWrapper isLogin={true} />} />
           <Route path="register" element={<AuthWrapper isLogin={false} />} />
           <Route path="forgot-password" element={<ForgotPasswordPage />} />
@@ -54,9 +67,9 @@ function App() {
         
         {/* Protected Admin Routes */}
         <Route path="/admin" element={
-          <ProtectedRoute allowedRoles={['ROLE_ADMIN', 'ROLE_STAFF']}>
+          <AdminRoute>
             <AdminLayout />
-          </ProtectedRoute>
+          </AdminRoute>
         }>
           {/* Outlet contents */}
           <Route index element={
