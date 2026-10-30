@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Bus, User, ChevronDown, Shield, PhoneCall, Sparkles } from 'lucide-react';
+import { Bus, User, ChevronDown, PhoneCall, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 
 export const Header: React.FC = () => {
@@ -137,30 +137,11 @@ export const Header: React.FC = () => {
 
           {/* Right Action Bar */}
           <div className="flex items-center space-x-3">
-            {/* Quick Admin Portal Badge Link */}
-            <Link
-              to="/login/admin"
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700/80 hover:border-cyan-500/50 text-[11px] font-mono text-slate-300 hover:text-cyan-300 transition-all shadow-sm"
-              title="Cổng điều phối dành riêng cho Quản trị viên và Nhân viên"
-            >
-              <Shield size={12} className="text-cyan-400" />
-              <span>Admin Portal</span>
-            </Link>
-
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
                 <span className="text-xs text-slate-300 hidden sm:inline">
                   Chào, <span className="text-white font-bold">{user?.fullName || user?.email}</span>
                 </span>
-                
-                {user?.roles?.some((r: string) => r === 'ROLE_ADMIN' || r === 'ROLE_STAFF') && (
-                  <button 
-                    onClick={() => navigate('/admin')}
-                    className="px-3 py-1.5 rounded-lg text-xs font-bold text-cyan-300 bg-cyan-950/60 border border-cyan-500/30 hover:bg-cyan-900/40 transition-colors"
-                  >
-                    Vào Dashboard
-                  </button>
-                )}
 
                 <button 
                   onClick={() => navigate('/profile')}
