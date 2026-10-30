@@ -1,35 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Radio, 
   Users, 
   UserCheck, 
   UserX, 
-  Globe, 
   Laptop, 
   Smartphone, 
   Clock, 
-  Activity, 
-  ExternalLink, 
   RefreshCw, 
   Search, 
   Sparkles, 
-  Compass, 
-  Eye, 
-  MousePointerClick, 
-  Bus, 
-  Calendar, 
   ArrowRight,
-  ShieldAlert,
-  SlidersHorizontal,
-  ChevronDown,
-  X
+  X,
+  ExternalLink,
+  Shield,
+  Eye
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { 
   trackingService, 
   type LiveVisitorsSummaryResponse, 
-  type LiveVisitorDto,
-  type LiveRecommendedTripDto
+  type LiveVisitorDto 
 } from '../../../services/tracking.service';
 import toast from 'react-hot-toast';
 
@@ -42,9 +33,6 @@ export const LiveVisitorsDashboard: React.FC = () => {
   const [timeWindow, setTimeWindow] = useState(5); // default 5 minutes
   const [filterType, setFilterType] = useState<'ALL' | 'REGISTERED' | 'GUEST'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Selected visitor modal / drawer
-  const [selectedVisitor, setSelectedVisitor] = useState<LiveVisitorDto | null>(null);
 
   const fetchLiveVisitors = async (showLoadingSpinner = false) => {
     if (showLoadingSpinner) setRefreshing(true);
@@ -53,7 +41,6 @@ export const LiveVisitorsDashboard: React.FC = () => {
       setData(res);
     } catch (err: any) {
       console.error('Error fetching live visitors:', err);
-      // Only toast on manual action to avoid spamming toast in auto-refresh
       if (showLoadingSpinner) {
         toast.error('Lỗi khi tải danh sách khách trực tuyến: ' + (err.message || 'Lỗi server'));
       }
@@ -79,11 +66,9 @@ export const LiveVisitorsDashboard: React.FC = () => {
   // Filter visitors
   const visitors = data?.visitors || [];
   const filteredVisitors = visitors.filter(v => {
-    // Type filter
     if (filterType === 'REGISTERED' && !v.isRegisteredCustomer) return false;
     if (filterType === 'GUEST' && v.isRegisteredCustomer) return false;
     
-    // Search query filter (IP, name, email, anonymousId, current page)
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       const matchIp = v.ipAddress?.toLowerCase().includes(q);
@@ -104,12 +89,34 @@ export const LiveVisitorsDashboard: React.FC = () => {
     return `${mins}m ${secs}s (Chủ động ${activeSec}s)`;
   };
 
+  const getPersonaBadge = (persona: string | undefined) => {
+    switch (persona) {
+      case 'LUXURY_VIP':
+        return (
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-300 bg-amber-950/70 border border-amber-500/40 px-2.5 py-0.5 rounded-full shadow-sm">
+            <Sparkles size={11} /> VIP Limousine
+          </span>
+        );
+      case 'BUDGET_SAVING':
+        return (
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-300 bg-emerald-950/70 border border-emerald-500/40 px-2.5 py-0.5 rounded-full shadow-sm">
+            <Sparkles size={11} /> Tiết Kiệm
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-300 bg-cyan-950/70 border border-cyan-500/40 px-2.5 py-0.5 rounded-full shadow-sm">
+            <Sparkles size={11} /> Phổ Biến
+          </span>
+        );
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* Top Header Card */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/30 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+      {/* Top Header Banner */}
+      <div className="bg-gradient-to-r from-slate-900 via-indigo-950/80 to-slate-900 border border-indigo-500/30 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
@@ -118,18 +125,18 @@ export const LiveVisitorsDashboard: React.FC = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
               </span>
-              <span className="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
-                Realtime Visitor Monitor
+              <span className="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/70 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                Realtime Monitor
               </span>
               <span className="text-xs text-slate-400">
-                Cập nhật lúc: {data?.checkedAt ? new Date(data.checkedAt).toLocaleTimeString('vi-VN') : 'Đang tải...'}
+                Đồng bộ lúc: {data?.checkedAt ? new Date(data.checkedAt).toLocaleTimeString('vi-VN') : 'Đang tải...'}
               </span>
             </div>
-            <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
-              Khách Đang Trực Tuyến & Đề Xuất Thời Gian Thực
+            <h1 className="text-2xl font-black text-white tracking-tight">
+              Danh Sách Khách Đang Trực Tuyến
             </h1>
             <p className="text-sm text-slate-300 max-w-2xl mt-1">
-              Giám sát chính xác từng lượt truy cập, địa chỉ IP, trang hiện tại, thời gian tích cực và bộ máy đề xuất chuyến xe tự động.
+              Theo dõi trực quan danh sách khách hàng đang hiện diện trên trang web. Bấm vào bất kỳ khách nào để mở phòng giám sát Realtime chuyên sâu.
             </p>
           </div>
 
@@ -145,7 +152,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
               }`}
             >
               <Radio size={14} className={autoRefresh ? 'animate-pulse text-emerald-400' : ''} />
-              {autoRefresh ? 'Tự động quét (5s)' : 'Tự quét: Đang tắt'}
+              {autoRefresh ? 'Tự quét (5s)' : 'Tự quét: Tắt'}
             </button>
 
             {/* Time Window Select */}
@@ -177,7 +184,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           <div className="bg-slate-900/80 border border-white/10 rounded-xl p-4 flex items-center justify-between backdrop-blur-md">
             <div>
-              <p className="text-xs text-slate-400 uppercase font-semibold">Tổng khách Online</p>
+              <p className="text-xs text-slate-400 uppercase font-semibold">Tổng Khách Đang Online</p>
               <h3 className="text-3xl font-extrabold text-white mt-1">
                 {data?.totalOnline ?? 0}
               </h3>
@@ -189,7 +196,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
 
           <div className="bg-slate-900/80 border border-white/10 rounded-xl p-4 flex items-center justify-between backdrop-blur-md">
             <div>
-              <p className="text-xs text-emerald-400 uppercase font-semibold">Khách có tài khoản</p>
+              <p className="text-xs text-emerald-400 uppercase font-semibold">Khách Đã Đăng Nhập</p>
               <h3 className="text-3xl font-extrabold text-emerald-400 mt-1">
                 {data?.registeredOnline ?? 0}
               </h3>
@@ -201,7 +208,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
 
           <div className="bg-slate-900/80 border border-white/10 rounded-xl p-4 flex items-center justify-between backdrop-blur-md">
             <div>
-              <p className="text-xs text-amber-400 uppercase font-semibold">Khách vãng lai (Guest)</p>
+              <p className="text-xs text-amber-400 uppercase font-semibold">Khách Vãng Lai (Guest)</p>
               <h3 className="text-3xl font-extrabold text-amber-400 mt-1">
                 {data?.guestOnline ?? 0}
               </h3>
@@ -270,24 +277,25 @@ export const LiveVisitorsDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Visitors Table */}
-      <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md">
+      {/* Clean & Legible Visitors Table */}
+      <div className="bg-slate-900/70 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-slate-300">
             <thead className="text-xs uppercase bg-slate-950/80 text-slate-400 border-b border-slate-800 font-semibold tracking-wider">
               <tr>
-                <th className="px-5 py-4">IP & Thiết Bị (Bắt Buộc)</th>
+                <th className="px-5 py-4 w-12 text-center">Status</th>
+                <th className="px-5 py-4">Địa Chỉ IP & Thiết Bị (Bắt Buộc)</th>
                 <th className="px-5 py-4">Định Danh Khách Hàng</th>
-                <th className="px-5 py-4">Trang Đang Xem & Tương Tác</th>
-                <th className="px-5 py-4">Hành Động Gần Nhất</th>
-                <th className="px-5 py-4">Đang Đề Xuất Gì (AI Realtime)</th>
-                <th className="px-5 py-4 text-center">Thao Tác</th>
+                <th className="px-5 py-4">Trang Đang Xem</th>
+                <th className="px-5 py-4">Thời Gian Dừng (Dwell)</th>
+                <th className="px-5 py-4">Phân Khúc AI</th>
+                <th className="px-5 py-4 text-right">Chi Tiết Realtime</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-16 text-center text-slate-400">
+                  <td colSpan={7} className="px-6 py-16 text-center text-slate-400">
                     <div className="flex flex-col items-center justify-center gap-3">
                       <RefreshCw size={24} className="animate-spin text-indigo-500" />
                       <span>Đang quét các kết nối trực tuyến realtime...</span>
@@ -296,7 +304,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
                 </tr>
               ) : filteredVisitors.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-16 text-center text-slate-400">
+                  <td colSpan={7} className="px-6 py-16 text-center text-slate-400">
                     <div className="flex flex-col items-center justify-center gap-2">
                       <Users size={32} className="text-slate-600" />
                       <p className="font-semibold text-slate-300">Không có khách nào trực tuyến trong {timeWindow} phút qua</p>
@@ -308,14 +316,22 @@ export const LiveVisitorsDashboard: React.FC = () => {
                 filteredVisitors.map((visitor) => (
                   <tr 
                     key={visitor.sessionId}
-                    className="hover:bg-slate-800/40 transition-colors group cursor-pointer"
-                    onClick={() => setSelectedVisitor(visitor)}
+                    onClick={() => navigate(`/admin/live-visitors/${visitor.sessionId}`)}
+                    className="hover:bg-indigo-950/30 transition-all group cursor-pointer"
                   >
+                    {/* Status Pulse */}
+                    <td className="px-5 py-4 text-center align-middle">
+                      <span className="relative flex h-3 w-3 mx-auto" title="Đang trực tuyến">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                      </span>
+                    </td>
+
                     {/* 1. IP & Device */}
-                    <td className="px-5 py-4 align-top">
-                      <div className="space-y-1.5">
+                    <td className="px-5 py-4 align-middle">
+                      <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-bold text-cyan-300 bg-cyan-950/80 border border-cyan-500/30 px-2 py-0.5 rounded shadow-sm">
+                          <span className="font-mono text-xs font-black text-cyan-300 bg-cyan-950/80 border border-cyan-500/30 px-2 py-0.5 rounded shadow-sm">
                             {visitor.ipAddress || '127.0.0.1'}
                           </span>
                         </div>
@@ -327,7 +343,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
                           )}
                           <span>{visitor.deviceType || 'Desktop'}</span>
                           <span className="text-slate-600">•</span>
-                          <span className="text-[11px] text-slate-400 truncate max-w-[140px]" title={visitor.trafficSource}>
+                          <span className="text-[11px] text-slate-400 truncate max-w-[120px]" title={visitor.trafficSource}>
                             {visitor.trafficSource || 'Direct'}
                           </span>
                         </div>
@@ -335,117 +351,79 @@ export const LiveVisitorsDashboard: React.FC = () => {
                     </td>
 
                     {/* 2. Customer Identity */}
-                    <td className="px-5 py-4 align-top">
+                    <td className="px-5 py-4 align-middle">
                       {visitor.isRegisteredCustomer ? (
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-full">
-                              <UserCheck size={11} /> Thành viên
-                            </span>
-                            <span className="font-semibold text-white text-xs truncate max-w-[150px]">
-                              {visitor.customerName || 'Khách hàng'}
-                            </span>
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-indigo-600/20 border border-indigo-500/40 text-indigo-400 flex items-center justify-center font-bold text-xs shrink-0">
+                            {visitor.customerName?.charAt(0) || 'U'}
                           </div>
-                          <p className="text-xs text-slate-400 truncate max-w-[180px]">
-                            {visitor.customerEmail}
-                          </p>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-bold text-white text-xs truncate max-w-[160px]">
+                                {visitor.customerName}
+                              </span>
+                              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-1.5 py-0.2 rounded">
+                                Thành viên
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-400 truncate max-w-[180px]">
+                              {visitor.customerEmail}
+                            </p>
+                          </div>
                         </div>
                       ) : (
-                        <div className="space-y-1">
-                          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-300 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded-full">
-                            <UserX size={11} /> Khách vãng lai
-                          </span>
-                          <p className="font-mono text-[11px] text-slate-400 truncate max-w-[160px]" title={visitor.anonymousId}>
-                            {visitor.anonymousId}
-                          </p>
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 text-slate-400 flex items-center justify-center font-bold text-xs shrink-0">
+                            G
+                          </div>
+                          <div className="min-w-0">
+                            <span className="text-[10px] font-bold text-amber-300 bg-amber-950/80 border border-amber-500/30 px-1.5 py-0.2 rounded">
+                              Khách vãng lai
+                            </span>
+                            <p className="font-mono text-[11px] text-slate-400 truncate max-w-[150px] mt-0.5" title={visitor.anonymousId}>
+                              {visitor.anonymousId}
+                            </p>
+                          </div>
                         </div>
                       )}
                     </td>
 
-                    {/* 3. Current Page & Dwell */}
-                    <td className="px-5 py-4 align-top">
-                      <div className="space-y-1 max-w-[240px]">
-                        <p className="text-xs font-semibold text-white line-clamp-1" title={visitor.currentPageTitle}>
+                    {/* 3. Current Page */}
+                    <td className="px-5 py-4 align-middle">
+                      <div className="min-w-0 max-w-[220px]">
+                        <p className="text-xs font-semibold text-white truncate" title={visitor.currentPageTitle}>
                           {visitor.currentPageTitle || 'Trang đặt vé'}
                         </p>
-                        <p className="text-[11px] font-mono text-indigo-300 truncate" title={visitor.currentPageUrl}>
+                        <p className="text-[11px] font-mono text-indigo-300 truncate mt-0.5" title={visitor.currentPageUrl}>
                           {visitor.currentPageUrl || '/'}
                         </p>
-                        <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                          <Clock size={12} className="text-amber-400" />
-                          <span>{formatDwellTime(visitor.activeSecondsOnPage, visitor.idleSecondsOnPage)}</span>
-                        </div>
                       </div>
                     </td>
 
-                    {/* 4. Last Action */}
-                    <td className="px-5 py-4 align-top">
-                      <div className="space-y-1 max-w-[200px]">
-                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-purple-300 bg-purple-950/60 border border-purple-500/30 px-2 py-0.5 rounded">
-                          <MousePointerClick size={11} />
-                          {visitor.lastActionType || 'PAGE_VIEW'}
-                        </span>
-                        {visitor.lastActionPayload && (
-                          <p className="text-[11px] text-slate-400 truncate font-mono bg-slate-950/60 px-1.5 py-0.5 rounded" title={visitor.lastActionPayload}>
-                            {visitor.lastActionPayload}
-                          </p>
-                        )}
-                        <p className="text-[10px] text-slate-500">
-                          {visitor.lastActivityTime ? new Date(visitor.lastActivityTime).toLocaleTimeString('vi-VN') : 'Vừa xong'}
-                        </p>
+                    {/* 4. Dwell Time */}
+                    <td className="px-5 py-4 align-middle">
+                      <div className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
+                        <Clock size={13} className="text-amber-400 shrink-0" />
+                        <span>{formatDwellTime(visitor.activeSecondsOnPage, visitor.idleSecondsOnPage)}</span>
                       </div>
                     </td>
 
-                    {/* 5. Live AI Recommendation */}
-                    <td className="px-5 py-4 align-top">
-                      <div className="space-y-1.5 max-w-[250px]">
-                        <div className="flex items-center gap-1.5">
-                          <Sparkles size={12} className="text-cyan-400" />
-                          <span className="text-xs font-bold text-cyan-300">
-                            {visitor.matchedPersona || 'Khách tìm chuyến nhanh'}
-                          </span>
-                        </div>
-                        {visitor.recommendedTrips && visitor.recommendedTrips.length > 0 ? (
-                          <div className="space-y-1">
-                            {visitor.recommendedTrips.slice(0, 2).map((trip, idx) => (
-                              <div key={idx} className="bg-slate-950/80 border border-indigo-500/20 rounded p-1.5 text-[11px] text-slate-300">
-                                <div className="flex items-center justify-between font-semibold text-white">
-                                  <span className="truncate max-w-[130px]">{trip.route}</span>
-                                  <span className="text-emerald-400">{trip.price}</span>
-                                </div>
-                                <div className="text-[10px] text-slate-400 flex items-center justify-between mt-0.5">
-                                  <span>{trip.departureTime}</span>
-                                  <span className="text-indigo-300">{trip.vehicleType}</span>
-                                </div>
-                              </div>
-                            ))}
-                            {visitor.recommendedTrips.length > 2 && (
-                              <p className="text-[10px] text-indigo-400 italic">
-                                + {visitor.recommendedTrips.length - 2} chuyến khác...
-                              </p>
-                            )}
-                          </div>
-                        ) : (
-                          <p className="text-[11px] text-slate-500 italic">
-                            Chưa đủ hành vi để gợi ý
-                          </p>
-                        )}
-                      </div>
+                    {/* 5. Persona */}
+                    <td className="px-5 py-4 align-middle">
+                      {getPersonaBadge(visitor.matchedPersona)}
                     </td>
 
-                    {/* 6. Quick Action */}
-                    <td className="px-5 py-4 align-middle text-center" onClick={(e) => e.stopPropagation()}>
+                    {/* 6. Action Button */}
+                    <td className="px-5 py-4 align-middle text-right">
                       <button
-                        onClick={() => {
-                          const id = visitor.isRegisteredCustomer 
-                            ? (visitor.customerEmail || visitor.anonymousId) 
-                            : visitor.anonymousId;
-                          navigate(`/admin/behavior-analytics?id=${encodeURIComponent(id)}`);
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/admin/live-visitors/${visitor.sessionId}`);
                         }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 hover:border-indigo-500 text-indigo-300 hover:text-white rounded-lg text-xs font-semibold transition-all group-hover:scale-105"
-                        title="Xem toàn bộ lịch sử hành trình của khách này"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-600/30 hover:bg-indigo-600 border border-indigo-500/40 hover:border-indigo-500 text-indigo-300 hover:text-white rounded-xl text-xs font-bold transition-all shadow-md group-hover:scale-105"
                       >
-                        <span>Hành trình</span>
+                        <Eye size={13} />
+                        <span>Giám sát realtime</span>
                         <ArrowRight size={13} />
                       </button>
                     </td>
@@ -456,148 +434,6 @@ export const LiveVisitorsDashboard: React.FC = () => {
           </table>
         </div>
       </div>
-
-      {/* Visitor Detail Modal / Popover */}
-      {selectedVisitor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
-          <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl relative p-6 custom-scrollbar">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
-                  <Activity size={20} />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">Chi Tiết Kết Nối Trực Tuyến</h3>
-                  <p className="text-xs text-slate-400 font-mono">Session ID: {selectedVisitor.sessionId}</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setSelectedVisitor(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Visitor Detail Info */}
-            <div className="space-y-5">
-              {/* Identity & Network Grid */}
-              <div className="grid grid-cols-2 gap-3 bg-slate-950/70 p-4 rounded-xl border border-slate-800">
-                <div>
-                  <span className="text-[11px] text-slate-400 uppercase font-semibold">Địa chỉ IP (Bắt buộc)</span>
-                  <p className="font-mono text-sm font-bold text-cyan-300 mt-0.5">{selectedVisitor.ipAddress}</p>
-                </div>
-                <div>
-                  <span className="text-[11px] text-slate-400 uppercase font-semibold">Loại khách</span>
-                  <p className="text-sm font-bold text-white mt-0.5">
-                    {selectedVisitor.isRegisteredCustomer ? (
-                      <span className="text-emerald-400">Thành viên ({selectedVisitor.customerEmail})</span>
-                    ) : (
-                      <span className="text-amber-400">Khách vãng lai</span>
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-[11px] text-slate-400 uppercase font-semibold">Anonymous ID</span>
-                  <p className="font-mono text-xs text-slate-300 mt-0.5 truncate">{selectedVisitor.anonymousId}</p>
-                </div>
-                <div>
-                  <span className="text-[11px] text-slate-400 uppercase font-semibold">Thiết bị & Nguồn</span>
-                  <p className="text-xs text-slate-300 mt-0.5">
-                    {selectedVisitor.deviceType} • {selectedVisitor.trafficSource || 'Direct'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Current Page & Activity */}
-              <div className="bg-slate-950/70 p-4 rounded-xl border border-slate-800 space-y-3">
-                <span className="text-[11px] text-indigo-400 uppercase font-bold tracking-wider">
-                  Trang Đang Duyệt & Thời Gian Dừng
-                </span>
-                <div className="space-y-1">
-                  <p className="text-sm font-bold text-white">{selectedVisitor.currentPageTitle || 'Không rõ tiêu đề'}</p>
-                  <p className="text-xs font-mono text-indigo-300 break-all">{selectedVisitor.currentPageUrl || '/'}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/80 text-xs text-slate-300">
-                  <div>
-                    <span className="text-slate-500">Thời gian chủ động:</span>{' '}
-                    <span className="font-semibold text-emerald-400">{selectedVisitor.activeSecondsOnPage}s</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500">Thời gian dừng (Idle):</span>{' '}
-                    <span className="font-semibold text-amber-400">{selectedVisitor.idleSecondsOnPage}s</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* AI Realtime Recommendations */}
-              <div className="bg-slate-950/70 p-4 rounded-xl border border-slate-800 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-cyan-400 uppercase font-bold tracking-wider flex items-center gap-1.5">
-                    <Sparkles size={13} />
-                    Đề Xuất Thời Gian Thực (AI Engine)
-                  </span>
-                  <span className="text-xs bg-cyan-950 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded-full font-semibold">
-                    {selectedVisitor.matchedPersona}
-                  </span>
-                </div>
-
-                {selectedVisitor.recommendedTrips && selectedVisitor.recommendedTrips.length > 0 ? (
-                  <div className="space-y-2">
-                    {selectedVisitor.recommendedTrips.map((trip, idx) => (
-                      <div key={idx} className="bg-slate-900 border border-indigo-500/30 p-3 rounded-lg flex items-center justify-between">
-                        <div>
-                          <p className="text-xs font-bold text-white flex items-center gap-2">
-                            <Bus size={14} className="text-indigo-400" />
-                            {trip.route}
-                          </p>
-                          <p className="text-[11px] text-slate-400 mt-0.5">
-                            Khởi hành: {trip.departureTime} • Loại xe: {trip.vehicleType}
-                          </p>
-                        </div>
-                        <span className="text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2.5 py-1 rounded">
-                          {trip.price}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs text-slate-500 italic">Chưa có chuyến xe nào được tạo đề xuất cho phiên này.</p>
-                )}
-              </div>
-
-              {/* User Agent Raw */}
-              <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
-                <span className="text-[10px] text-slate-500 uppercase font-semibold">User Agent</span>
-                <p className="font-mono text-[10px] text-slate-400 break-all mt-1">{selectedVisitor.userAgent}</p>
-              </div>
-
-              {/* Action buttons */}
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  onClick={() => setSelectedVisitor(null)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold"
-                >
-                  Đóng
-                </button>
-                <button
-                  onClick={() => {
-                    const id = selectedVisitor.isRegisteredCustomer 
-                      ? (selectedVisitor.customerEmail || selectedVisitor.anonymousId) 
-                      : selectedVisitor.anonymousId;
-                    navigate(`/admin/behavior-analytics?id=${encodeURIComponent(id)}`);
-                  }}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 flex items-center gap-1.5"
-                >
-                  <span>Khám phá toàn bộ hành trình</span>
-                  <ArrowRight size={14} />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

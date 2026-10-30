@@ -129,6 +129,29 @@ export interface LiveVisitorDto {
   recommendedTrips?: LiveRecommendedTripDto[];
 }
 
+export interface SessionPageViewDto {
+  id: string;
+  pageUrl: string;
+  pageTitle: string;
+  enteredAt: string;
+  activeSeconds: number;
+  idleSeconds: number;
+}
+
+export interface SessionActionDto {
+  id: string;
+  actionType: string;
+  payload: string;
+  createdAt: string;
+}
+
+export interface LiveVisitorDetailDto {
+  visitor: LiveVisitorDto;
+  isOnline: boolean;
+  pageViews: SessionPageViewDto[];
+  actions: SessionActionDto[];
+}
+
 export interface LiveVisitorsSummaryResponse {
   totalOnline: number;
   registeredOnline: number;
@@ -175,6 +198,11 @@ export const trackingService = {
 
   getLiveVisitors: async (minutes = 5): Promise<LiveVisitorsSummaryResponse> => {
     const res = await api.get(`/admin/tracking/live-visitors?minutes=${minutes}`);
+    return res.data?.data;
+  },
+
+  getLiveVisitorDetail: async (sessionId: string): Promise<LiveVisitorDetailDto> => {
+    const res = await api.get(`/admin/tracking/live-visitors/${sessionId}`);
     return res.data?.data;
   },
 
