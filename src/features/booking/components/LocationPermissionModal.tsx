@@ -65,7 +65,7 @@ export const LocationPermissionModal: React.FC<LocationPermissionModalProps> = (
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 max-w-md w-[calc(100vw-3rem)] animate-in fade-in slide-in-from-bottom-6 duration-500">
+    <div className="fixed bottom-6 left-4 sm:left-6 z-40 max-w-sm sm:max-w-md w-[calc(100vw-2rem)] sm:w-[420px] animate-in fade-in slide-in-from-bottom-6 duration-500">
       <div className="relative rounded-3xl bg-slate-950/90 backdrop-blur-2xl border border-cyan-500/40 p-6 shadow-2xl shadow-cyan-950/50 text-slate-100 overflow-hidden">
         
         {/* Glow ambient background */}
