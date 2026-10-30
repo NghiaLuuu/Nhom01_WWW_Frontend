@@ -400,6 +400,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
 
           {/* Journey Header Profile Card */}
           {selectedJourney && (() => {
+            const isRegistered = Boolean(selectedJourney.isRegisteredCustomer || (selectedJourney as any).registeredCustomer);
             const journeysList: JourneyClusterDto[] = selectedJourney.journeys || [];
             const activeCluster = journeysList.find(j => j.journeyId === selectedClusterId);
             const displayEvents = (selectedClusterId === 'ALL' || !activeCluster)
@@ -410,7 +411,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
               <div className="p-6 rounded-3xl bg-white border border-gray-200 shadow-sm space-y-6">
                 
                 {/* 1. Customer Identity Stitching Banner */}
-                {selectedJourney.isRegisteredCustomer ? (
+                {isRegistered ? (
                   <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-blue-500/10 to-indigo-500/10 border border-emerald-500/20 flex flex-col md:flex-row md:items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-600 flex items-center justify-center">
