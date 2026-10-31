@@ -74,6 +74,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .brand-logo {
@@ -88,6 +89,7 @@ body {
   font-size: 16px;
   color: #070b14;
   box-shadow: 0 0 16px var(--accent-cyan-glow);
+  flex-shrink: 0;
 }
 
 .brand-title {
@@ -95,6 +97,7 @@ body {
   font-weight: 800;
   letter-spacing: -0.01em;
   color: #fff;
+  white-space: nowrap;
 }
 
 .brand-subtitle {
@@ -102,12 +105,14 @@ body {
   color: var(--accent-cyan);
   font-family: var(--font-mono);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .nav-controls {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .slide-indicator {
@@ -122,6 +127,8 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .slide-select {
@@ -135,6 +142,9 @@ body {
   cursor: pointer;
   outline: none;
   font-family: var(--font-sans);
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: 220px;
 }
 
 .slide-select:focus {
@@ -154,6 +164,33 @@ body {
   align-items: center;
   gap: 6px;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1200px) {
+  .brand-subtitle {
+    display: none;
+  }
+  .top-nav {
+    padding: 0 14px;
+  }
+  .nav-controls {
+    gap: 6px;
+  }
+  .btn-nav {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  .slide-select {
+    max-width: 170px;
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+  .slide-indicator {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
 }
 
 .btn-nav:hover {
