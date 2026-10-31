@@ -67,7 +67,7 @@ export const AdminLoginPage: React.FC = () => {
   return (
     <div className="min-h-screen w-full relative flex items-center justify-center bg-slate-950 font-sans selection:bg-cyan-500/30 overflow-hidden px-4">
       {/* Futuristic Background Accents */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      <div aria-hidden="true" className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Subtle Cyber Grid */}
         <div 
           className="absolute inset-0 opacity-15"
