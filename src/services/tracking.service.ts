@@ -111,6 +111,10 @@ export interface LiveVisitorDto {
   anonymousId: string;
   customerId?: string;
   isRegisteredCustomer: boolean;
+  onlineStatus?: 'ONLINE' | 'IDLE' | 'OFFLINE';
+  isOnline?: boolean;
+  offlineSeconds?: number;
+  statusLabel?: string;
   customerName?: string;
   customerEmail?: string;
   ipAddress: string;
@@ -154,6 +158,8 @@ export interface LiveVisitorDetailDto {
 
 export interface LiveVisitorsSummaryResponse {
   totalOnline: number;
+  totalIdle?: number;
+  totalOffline?: number;
   registeredOnline: number;
   guestOnline: number;
   checkedAt: string;

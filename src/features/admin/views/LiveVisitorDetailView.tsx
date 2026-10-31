@@ -114,7 +114,7 @@ export const LiveVisitorDetailView: React.FC = () => {
         <h2 className="text-xl font-bold text-white">Không tìm thấy thông tin phiên trực tuyến</h2>
         <p className="text-sm text-slate-400">Phiên này có thể đã kết thúc hoặc không tồn tại.</p>
         <button
-          onClick={() => navigate('/admin/live-visitors')}
+          onClick={() => navigate('/admin/tracking?tab=live')}
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-indigo-600/30"
         >
           <ArrowLeft size={14} />
@@ -137,13 +137,13 @@ export const LiveVisitorDetailView: React.FC = () => {
           <div className="flex items-center gap-2 text-xs text-slate-400">
             <Link to="/admin" className="hover:text-white transition-colors">Admin</Link>
             <span>/</span>
-            <Link to="/admin/live-visitors" className="hover:text-white transition-colors">Khách Đang Online</Link>
+            <Link to="/admin/tracking?tab=live" className="hover:text-white transition-colors">Giám Sát Khách</Link>
             <span>/</span>
             <span className="text-indigo-400 font-mono">Session #{sessionId?.substring(0, 8)}</span>
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate('/admin/live-visitors')}
+              onClick={() => navigate('/admin/tracking?tab=live')}
               className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors shrink-0"
               title="Quay lại danh sách"
             >
@@ -281,7 +281,7 @@ export const LiveVisitorDetailView: React.FC = () => {
                     const id = v.isRegisteredCustomer 
                       ? (v.customerEmail || v.anonymousId) 
                       : v.anonymousId;
-                    navigate(`/admin/behavior-analytics?id=${encodeURIComponent(id)}`);
+                    navigate(`/admin/tracking?tab=journey&id=${encodeURIComponent(id)}`);
                   }}
                   className="w-full py-2.5 px-3 bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 hover:border-indigo-500 text-indigo-300 hover:text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 group cursor-pointer"
                 >

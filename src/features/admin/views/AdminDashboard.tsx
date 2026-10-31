@@ -100,7 +100,7 @@ export const AdminDashboard: React.FC = () => {
       title: 'Khách Đang Online',
       desc: 'Giám sát phiên truy cập trực tiếp & vị trí GPS',
       icon: Radio,
-      path: '/admin/live-visitors',
+      path: '/admin/tracking?tab=live',
       color: 'from-emerald-500/20 to-teal-600/20',
       border: 'hover:border-emerald-500/50',
       iconColor: 'text-emerald-400',
@@ -110,7 +110,7 @@ export const AdminDashboard: React.FC = () => {
       title: 'Hành Vi & AI Persona',
       desc: 'Hành trình Commuter Habit, VIP Limousine, Sinh viên',
       icon: Activity,
-      path: '/admin/behavior-analytics',
+      path: '/admin/tracking?tab=overview',
       color: 'from-purple-500/20 to-pink-600/20',
       border: 'hover:border-purple-500/50',
       iconColor: 'text-purple-400',
@@ -214,7 +214,7 @@ export const AdminDashboard: React.FC = () => {
             </button>
 
             <Link
-              to="/admin/live-visitors"
+              to="/admin/tracking?tab=live"
               className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 hover:text-white font-medium text-xs flex items-center gap-2 transition-colors"
             >
               <Eye size={14} className="text-emerald-400" />
@@ -291,7 +291,7 @@ export const AdminDashboard: React.FC = () => {
           </div>
           <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
             <span>Tracking tự động</span>
-            <Link to="/admin/live-visitors" className="text-emerald-400 hover:underline flex items-center gap-0.5">
+            <Link to="/admin/tracking?tab=live" className="text-emerald-400 hover:underline flex items-center gap-0.5">
               <span>Chi tiết</span>
               <ArrowUpRight size={11} />
             </Link>

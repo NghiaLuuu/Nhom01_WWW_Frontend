@@ -21,6 +21,7 @@ import { TicketManagement } from './features/admin/views/TicketManagement';
 import { UserBehaviorAnalytics } from './features/admin/views/UserBehaviorAnalytics';
 import { LiveVisitorsDashboard } from './features/admin/views/LiveVisitorsDashboard';
 import { LiveVisitorDetailView } from './features/admin/views/LiveVisitorDetailView';
+import { UserTrackingHub } from './features/admin/views/UserTrackingHub';
 import { AdminDashboard } from './features/admin/views/AdminDashboard';
 import { AboutPage } from './features/public/views/AboutPage';
 import { AchievementsPage } from './features/public/views/AchievementsPage';
@@ -86,9 +87,11 @@ function App() {
           <Route path="vehicles-drivers" element={<VehicleManagement />} />
           <Route path="audit-logs" element={<AuditLogManagement />} />
           <Route path="profile" element={<AdminProfilePage />} />
-          <Route path="live-visitors" element={<LiveVisitorsDashboard />} />
+          <Route path="tracking" element={<UserTrackingHub />} />
+          <Route path="tracking/:sessionId" element={<LiveVisitorDetailView />} />
+          <Route path="live-visitors" element={<Navigate to="/admin/tracking?tab=live" replace />} />
           <Route path="live-visitors/:sessionId" element={<LiveVisitorDetailView />} />
-          <Route path="behavior-analytics" element={<UserBehaviorAnalytics />} />
+          <Route path="behavior-analytics" element={<Navigate to="/admin/tracking?tab=overview" replace />} />
           
           {/* Catch all inside admin */}
           <Route path="*" element={
