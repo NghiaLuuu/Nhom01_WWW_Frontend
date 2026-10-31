@@ -6,20 +6,9 @@ import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
 import { Plus, MapPin, Navigation, Clock, Search, ArrowRight, Route as RouteIcon, TrendingUp, Compass } from 'lucide-react';
 
-const MOCK_FALLBACK_ROUTES: Route[] = [
-  { id: 1, departureLocation: 'Sài Gòn (Bến Miền Đông)', arrivalLocation: 'Phú Yên (Tuy Hòa)', distance: 520, duration: 10, basePrice: 320000 },
-  { id: 2, departureLocation: 'Sài Gòn (Bến Miền Tây)', arrivalLocation: 'Đà Lạt (Lâm Đồng)', distance: 310, duration: 7, basePrice: 280000 },
-  { id: 3, departureLocation: 'Sài Gòn (Miền Đông Mới)', arrivalLocation: 'Nha Trang (Khánh Hòa)', distance: 430, duration: 8.5, basePrice: 300000 },
-  { id: 4, departureLocation: 'Hà Nội (Bến Mỹ Đình)', arrivalLocation: 'Sa Pa (Lào Cai)', distance: 320, duration: 6, basePrice: 350000 },
-  { id: 5, departureLocation: 'Đà Nẵng (Bến Trung Tâm)', arrivalLocation: 'Quy Nhơn (Bình Định)', distance: 305, duration: 6.5, basePrice: 240000 },
-  { id: 6, departureLocation: 'Cần Thơ (Bến Trung Tâm)', arrivalLocation: 'Sài Gòn (Bến Miền Tây)', distance: 165, duration: 3.5, basePrice: 180000 },
-  { id: 7, departureLocation: 'Sài Gòn (Bến Miền Đông)', arrivalLocation: 'Buôn Ma Thuột (Đắk Lắk)', distance: 350, duration: 8, basePrice: 270000 },
-  { id: 8, departureLocation: 'Hà Nội (Bến Nước Ngầm)', arrivalLocation: 'Đà Nẵng (Bến Trung Tâm)', distance: 760, duration: 14, basePrice: 480000 }
-];
-
 export const RouteManagement: React.FC = () => {
-  const [routes, setRoutes] = useState<Route[]>(MOCK_FALLBACK_ROUTES);
-  const [isLoading, setIsLoading] = useState(false);
+  const [routes, setRoutes] = useState<Route[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRoute, setEditingRoute] = useState<Route | null>(null);
 
@@ -38,14 +27,15 @@ export const RouteManagement: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await RouteService.getAll();
-      if (res?.success && res.data?.length > 0) {
+      if (res?.success && Array.isArray(res.data)) {
         setRoutes(res.data);
       } else {
-        setRoutes(MOCK_FALLBACK_ROUTES);
+        setRoutes([]);
       }
-    } catch {
-      // Graceful fallback to mock routes without throwing red toasts
-      setRoutes(MOCK_FALLBACK_ROUTES);
+    } catch (error) {
+      console.error('Lỗi tải danh sách tuyến đường:', error);
+      toast.error('Không thể kết nối đến máy chủ lấy danh sách tuyến đường.');
+      setRoutes([]);
     } finally {
       setIsLoading(false);
     }

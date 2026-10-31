@@ -8,96 +8,11 @@ import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
 import { Plus, Bus, Clock, Search, Filter, CheckCircle2, PlayCircle, XCircle } from 'lucide-react';
 
-const MOCK_FALLBACK_ROUTES: Route[] = [
-  { id: 1, departureLocation: 'Sài Gòn', arrivalLocation: 'Phú Yên', distance: 520, duration: 10, basePrice: 320000 },
-  { id: 2, departureLocation: 'Sài Gòn', arrivalLocation: 'Đà Lạt', distance: 310, duration: 7, basePrice: 280000 },
-  { id: 3, departureLocation: 'Sài Gòn', arrivalLocation: 'Nha Trang', distance: 430, duration: 8, basePrice: 300000 },
-  { id: 4, departureLocation: 'Hà Nội', arrivalLocation: 'Sa Pa', distance: 320, duration: 6, basePrice: 350000 },
-  { id: 5, departureLocation: 'Đà Nẵng', arrivalLocation: 'Quy Nhơn', distance: 305, duration: 6, basePrice: 240000 },
-  { id: 6, departureLocation: 'Cần Thơ', arrivalLocation: 'Sài Gòn', distance: 165, duration: 3, basePrice: 180000 },
-];
-
-const MOCK_FALLBACK_VEHICLES: Vehicle[] = [
-  { id: 1, licensePlate: '51B-891.22', capacity: 34 },
-  { id: 2, licensePlate: '51B-942.18', capacity: 22 },
-  { id: 3, licensePlate: '49B-772.09', capacity: 34 },
-  { id: 4, licensePlate: '79B-663.15', capacity: 22 },
-  { id: 5, licensePlate: '29B-512.44', capacity: 34 },
-  { id: 6, licensePlate: '43B-338.90', capacity: 40 },
-];
-
-const MOCK_FALLBACK_TRIPS: Trip[] = [
-  {
-    id: 101,
-    route: MOCK_FALLBACK_ROUTES[0],
-    vehicle: MOCK_FALLBACK_VEHICLES[0],
-    departureTime: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
-    price: 350000,
-    status: 'RUNNING'
-  },
-  {
-    id: 102,
-    route: MOCK_FALLBACK_ROUTES[1],
-    vehicle: MOCK_FALLBACK_VEHICLES[1],
-    departureTime: new Date(Date.now() + 4 * 3600 * 1000).toISOString(),
-    price: 320000,
-    status: 'PENDING'
-  },
-  {
-    id: 103,
-    route: MOCK_FALLBACK_ROUTES[2],
-    vehicle: MOCK_FALLBACK_VEHICLES[2],
-    departureTime: new Date(Date.now() + 6 * 3600 * 1000).toISOString(),
-    price: 340000,
-    status: 'RUNNING'
-  },
-  {
-    id: 104,
-    route: MOCK_FALLBACK_ROUTES[3],
-    vehicle: MOCK_FALLBACK_VEHICLES[4],
-    departureTime: new Date(Date.now() + 8 * 3600 * 1000).toISOString(),
-    price: 380000,
-    status: 'PENDING'
-  },
-  {
-    id: 105,
-    route: MOCK_FALLBACK_ROUTES[4],
-    vehicle: MOCK_FALLBACK_VEHICLES[3],
-    departureTime: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
-    price: 260000,
-    status: 'COMPLETED'
-  },
-  {
-    id: 106,
-    route: MOCK_FALLBACK_ROUTES[5],
-    vehicle: MOCK_FALLBACK_VEHICLES[5],
-    departureTime: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
-    price: 190000,
-    status: 'COMPLETED'
-  },
-  {
-    id: 107,
-    route: MOCK_FALLBACK_ROUTES[0],
-    vehicle: MOCK_FALLBACK_VEHICLES[1],
-    departureTime: new Date(Date.now() + 14 * 3600 * 1000).toISOString(),
-    price: 370000,
-    status: 'PENDING'
-  },
-  {
-    id: 108,
-    route: MOCK_FALLBACK_ROUTES[2],
-    vehicle: MOCK_FALLBACK_VEHICLES[0],
-    departureTime: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
-    price: 320000,
-    status: 'CANCELLED'
-  }
-];
-
 export const TripManagement: React.FC = () => {
-  const [trips, setTrips] = useState<Trip[]>(MOCK_FALLBACK_TRIPS);
-  const [routes, setRoutes] = useState<Route[]>(MOCK_FALLBACK_ROUTES);
-  const [vehicles, setVehicles] = useState<Vehicle[]>(MOCK_FALLBACK_VEHICLES);
-  const [isLoading, setIsLoading] = useState(false);
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [routes, setRoutes] = useState<Route[]>([]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
 
@@ -122,18 +37,15 @@ export const TripManagement: React.FC = () => {
         VehicleService.getAll()
       ]);
       
-      const loadedTrips = tripsRes?.success && tripsRes.data?.length > 0 ? tripsRes.data : MOCK_FALLBACK_TRIPS;
-      const loadedRoutes = routesRes?.success && routesRes.data?.length > 0 ? routesRes.data : MOCK_FALLBACK_ROUTES;
-      const loadedVehicles = vehiclesRes?.success && vehiclesRes.data?.length > 0 ? vehiclesRes.data : MOCK_FALLBACK_VEHICLES;
-
-      setTrips(loadedTrips);
-      setRoutes(loadedRoutes);
-      setVehicles(loadedVehicles);
-    } catch {
-      // Graceful fallback to rich mock data, avoiding disruptive red error toasts
-      setTrips(MOCK_FALLBACK_TRIPS);
-      setRoutes(MOCK_FALLBACK_ROUTES);
-      setVehicles(MOCK_FALLBACK_VEHICLES);
+      setTrips(tripsRes?.success && Array.isArray(tripsRes.data) ? tripsRes.data : []);
+      setRoutes(routesRes?.success && Array.isArray(routesRes.data) ? routesRes.data : []);
+      setVehicles(vehiclesRes?.success && Array.isArray(vehiclesRes.data) ? vehiclesRes.data : []);
+    } catch (error) {
+      console.error('Lỗi tải dữ liệu chuyến xe:', error);
+      toast.error('Không thể kết nối đến máy chủ lấy dữ liệu chuyến xe.');
+      setTrips([]);
+      setRoutes([]);
+      setVehicles([]);
     } finally {
       setIsLoading(false);
     }

@@ -7,104 +7,12 @@ import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
 import { Plus, Users, UserCheck, Search, Shield, KeyRound, Lock, Unlock, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
 
-const MOCK_FALLBACK_ROLES: Role[] = [
-  { id: 1, name: 'ROLE_ADMIN', description: 'Toàn quyền quản trị hệ thống' },
-  { id: 2, name: 'ROLE_STAFF', description: 'Nhân viên điều phối & quản lý vé' }
-];
-
-const MOCK_FALLBACK_STAFFS: User[] = [
-  {
-    id: 'u1',
-    staffCode: 'NV-001',
-    fullName: 'Lưu Trung Nghĩa',
-    email: 'admin@vexe.vn',
-    status: 'ACTIVE',
-    role: { id: 1, name: 'ROLE_ADMIN', description: 'Admin VEXE' },
-    permissions: ['TRIP_MANAGE', 'MANAGE_TICKET', 'ROUTE_MANAGE', 'STAFF_MANAGE']
-  },
-  {
-    id: 'u2',
-    staffCode: 'NV-002',
-    fullName: 'Trần Văn Hoàng',
-    email: 'hoang.tran@vexe.vn',
-    status: 'ACTIVE',
-    role: { id: 2, name: 'ROLE_STAFF', description: 'Điều Phối Viên' },
-    permissions: ['TRIP_MANAGE', 'ROUTE_MANAGE']
-  },
-  {
-    id: 'u3',
-    staffCode: 'NV-003',
-    fullName: 'Nguyễn Thị Bích',
-    email: 'bich.nguyen@vexe.vn',
-    status: 'ACTIVE',
-    role: { id: 2, name: 'ROLE_STAFF', description: 'Nhân Viên Soát Vé POS' },
-    permissions: ['MANAGE_TICKET', 'TICKET_MANAGE']
-  },
-  {
-    id: 'u4',
-    staffCode: 'NV-004',
-    fullName: 'Lê Minh Tuấn',
-    email: 'tuan.le@vexe.vn',
-    status: 'ACTIVE',
-    role: { id: 2, name: 'ROLE_STAFF', description: 'Hỗ Trợ Khách Hàng' },
-    permissions: ['CUSTOMER_MANAGE', 'VIEW_STATISTICS']
-  },
-  {
-    id: 'u5',
-    staffCode: 'NV-005',
-    fullName: 'Phạm Đức Trọng',
-    email: 'trong.pham@vexe.vn',
-    status: 'LOCKED',
-    role: { id: 2, name: 'ROLE_STAFF', description: 'Nhân Viên Kỹ Thuật' },
-    permissions: ['VEHICLE_MANAGE']
-  }
-];
-
-const MOCK_FALLBACK_CUSTOMERS: User[] = [
-  {
-    id: 'c1',
-    fullName: 'Lưu Trung Nghĩa (Hành Khách)',
-    email: 'luutrungnghia19012003@gmail.com',
-    status: 'ACTIVE'
-  },
-  {
-    id: 'c2',
-    fullName: 'Nguyễn Văn An',
-    email: 'an.nguyen@gmail.com',
-    status: 'ACTIVE'
-  },
-  {
-    id: 'c3',
-    fullName: 'Trần Thị Mai',
-    email: 'maitran@gmail.com',
-    status: 'ACTIVE'
-  },
-  {
-    id: 'c4',
-    fullName: 'Lê Hoàng Long',
-    email: 'long.le@yahoo.com',
-    status: 'ACTIVE'
-  },
-  {
-    id: 'c5',
-    fullName: 'Phạm Quỳnh Anh',
-    email: 'quynhanh.pham@outlook.com',
-    status: 'ACTIVE'
-  },
-  {
-    id: 'c6',
-    fullName: 'Đặng Quốc Huy',
-    email: 'huy.dang@company.vn',
-    status: 'LOCKED'
-  }
-];
-
 export const UserManagement: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'STAFF' | 'CUSTOMER'>('STAFF');
-  const [staffs, setStaffs] = useState<User[]>(MOCK_FALLBACK_STAFFS);
-  const [customers, setCustomers] = useState<User[]>(MOCK_FALLBACK_CUSTOMERS);
-  const [roles, setRoles] = useState<Role[]>(MOCK_FALLBACK_ROLES);
-  const [isLoading, setIsLoading] = useState(false);
+  const [staffs, setStaffs] = useState<User[]>([]);
+  const [customers, setCustomers] = useState<User[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const AVAILABLE_PERMISSIONS = [
     { id: 'TRIP_MANAGE', label: 'Quản lý chuyến xe' },
@@ -136,18 +44,19 @@ export const UserManagement: React.FC = () => {
     setIsLoading(true);
     try {
       const [staffsRes, customersRes, rolesRes] = await Promise.all([
-        UserService.getStaffs().catch(() => ({ success: false, data: [] })),
-        UserService.getCustomers().catch(() => ({ success: false, data: [] })),
-        RoleService.getAll().catch(() => ({ success: false, data: [] }))
+        UserService.getStaffs(),
+        UserService.getCustomers(),
+        RoleService.getAll()
       ]);
-      setStaffs(staffsRes?.success && staffsRes.data?.length > 0 ? staffsRes.data : MOCK_FALLBACK_STAFFS);
-      setCustomers(customersRes?.success && customersRes.data?.length > 0 ? customersRes.data : MOCK_FALLBACK_CUSTOMERS);
-      setRoles(rolesRes?.success && rolesRes.data?.length > 0 ? rolesRes.data : MOCK_FALLBACK_ROLES);
-    } catch {
-      // Graceful fallback without throwing red toasts
-      setStaffs(MOCK_FALLBACK_STAFFS);
-      setCustomers(MOCK_FALLBACK_CUSTOMERS);
-      setRoles(MOCK_FALLBACK_ROLES);
+      setStaffs(staffsRes?.success && Array.isArray(staffsRes.data) ? staffsRes.data : []);
+      setCustomers(customersRes?.success && Array.isArray(customersRes.data) ? customersRes.data : []);
+      setRoles(rolesRes?.success && Array.isArray(rolesRes.data) ? rolesRes.data : []);
+    } catch (error) {
+      console.error('Lỗi tải dữ liệu người dùng:', error);
+      toast.error('Không thể kết nối đến máy chủ lấy dữ liệu người dùng.');
+      setStaffs([]);
+      setCustomers([]);
+      setRoles([]);
     } finally {
       setIsLoading(false);
     }

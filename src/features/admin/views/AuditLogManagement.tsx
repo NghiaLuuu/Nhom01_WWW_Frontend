@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import toast from 'react-hot-toast';
 import { AuditLogService, type AuditLog, type PageResponse } from '../../../services/auditlog.service';
 import { 
   Shield, 
@@ -30,126 +31,9 @@ const ACTION_LABELS: Record<string, string> = {
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50];
 
-const MOCK_FALLBACK_LOGS: AuditLog[] = [
-  {
-    id: 'log-01',
-    userId: 'usr-admin-01',
-    userEmail: 'admin@vexe.vn',
-    action: 'UPDATE',
-    entityName: 'Trip',
-    entityId: 'trip-sg-py-2026',
-    oldValues: { status: 'SCHEDULED', availableSeats: 32, price: 280000 },
-    newValues: { status: 'BOARDING', availableSeats: 2, price: 280000 },
-    ipAddress: '118.69.182.45',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0.0.0',
-    endpoint: '/api/v1/trips/trip-sg-py-2026/status',
-    createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString()
-  },
-  {
-    id: 'log-02',
-    userId: 'usr-staff-02',
-    userEmail: 'hoang.tran@vexe.vn',
-    action: 'CREATE',
-    entityName: 'Booking',
-    entityId: 'bkg-984210',
-    oldValues: null,
-    newValues: { bookingCode: 'BKG-984210', passengerName: 'Lưu Trung Nghĩa', seatNumbers: ['A03', 'A04'], totalAmount: 560000, status: 'PAID' },
-    ipAddress: '42.112.90.12',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0.0.0',
-    endpoint: '/api/v1/bookings/checkout-pos',
-    createdAt: new Date(Date.now() - 1000 * 60 * 18).toISOString()
-  },
-  {
-    id: 'log-03',
-    userId: 'usr-admin-01',
-    userEmail: 'admin@vexe.vn',
-    action: 'UPDATE',
-    entityName: 'Route',
-    entityId: 'rt-sg-dl',
-    oldValues: { basePrice: 320000, distanceKm: 305 },
-    newValues: { basePrice: 350000, distanceKm: 305 },
-    ipAddress: '118.69.182.45',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0.0.0',
-    endpoint: '/api/v1/routes/rt-sg-dl',
-    createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString()
-  },
-  {
-    id: 'log-04',
-    userId: 'usr-staff-03',
-    userEmail: 'bich.nguyen@vexe.vn',
-    action: 'LOGIN',
-    entityName: 'UserSession',
-    entityId: 'sess-pos-003',
-    oldValues: null,
-    newValues: { ip: '14.161.35.88', authMethod: 'PASSWORD_JWT', role: 'ROLE_STAFF' },
-    ipAddress: '14.161.35.88',
-    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/128.0.0.0',
-    endpoint: '/api/v1/auth/login',
-    createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString()
-  },
-  {
-    id: 'log-05',
-    userId: 'usr-admin-01',
-    userEmail: 'admin@vexe.vn',
-    action: 'CREATE',
-    entityName: 'Vehicle',
-    entityId: 'vh-78B-01499',
-    oldValues: null,
-    newValues: { licensePlate: '78B-014.99', type: 'LIMOUSINE_34', totalSeats: 34, status: 'ACTIVE' },
-    ipAddress: '118.69.182.45',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0.0.0',
-    endpoint: '/api/v1/vehicles',
-    createdAt: new Date(Date.now() - 1000 * 60 * 240).toISOString()
-  },
-  {
-    id: 'log-06',
-    userId: 'usr-staff-04',
-    userEmail: 'tuan.le@vexe.vn',
-    action: 'DELETE',
-    entityName: 'Coupon',
-    entityId: 'cp-summer-expired',
-    oldValues: { code: 'SUMMER2025', discountPercent: 15, maxUsage: 500 },
-    newValues: null,
-    ipAddress: '171.244.11.20',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0.0.0',
-    endpoint: '/api/v1/promotions/cp-summer-expired',
-    createdAt: new Date(Date.now() - 1000 * 60 * 360).toISOString()
-  },
-  {
-    id: 'log-07',
-    userId: null,
-    userEmail: null,
-    action: 'UPDATE',
-    entityName: 'PgVectorStore',
-    entityId: 'vec-commuter-clusters',
-    oldValues: { indexStatus: 'STALE', totalEmbeddings: 1420 },
-    newValues: { indexStatus: 'SYNCHRONIZED', totalEmbeddings: 1580, latencyMs: 24.5 },
-    ipAddress: '127.0.0.1',
-    userAgent: 'SpringAI-PGVector-BatchIndexer/1.0',
-    endpoint: '/internal/spring-ai/reindex',
-    createdAt: new Date(Date.now() - 1000 * 60 * 500).toISOString()
-  },
-  {
-    id: 'log-08',
-    userId: 'usr-admin-01',
-    userEmail: 'admin@vexe.vn',
-    action: 'UPDATE',
-    entityName: 'UserPermission',
-    entityId: 'usr-staff-05',
-    oldValues: { status: 'LOCKED', permissions: ['BASIC'] },
-    newValues: { status: 'ACTIVE', permissions: ['TRIP_MANAGE', 'ROUTE_MANAGE'] },
-    ipAddress: '118.69.182.45',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0.0.0',
-    endpoint: '/api/v1/staffs/usr-staff-05/permissions',
-    createdAt: new Date(Date.now() - 1000 * 60 * 720).toISOString()
-  }
-];
-
-const MOCK_FALLBACK_ENTITIES = ['Trip', 'Booking', 'Route', 'UserSession', 'Vehicle', 'Coupon', 'PgVectorStore', 'UserPermission'];
-
 export const AuditLogManagement: React.FC = () => {
-  const [logs, setLogs] = useState<AuditLog[]>(MOCK_FALLBACK_LOGS);
-  const [entityNames, setEntityNames] = useState<string[]>(MOCK_FALLBACK_ENTITIES);
+  const [logs, setLogs] = useState<AuditLog[]>([]);
+  const [entityNames, setEntityNames] = useState<string[]>(['Trip', 'Booking', 'Route', 'UserSession', 'Vehicle', 'Staff', 'Customer']);
   const [selectedEntity, setSelectedEntity] = useState<string>('');
   const [selectedAction, setSelectedAction] = useState<string>('');
   const [userEmail, setUserEmail] = useState<string>('');
@@ -159,8 +43,8 @@ export const AuditLogManagement: React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalElements, setTotalElements] = useState(MOCK_FALLBACK_LOGS.length);
-  const [isLoading, setIsLoading] = useState(false);
+  const [totalElements, setTotalElements] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
   const fetchEntityNames = useCallback(async () => {
@@ -170,7 +54,7 @@ export const AuditLogManagement: React.FC = () => {
         setEntityNames(res.data);
       }
     } catch {
-      setEntityNames(MOCK_FALLBACK_ENTITIES);
+      // Keep initial entity list
     }
   }, []);
 
@@ -183,22 +67,22 @@ export const AuditLogManagement: React.FC = () => {
         selectedEntity || undefined,
         userEmail || undefined
       );
-      if (res && res.success && res.data && res.data.content && res.data.content.length > 0) {
+      if (res && res.success && res.data && Array.isArray(res.data.content)) {
         const pageData: PageResponse<AuditLog> = res.data;
         setLogs(pageData.content);
-        setTotalPages(pageData.totalPages);
-        setTotalElements(pageData.totalElements);
+        setTotalPages(pageData.totalPages || 1);
+        setTotalElements(pageData.totalElements || 0);
       } else {
-        // High-availability graceful fallback
-        setLogs(MOCK_FALLBACK_LOGS);
+        setLogs([]);
         setTotalPages(1);
-        setTotalElements(MOCK_FALLBACK_LOGS.length);
+        setTotalElements(0);
       }
-    } catch {
-      // Graceful fallback without showing disruptive red error toasts
-      setLogs(MOCK_FALLBACK_LOGS);
+    } catch (error) {
+      console.error('Lỗi tải nhật ký kiểm toán:', error);
+      toast.error('Không thể kết nối đến máy chủ lấy nhật ký kiểm toán.');
+      setLogs([]);
       setTotalPages(1);
-      setTotalElements(MOCK_FALLBACK_LOGS.length);
+      setTotalElements(0);
     } finally {
       setIsLoading(false);
     }
@@ -225,11 +109,7 @@ export const AuditLogManagement: React.FC = () => {
           setIsEmailDropdownOpen(true);
         }
       } catch {
-        // Fallback filter
-        const mockEmails = ['admin@vexe.vn', 'hoang.tran@vexe.vn', 'bich.nguyen@vexe.vn', 'tuan.le@vexe.vn'];
-        const matched = mockEmails.filter(e => e.toLowerCase().includes(emailSearchTerm.toLowerCase()));
-        setEmailSuggestions(matched);
-        if (matched.length > 0) setIsEmailDropdownOpen(true);
+        setEmailSuggestions([]);
       }
     }, 250);
     return () => clearTimeout(timer);

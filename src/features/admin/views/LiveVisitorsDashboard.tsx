@@ -26,95 +26,10 @@ import {
 } from '../../../services/tracking.service';
 import toast from 'react-hot-toast';
 
-const MOCK_FALLBACK_LIVE_DATA: LiveVisitorsSummaryResponse = {
-  totalOnline: 4,
-  registeredOnline: 2,
-  guestOnline: 2,
-  checkedAt: new Date().toISOString(),
-  visitors: [
-    {
-      sessionId: 'sess-live-01',
-      anonymousId: 'anon-78df-a92c',
-      customerId: 'usr-customer-01',
-      isRegisteredCustomer: true,
-      customerName: 'Lưu Trung Nghĩa',
-      customerEmail: 'luutrungnghia19012003@gmail.com',
-      ipAddress: '118.69.182.45',
-      deviceType: 'Desktop',
-      trafficSource: 'Direct',
-      currentPageUrl: '/search?from=Sài Gòn&to=Tuy Hòa',
-      currentPageTitle: 'Tra Cứu Chuyến Xe Sài Gòn ⇌ Tuy Hòa',
-      activeSecondsOnPage: 185,
-      idleSecondsOnPage: 24,
-      lastActivityTime: new Date(Date.now() - 1000 * 8).toISOString(),
-      lastActionType: 'CHỌN_TUYẾN',
-      lastActionPayload: 'TP.HCM -> Phú Yên (Tối 20:00)',
-      matchedPersona: 'COMMUTER_HABIT',
-      recommendedTrips: [
-        { tripId: 101, route: 'Bến xe Miền Đông ⇌ Bến xe Tuy Hòa', departureTime: '19:30', price: '280.000đ', vehicleType: 'Limousine 34 Giường' }
-      ]
-    },
-    {
-      sessionId: 'sess-live-02',
-      anonymousId: 'anon-99ea-411f',
-      customerId: 'usr-customer-02',
-      isRegisteredCustomer: true,
-      customerName: 'Trần Văn Hoàng',
-      customerEmail: 'hoang.tran@vexe.vn',
-      ipAddress: '42.112.90.12',
-      deviceType: 'Desktop',
-      trafficSource: 'Google Ads',
-      currentPageUrl: '/checkout',
-      currentPageTitle: 'Thanh Toán Vé Xe Trực Tuyến',
-      activeSecondsOnPage: 340,
-      idleSecondsOnPage: 60,
-      lastActivityTime: new Date(Date.now() - 1000 * 25).toISOString(),
-      lastActionType: 'CHỌN_GHẾ',
-      lastActionPayload: 'Ghế A04 - VIP Cửa sổ',
-      matchedPersona: 'LUXURY_VIP',
-      recommendedTrips: []
-    },
-    {
-      sessionId: 'sess-live-03',
-      anonymousId: 'anon-bbf1-8820',
-      isRegisteredCustomer: false,
-      ipAddress: '14.161.35.88',
-      deviceType: 'Mobile',
-      trafficSource: 'Facebook',
-      currentPageUrl: '/search?to=Đà Lạt',
-      currentPageTitle: 'Vé Xe Đi Đà Lạt Cuối Tuần',
-      activeSecondsOnPage: 110,
-      idleSecondsOnPage: 15,
-      lastActivityTime: new Date(Date.now() - 1000 * 55).toISOString(),
-      lastActionType: 'LỌC_GIÁ',
-      lastActionPayload: 'Dưới 300.000đ',
-      matchedPersona: 'BUDGET_SAVER',
-      recommendedTrips: []
-    },
-    {
-      sessionId: 'sess-live-04',
-      anonymousId: 'anon-fa32-1209',
-      isRegisteredCustomer: false,
-      ipAddress: '171.244.11.20',
-      deviceType: 'Mobile',
-      trafficSource: 'Organic',
-      currentPageUrl: '/',
-      currentPageTitle: 'VEXE - Đặt Vé Xe Khách Thế Hệ Mới',
-      activeSecondsOnPage: 45,
-      idleSecondsOnPage: 10,
-      lastActivityTime: new Date(Date.now() - 1000 * 90).toISOString(),
-      lastActionType: 'XEM_ƯU_ĐÃI',
-      lastActionPayload: 'Ưu đãi Tân Thủ 20%',
-      matchedPersona: 'STUDENT_SAVER',
-      recommendedTrips: []
-    }
-  ]
-};
-
 export const LiveVisitorsDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState<LiveVisitorsSummaryResponse | null>(MOCK_FALLBACK_LIVE_DATA);
-  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<LiveVisitorsSummaryResponse | null>(null);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [timeWindow, setTimeWindow] = useState(5); // default 5 minutes
@@ -125,14 +40,11 @@ export const LiveVisitorsDashboard: React.FC = () => {
     if (showLoadingSpinner) setRefreshing(true);
     try {
       const res = await trackingService.getLiveVisitors(timeWindow);
-      if (res && res.visitors && res.visitors.length > 0) {
+      if (res) {
         setData(res);
-      } else {
-        setData(MOCK_FALLBACK_LIVE_DATA);
       }
-    } catch {
-      // Graceful fallback to rich mock data without throwing red error toast
-      setData(MOCK_FALLBACK_LIVE_DATA);
+    } catch (error) {
+      console.error('Lỗi tải dữ liệu khách trực tuyến:', error);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -154,7 +66,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
 
   // Filter visitors & sort newest activity on top
   const visitors = useMemo(() => {
-    return (data?.visitors || MOCK_FALLBACK_LIVE_DATA.visitors).slice().sort((a, b) => {
+    return (data?.visitors || []).slice().sort((a, b) => {
       const timeA = a.lastActivityTime || '';
       const timeB = b.lastActivityTime || '';
       return timeB.localeCompare(timeA);

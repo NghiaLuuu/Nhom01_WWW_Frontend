@@ -5,140 +5,9 @@ import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
 import { Ticket as TicketIcon, CheckCircle, XCircle, Search, Filter, TrendingUp, AlertCircle, Clock, ShieldCheck, QrCode } from 'lucide-react';
 
-const MOCK_FALLBACK_TICKETS: Ticket[] = [
-  {
-    id: 1,
-    bookingCode: 'BKG-984210',
-    trip: {
-      id: 101,
-      route: { id: 1, departureLocation: 'Sài Gòn', arrivalLocation: 'Phú Yên', basePrice: 320000, distance: 520, duration: 10 },
-      vehicle: { id: 1, licensePlate: '51B-891.22', capacity: 34 },
-      departureTime: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
-      price: 350000
-    },
-    customer: { id: 'c1', fullName: 'Lưu Trung Nghĩa', email: 'luutrungnghia19012003@gmail.com', status: 'ACTIVE' },
-    seats: ['VIP-01', 'VIP-02'],
-    totalPrice: 700000,
-    status: 'PAID',
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 2,
-    bookingCode: 'BKG-984211',
-    trip: {
-      id: 102,
-      route: { id: 2, departureLocation: 'Sài Gòn', arrivalLocation: 'Đà Lạt', basePrice: 280000, distance: 310, duration: 7 },
-      vehicle: { id: 2, licensePlate: '51B-942.18', capacity: 22 },
-      departureTime: new Date(Date.now() + 4 * 3600 * 1000).toISOString(),
-      price: 320000
-    },
-    customer: { id: 'c2', fullName: 'Trần Thị Mai', email: 'maitran@gmail.com', status: 'ACTIVE' },
-    seats: ['C-05'],
-    totalPrice: 320000,
-    status: 'CANCEL_REQUESTED',
-    createdAt: new Date(Date.now() - 3600 * 1000).toISOString()
-  },
-  {
-    id: 3,
-    bookingCode: 'BKG-984212',
-    trip: {
-      id: 103,
-      route: { id: 3, departureLocation: 'Sài Gòn', arrivalLocation: 'Nha Trang', basePrice: 300000, distance: 430, duration: 8.5 },
-      vehicle: { id: 3, licensePlate: '49B-772.09', capacity: 34 },
-      departureTime: new Date(Date.now() + 6 * 3600 * 1000).toISOString(),
-      price: 340000
-    },
-    customer: { id: 'c3', fullName: 'Nguyễn Hoàng Hải', email: 'hai.nguyen@company.vn', status: 'ACTIVE' },
-    seats: ['A-11', 'A-12'],
-    totalPrice: 680000,
-    status: 'PAID',
-    createdAt: new Date(Date.now() - 7200 * 1000).toISOString()
-  },
-  {
-    id: 4,
-    bookingCode: 'BKG-984213',
-    trip: {
-      id: 104,
-      route: { id: 4, departureLocation: 'Hà Nội', arrivalLocation: 'Sa Pa', basePrice: 350000, distance: 320, duration: 6 },
-      vehicle: { id: 4, licensePlate: '79B-663.15', capacity: 22 },
-      departureTime: new Date(Date.now() + 8 * 3600 * 1000).toISOString(),
-      price: 380000
-    },
-    customer: { id: 'c4', fullName: 'Phạm Thu Hương', email: 'huongpham@gmail.com', status: 'ACTIVE' },
-    seats: ['VIP-08'],
-    totalPrice: 380000,
-    status: 'USED',
-    createdAt: new Date(Date.now() - 86400 * 1000).toISOString()
-  },
-  {
-    id: 5,
-    bookingCode: 'BKG-984214',
-    trip: {
-      id: 105,
-      route: { id: 5, departureLocation: 'Đà Nẵng', arrivalLocation: 'Quy Nhơn', basePrice: 240000, distance: 305, duration: 6.5 },
-      vehicle: { id: 5, licensePlate: '29B-512.44', capacity: 34 },
-      departureTime: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
-      price: 260000
-    },
-    customer: { id: 'c5', fullName: 'Lê Văn Khang', email: 'khangle@gmail.com', status: 'ACTIVE' },
-    seats: ['B-02', 'B-03'],
-    totalPrice: 520000,
-    status: 'USED',
-    createdAt: new Date(Date.now() - 90000 * 1000).toISOString()
-  },
-  {
-    id: 6,
-    bookingCode: 'BKG-984215',
-    trip: {
-      id: 106,
-      route: { id: 6, departureLocation: 'Cần Thơ', arrivalLocation: 'Sài Gòn', basePrice: 180000, distance: 165, duration: 3.5 },
-      vehicle: { id: 6, licensePlate: '43B-338.90', capacity: 40 },
-      departureTime: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
-      price: 190000
-    },
-    customer: { id: 'c6', fullName: 'Đỗ Minh Trí', email: 'trido@gmail.com', status: 'ACTIVE' },
-    seats: ['A-09'],
-    totalPrice: 190000,
-    status: 'CANCELLED',
-    createdAt: new Date(Date.now() - 120000 * 1000).toISOString()
-  },
-  {
-    id: 7,
-    bookingCode: 'BKG-984216',
-    trip: {
-      id: 101,
-      route: { id: 1, departureLocation: 'Sài Gòn', arrivalLocation: 'Phú Yên', basePrice: 320000, distance: 520, duration: 10 },
-      vehicle: { id: 1, licensePlate: '51B-891.22', capacity: 34 },
-      departureTime: new Date(Date.now() + 14 * 3600 * 1000).toISOString(),
-      price: 370000
-    },
-    customer: { id: 'c7', fullName: 'Võ Thanh Tùng', email: 'tungvo@gmail.com', status: 'ACTIVE' },
-    seats: ['VIP-03'],
-    totalPrice: 370000,
-    status: 'PAID',
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 8,
-    bookingCode: 'BKG-984217',
-    trip: {
-      id: 102,
-      route: { id: 2, departureLocation: 'Sài Gòn', arrivalLocation: 'Đà Lạt', basePrice: 280000, distance: 310, duration: 7 },
-      vehicle: { id: 2, licensePlate: '51B-942.18', capacity: 22 },
-      departureTime: new Date(Date.now() + 18 * 3600 * 1000).toISOString(),
-      price: 320000
-    },
-    customer: { id: 'c8', fullName: 'Bùi Diệu Linh', email: 'linhbui@gmail.com', status: 'ACTIVE' },
-    seats: ['C-01', 'C-02'],
-    totalPrice: 640000,
-    status: 'CANCEL_REQUESTED',
-    createdAt: new Date().toISOString()
-  }
-];
-
 export const TicketManagement: React.FC = () => {
-  const [tickets, setTickets] = useState<Ticket[]>(MOCK_FALLBACK_TICKETS);
-  const [isLoading, setIsLoading] = useState(false);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Search & Filter State
   const [searchTerm, setSearchTerm] = useState('');
@@ -148,7 +17,7 @@ export const TicketManagement: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await TicketService.getAllTickets();
-      if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
+      if (res?.success && Array.isArray(res.data)) {
         // Map backend booking/ticket data with defensive fallback attributes
         const mapped: Ticket[] = res.data.map((item: any) => ({
           id: item.id,
@@ -170,11 +39,12 @@ export const TicketManagement: React.FC = () => {
         }));
         setTickets(mapped);
       } else {
-        setTickets(MOCK_FALLBACK_TICKETS);
+        setTickets([]);
       }
-    } catch {
-      // Graceful fallback to mock tickets without throwing red error toasts
-      setTickets(MOCK_FALLBACK_TICKETS);
+    } catch (error) {
+      console.error('Lỗi tải danh sách vé:', error);
+      toast.error('Không thể kết nối đến máy chủ lấy danh sách vé.');
+      setTickets([]);
     } finally {
       setIsLoading(false);
     }

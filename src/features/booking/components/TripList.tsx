@@ -72,7 +72,7 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
     setSelectedTrip(trip);
     setLoadingSeats(true);
     try {
-      const res = await BookingService.getSeatLayout(trip.id);
+      const res = await BookingService.getSeatLayout(trip.id, trip.vehicle?.id);
       if (res.success) {
         setSeats(res.data);
       }

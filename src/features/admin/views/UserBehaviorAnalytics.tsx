@@ -32,213 +32,15 @@ import {
 } from '../../../services/tracking.service';
 import toast from 'react-hot-toast';
 
-const MOCK_FALLBACK_ANALYTICS: TrackingAnalyticsResponse = {
-  totalSessions: 1428,
-  uniqueVisitors: 890,
-  avgSessionDurationSeconds: 245,
-  trafficSources: {
-    'Trực tiếp (Direct)': 620,
-    'Google Ads': 450,
-    'Mạng xã hội (Facebook)': 230,
-    'Tìm kiếm tự nhiên (Organic)': 128
-  },
-  actionBreakdown: {
-    'CHỌN_TUYẾN': 840,
-    'LỌC_XE_VIP': 520,
-    'CHỌN_GHẾ': 430,
-    'THANH_TOÁN': 180
-  },
-  topPages: [
-    {
-      pageUrl: '/search?from=Sài Gòn&to=Tuy Hòa',
-      viewCount: 680,
-      avgActiveSeconds: 145,
-      avgIdleSeconds: 25
-    },
-    {
-      pageUrl: '/checkout',
-      viewCount: 310,
-      avgActiveSeconds: 180,
-      avgIdleSeconds: 30
-    },
-    {
-      pageUrl: '/',
-      viewCount: 1240,
-      avgActiveSeconds: 85,
-      avgIdleSeconds: 20
-    },
-    {
-      pageUrl: '/booking-success',
-      viewCount: 180,
-      avgActiveSeconds: 65,
-      avgIdleSeconds: 15
-    }
-  ],
-  recentSessions: [
-    {
-      sessionId: 'sess-rec-01',
-      anonymousId: 'anon-78df-a92c-9821',
-      customerId: 'usr-customer-01',
-      ipAddress: '118.69.182.45',
-      trafficSource: 'Direct',
-      totalDurationSeconds: 320,
-      createdAt: '10:45:20 31/10/2026',
-      pageViewCount: 4,
-      actionCount: 8
-    },
-    {
-      sessionId: 'sess-rec-02',
-      anonymousId: 'anon-99ea-411f-3310',
-      customerId: 'usr-customer-02',
-      ipAddress: '42.112.90.12',
-      trafficSource: 'Google Ads',
-      totalDurationSeconds: 410,
-      createdAt: '10:20:15 31/10/2026',
-      pageViewCount: 5,
-      actionCount: 12
-    },
-    {
-      sessionId: 'sess-rec-03',
-      anonymousId: 'anon-bbf1-8820-7712',
-      ipAddress: '14.161.35.88',
-      trafficSource: 'Facebook',
-      totalDurationSeconds: 180,
-      createdAt: '09:55:00 31/10/2026',
-      pageViewCount: 2,
-      actionCount: 5
-    },
-    {
-      sessionId: 'sess-rec-04',
-      anonymousId: 'anon-fa32-1209-6610',
-      ipAddress: '171.244.11.20',
-      trafficSource: 'Organic',
-      totalDurationSeconds: 95,
-      createdAt: '09:30:10 31/10/2026',
-      pageViewCount: 1,
-      actionCount: 2
-    }
-  ]
+const EMPTY_ANALYTICS: TrackingAnalyticsResponse = {
+  totalSessions: 0,
+  uniqueVisitors: 0,
+  avgSessionDurationSeconds: 0,
+  trafficSources: {},
+  actionBreakdown: {},
+  topPages: [],
+  recentSessions: []
 };
-
-const MOCK_FALLBACK_JOURNEY: CustomerJourneyTimelineDto = {
-  identifier: 'usr-customer-01',
-  customerName: 'Lưu Trung Nghĩa',
-  customerEmail: 'luutrungnghia19012003@gmail.com',
-  isRegisteredCustomer: true,
-  linkedAnonymousIds: ['anon-78df-a92c-9821', 'anon-11fa-8812-4421'],
-  totalSessions: 14,
-  totalPageViews: 38,
-  totalActions: 52,
-  matchedPersona: 'COMMUTER_HABIT',
-  journeys: [
-    {
-      journeyId: 'jn-py-01',
-      title: 'Hành Trình Sài Gòn ⇌ Tuy Hòa (Về Quê Cuối Tuần)',
-      status: 'CONVERTED',
-      targetRoute: 'Sài Gòn ⇌ Tuy Hòa (Phú Yên)',
-      trafficSource: 'Direct',
-      startTime: '10:30:00 31/10/2026',
-      endTime: '10:48:30 31/10/2026',
-      durationMinutes: 18,
-      activeSeconds: 280,
-      idleSeconds: 45,
-      customerIdentified: true,
-      events: [
-        {
-          id: 'ev-01',
-          type: 'SESSION_START',
-          title: 'Khởi tạo phiên truy cập',
-          description: 'IP: 118.69.182.45 • Thiết bị: Desktop Windows Chrome • Nguồn: Direct',
-          timestamp: '10:30:12 31/10/2026',
-          activeSeconds: 0,
-          idleSeconds: 0
-        },
-        {
-          id: 'ev-02',
-          type: 'PAGE_VIEW',
-          title: 'Xem Trang Chủ VEXE',
-          description: 'URL: / • Đề xuất vị trí hiện tại kích hoạt',
-          timestamp: '10:30:15 31/10/2026',
-          activeSeconds: 45,
-          idleSeconds: 10
-        },
-        {
-          id: 'ev-03',
-          type: 'ACTION',
-          title: 'Tra cứu vé tuyến Sài Gòn ⇌ Tuy Hòa',
-          description: 'Điểm đi: Sài Gòn • Điểm đến: Tuy Hòa (Phú Yên) • Ngày đi: 31/10/2026',
-          timestamp: '10:31:05 31/10/2026',
-          activeSeconds: 15,
-          idleSeconds: 0
-        },
-        {
-          id: 'ev-04',
-          type: 'PAGE_VIEW',
-          title: 'Xem Danh Sách Chuyến Xe Sài Gòn - Tuy Hòa',
-          description: 'URL: /search?from=Sài Gòn&to=Tuy Hòa • AI Vector Cluster xếp hạng ưu tiên',
-          timestamp: '10:31:25 31/10/2026',
-          activeSeconds: 120,
-          idleSeconds: 15
-        },
-        {
-          id: 'ev-05',
-          type: 'ACTION',
-          title: 'Chọn xe Limousine VIP 34 chỗ (19:30)',
-          description: 'Chuyến xe mã #TRIP-SG-PY-2026 • Giá vé: 280.000đ',
-          timestamp: '10:33:30 31/10/2026',
-          activeSeconds: 20,
-          idleSeconds: 5
-        },
-        {
-          id: 'ev-06',
-          type: 'ACTION',
-          title: 'Đặt vé & Giữ ghế A03, A04 thành công',
-          description: 'Mã đặt vé: #BKG-984210 • Tổng thanh toán: 560.000đ',
-          timestamp: '10:48:30 31/10/2026',
-          activeSeconds: 80,
-          idleSeconds: 15
-        }
-      ]
-    },
-    {
-      journeyId: 'jn-dl-02',
-      title: 'Khảo Sát Giá Vé Đi Đà Lạt',
-      status: 'ABANDONED',
-      targetRoute: 'Sài Gòn ⇌ Đà Lạt',
-      trafficSource: 'Google Ads',
-      startTime: '14:15:00 24/10/2026',
-      endTime: '14:26:00 24/10/2026',
-      durationMinutes: 11,
-      activeSeconds: 140,
-      idleSeconds: 80,
-      customerIdentified: true,
-      events: [
-        {
-          id: 'ev-10',
-          type: 'PAGE_VIEW',
-          title: 'Xem vé xe Sài Gòn đi Đà Lạt',
-          description: 'URL: /search?to=Đà Lạt • Khách tham khảo giá cuối tuần',
-          timestamp: '14:15:20 24/10/2026',
-          activeSeconds: 90,
-          idleSeconds: 40
-        },
-        {
-          id: 'ev-11',
-          type: 'ACTION',
-          title: 'Lọc chuyến xe khởi hành ban đêm',
-          description: 'Giờ khởi hành: sau 22:00',
-          timestamp: '14:18:10 24/10/2026',
-          activeSeconds: 50,
-          idleSeconds: 40
-        }
-      ]
-    }
-  ],
-  events: []
-};
-
-// Stitch all events into general events list
-MOCK_FALLBACK_JOURNEY.events = MOCK_FALLBACK_JOURNEY.journeys?.flatMap(j => j.events) || [];
 
 export const UserBehaviorAnalytics: React.FC = () => {
   const formatPersonaLabel = (persona: string | undefined) => {
@@ -258,13 +60,13 @@ export const UserBehaviorAnalytics: React.FC = () => {
   };
 
   const [searchParams] = useSearchParams();
-  const [analytics, setAnalytics] = useState<TrackingAnalyticsResponse | null>(MOCK_FALLBACK_ANALYTICS);
-  const [loading, setLoading] = useState(false);
+  const [analytics, setAnalytics] = useState<TrackingAnalyticsResponse>(EMPTY_ANALYTICS);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   // Journey Explorer State
-  const [searchIdentifier, setSearchIdentifier] = useState('usr-customer-01');
-  const [selectedJourney, setSelectedJourney] = useState<CustomerJourneyTimelineDto | null>(MOCK_FALLBACK_JOURNEY);
+  const [searchIdentifier, setSearchIdentifier] = useState('');
+  const [selectedJourney, setSelectedJourney] = useState<CustomerJourneyTimelineDto | null>(null);
   const [selectedClusterId, setSelectedClusterId] = useState<string>('ALL');
   const [loadingJourney, setLoadingJourney] = useState(false);
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'JOURNEY'>('OVERVIEW');
@@ -272,20 +74,16 @@ export const UserBehaviorAnalytics: React.FC = () => {
   const fetchAnalytics = async () => {
     try {
       const data = await trackingService.getAnalyticsOverview();
-      if (data && data.totalSessions > 0) {
+      if (data) {
         setAnalytics(data);
-      } else {
-        setAnalytics(MOCK_FALLBACK_ANALYTICS);
       }
-
       const queryId = searchParams.get('id');
       if (queryId) {
         setActiveTab('JOURNEY');
         loadJourney(queryId);
       }
-    } catch {
-      // Graceful fallback without showing red toast
-      setAnalytics(MOCK_FALLBACK_ANALYTICS);
+    } catch (err) {
+      console.error('Failed to load tracking analytics', err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -298,7 +96,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
     setSearchIdentifier(identifier);
     try {
       const data = await trackingService.getCustomerJourney(identifier.trim());
-      if (data && data.customerName) {
+      if (data) {
         setSelectedJourney(data);
         if (data.journeys && data.journeys.length > 0) {
           setSelectedClusterId(data.journeys[0].journeyId);
@@ -306,13 +104,11 @@ export const UserBehaviorAnalytics: React.FC = () => {
           setSelectedClusterId('ALL');
         }
       } else {
-        setSelectedJourney(MOCK_FALLBACK_JOURNEY);
-        setSelectedClusterId('ALL');
+        setSelectedJourney(null);
       }
-    } catch {
-      // Fallback
-      setSelectedJourney(MOCK_FALLBACK_JOURNEY);
-      setSelectedClusterId('ALL');
+    } catch (err) {
+      console.error('Failed to load customer journey', err);
+      setSelectedJourney(null);
     } finally {
       setLoadingJourney(false);
     }
@@ -338,7 +134,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
   };
 
   // Safe analytics data
-  const safeData = analytics || MOCK_FALLBACK_ANALYTICS;
+  const safeData = analytics || EMPTY_ANALYTICS;
 
   return (
     <div className="space-y-6">
@@ -657,6 +453,23 @@ export const UserBehaviorAnalytics: React.FC = () => {
               <span>Tra cứu hành trình</span>
             </button>
           </form>
+
+          {loadingJourney && (
+            <div className="p-12 text-center rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl">
+              <Activity size={32} className="animate-spin text-cyan-400 mx-auto mb-3" />
+              <p className="text-xs text-slate-300">Đang truy vấn và xâu chuỗi hành trình khách hàng từ máy chủ...</p>
+            </div>
+          )}
+
+          {!selectedJourney && !loadingJourney && (
+            <div className="p-12 text-center rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl">
+              <Users size={36} className="text-slate-500 mx-auto mb-3" />
+              <h3 className="text-white font-bold text-sm">Chưa có hành trình nào được chọn</h3>
+              <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
+                Nhập Email, Anonymous ID, hoặc bấm nút &quot;Xem A-Z&quot; từ danh sách khách ở tab Tổng Quan để truy vết toàn bộ hành trình.
+              </p>
+            </div>
+          )}
 
           {/* Journey Header Profile Card */}
           {selectedJourney && (() => {

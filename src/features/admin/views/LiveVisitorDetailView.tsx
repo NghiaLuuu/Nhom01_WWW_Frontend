@@ -31,84 +31,6 @@ import {
 } from '../../../services/tracking.service';
 import toast from 'react-hot-toast';
 
-const MOCK_FALLBACK_DETAIL: LiveVisitorDetailDto = {
-  isOnline: true,
-  visitor: {
-    sessionId: 'sess-live-01',
-    anonymousId: 'anon-78df-a92c-9821',
-    customerId: 'usr-customer-01',
-    isRegisteredCustomer: true,
-    customerName: 'Lưu Trung Nghĩa',
-    customerEmail: 'luutrungnghia19012003@gmail.com',
-    ipAddress: '118.69.182.45',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0.0.0 Safari/537.36',
-    deviceType: 'Desktop',
-    trafficSource: 'Direct (Gõ trực tiếp)',
-    currentPageUrl: '/search?from=Sài Gòn&to=Tuy Hòa',
-    currentPageTitle: 'Tra Cứu Vé Tuyến Sài Gòn ⇌ Tuy Hòa (Phú Yên)',
-    activeSecondsOnPage: 185,
-    idleSecondsOnPage: 35,
-    lastActivityTime: new Date(Date.now() - 1000 * 12).toISOString(),
-    lastActionType: 'CHỌN_CHUYẾN_ĐI',
-    lastActionPayload: 'Chuyến Limousine VIP 19:30 BX Miền Đông -> Tuy Hòa',
-    matchedPersona: 'COMMUTER_HABIT',
-    recommendedTrips: [
-      {
-        tripId: 101,
-        route: 'Sài Gòn ⇌ Tuy Hòa (Phú Yên)',
-        departureTime: '19:30 Tối nay',
-        price: '280.000đ',
-        vehicleType: 'Limousine 34 Phòng VIP'
-      },
-      {
-        tripId: 102,
-        route: 'Sài Gòn ⇌ Sông Cầu (Phú Yên)',
-        departureTime: '20:15 Tối nay',
-        price: '300.000đ',
-        vehicleType: 'Limousine Giường Nằm Luxury'
-      }
-    ]
-  },
-  pageViews: [
-    {
-      id: 'pv-01',
-      pageUrl: '/search?from=Sài Gòn&to=Tuy Hòa',
-      pageTitle: 'Tra Cứu Vé Tuyến Sài Gòn ⇌ Tuy Hòa',
-      enteredAt: new Date(Date.now() - 1000 * 220).toLocaleTimeString('vi-VN'),
-      activeSeconds: 185,
-      idleSeconds: 35
-    },
-    {
-      id: 'pv-02',
-      pageUrl: '/',
-      pageTitle: 'VEXE - Nền Tảng Đặt Vé Xe Khách Thế Hệ Mới',
-      enteredAt: new Date(Date.now() - 1000 * 480).toLocaleTimeString('vi-VN'),
-      activeSeconds: 95,
-      idleSeconds: 20
-    }
-  ],
-  actions: [
-    {
-      id: 'act-01',
-      actionType: 'CHỌN_CHUYẾN_ĐI',
-      payload: 'Chuyến Limousine VIP 19:30 BX Miền Đông -> Tuy Hòa (280.000đ)',
-      createdAt: new Date(Date.now() - 1000 * 12).toLocaleTimeString('vi-VN')
-    },
-    {
-      id: 'act-02',
-      actionType: 'LỌC_XE_VIP',
-      payload: 'Loại xe: VIP Limousine 34 chỗ, Giờ chạy sau 18:00',
-      createdAt: new Date(Date.now() - 1000 * 85).toLocaleTimeString('vi-VN')
-    },
-    {
-      id: 'act-03',
-      actionType: 'TÌM_KIẾM_TUYẾN',
-      payload: 'Điểm đi: Sài Gòn -> Điểm đến: Tuy Hòa (Ngày: 31/10/2026)',
-      createdAt: new Date(Date.now() - 1000 * 210).toLocaleTimeString('vi-VN')
-    }
-  ]
-};
-
 export const LiveVisitorDetailView: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
@@ -129,8 +51,8 @@ export const LiveVisitorDetailView: React.FC = () => {
     }
   };
 
-  const [detail, setDetail] = useState<LiveVisitorDetailDto | null>(MOCK_FALLBACK_DETAIL);
-  const [loading, setLoading] = useState(false);
+  const [detail, setDetail] = useState<LiveVisitorDetailDto | null>(null);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [copiedIp, setCopiedIp] = useState(false);
@@ -144,11 +66,12 @@ export const LiveVisitorDetailView: React.FC = () => {
       if (res && res.visitor) {
         setDetail(res);
       } else {
-        setDetail(MOCK_FALLBACK_DETAIL);
+        setDetail(null);
       }
-    } catch {
-      // Graceful fallback to mock detail
-      setDetail(MOCK_FALLBACK_DETAIL);
+    } catch (error) {
+      console.error('Lỗi tải chi tiết phiên khách trực tuyến:', error);
+      toast.error('Không tìm thấy phiên khách trực tuyến hoặc phiên đã kết thúc.');
+      setDetail(null);
     } finally {
       setLoading(false);
       setRefreshing(false);

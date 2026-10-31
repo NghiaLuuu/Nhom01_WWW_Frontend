@@ -6,20 +6,9 @@ import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
 import { Plus, Car, Bus, Users, Search, ShieldCheck, CheckCircle2, AlertCircle, Wrench, Sparkles, Filter } from 'lucide-react';
 
-const MOCK_FALLBACK_VEHICLES: Vehicle[] = [
-  { id: 1, licensePlate: '51B-891.22', capacity: 34 },
-  { id: 2, licensePlate: '51B-942.18', capacity: 22 },
-  { id: 3, licensePlate: '49B-772.09', capacity: 34 },
-  { id: 4, licensePlate: '79B-663.15', capacity: 22 },
-  { id: 5, licensePlate: '29B-512.44', capacity: 34 },
-  { id: 6, licensePlate: '43B-338.90', capacity: 40 },
-  { id: 7, licensePlate: '51B-678.89', capacity: 34 },
-  { id: 8, licensePlate: '77B-419.02', capacity: 22 }
-];
-
 export const VehicleManagement: React.FC = () => {
-  const [vehicles, setVehicles] = useState<Vehicle[]>(MOCK_FALLBACK_VEHICLES);
-  const [isLoading, setIsLoading] = useState(false);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
 
@@ -36,14 +25,15 @@ export const VehicleManagement: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await VehicleService.getAll();
-      if (res?.success && res.data?.length > 0) {
+      if (res?.success && Array.isArray(res.data)) {
         setVehicles(res.data);
       } else {
-        setVehicles(MOCK_FALLBACK_VEHICLES);
+        setVehicles([]);
       }
-    } catch {
-      // Graceful fallback to mock vehicles without throwing red toasts
-      setVehicles(MOCK_FALLBACK_VEHICLES);
+    } catch (error) {
+      console.error('Lỗi tải danh sách xe:', error);
+      toast.error('Không thể kết nối đến máy chủ lấy danh sách xe.');
+      setVehicles([]);
     } finally {
       setIsLoading(false);
     }
