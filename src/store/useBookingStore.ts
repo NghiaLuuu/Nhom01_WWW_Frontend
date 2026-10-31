@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { type Trip } from '../features/admin/api/trip.service';
 
 interface BookingState {
@@ -12,30 +13,36 @@ interface BookingState {
   clearBooking: () => void;
 }
 
-export const useBookingStore = create<BookingState>((set, get) => ({
-  selectedTrip: null,
-  selectedSeats: [],
-  holdExpiresAt: null,
+export const useBookingStore = create<BookingState>()(
+  persist(
+    (set, get) => ({
+      selectedTrip: null,
+      selectedSeats: [],
+      holdExpiresAt: null,
 
-  setSelectedTrip: (trip) => set({ selectedTrip: trip, selectedSeats: [], holdExpiresAt: null }),
-  
-  toggleSeat: (seatId, maxSeats) => {
-    const { selectedSeats } = get();
-    if (selectedSeats.includes(seatId)) {
-      set({ selectedSeats: selectedSeats.filter(id => id !== seatId) });
-    } else {
-      if (selectedSeats.length < maxSeats) {
-        set({ selectedSeats: [...selectedSeats, seatId] });
+      setSelectedTrip: (trip) => set({ selectedTrip: trip, selectedSeats: [], holdExpiresAt: null }),
+      
+      toggleSeat: (seatId, maxSeats) => {
+        const { selectedSeats } = get();
+        if (selectedSeats.includes(seatId)) {
+          set({ selectedSeats: selectedSeats.filter(id => id !== seatId) });
+        } else {
+          if (selectedSeats.length < maxSeats) {
+            set({ selectedSeats: [...selectedSeats, seatId] });
+          }
+        }
+      },
+
+      startHoldTimer: () => {
+        set({ holdExpiresAt: Date.now() + 5 * 60 * 1000 });
+      },
+
+      clearBooking: () => {
+        set({ selectedTrip: null, selectedSeats: [], holdExpiresAt: null });
       }
+    }),
+    {
+      name: 'vexe-booking-storage'
     }
-  },
-
-  startHoldTimer: () => {
-    // Set timer for 5 minutes from now
-    set({ holdExpiresAt: Date.now() + 5 * 60 * 1000 });
-  },
-
-  clearBooking: () => {
-    set({ selectedTrip: null, selectedSeats: [], holdExpiresAt: null });
-  }
-}));
+  )
+);
