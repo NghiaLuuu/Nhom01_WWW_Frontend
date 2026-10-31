@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigation, MapPin, Sparkles, X, CheckCircle2, ChevronDown } from 'lucide-react';
+import { Navigation, MapPin, Sparkles, X, CheckCircle2, ChevronDown, Gift, HelpCircle } from 'lucide-react';
 import { geolocationService, type UserLocationResult } from '../../../services/geolocation.service';
 
 export const DEMO_CITIES = [
@@ -23,6 +23,7 @@ export const LocationPermissionModal: React.FC<LocationPermissionModalProps> = (
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [successLocation, setSuccessLocation] = useState<UserLocationResult | null>(null);
+  const [isNewGuest, setIsNewGuest] = useState<boolean>(() => geolocationService.isNewGuest());
 
   useEffect(() => {
     const status = geolocationService.getPermissionStatus();
@@ -37,6 +38,22 @@ export const LocationPermissionModal: React.FC<LocationPermissionModalProps> = (
     }
   }, []);
 
+  useEffect(() => {
+    const handleGuestTypeUpdate = (e: any) => {
+      if (typeof e.detail?.isNewGuest === 'boolean') {
+        setIsNewGuest(e.detail.isNewGuest);
+      }
+    };
+    const handleOpenModal = () => setIsOpen(true);
+
+    window.addEventListener('vexe_guest_type_updated', handleGuestTypeUpdate);
+    window.addEventListener('vexe_open_location_modal', handleOpenModal);
+    return () => {
+      window.removeEventListener('vexe_guest_type_updated', handleGuestTypeUpdate);
+      window.removeEventListener('vexe_open_location_modal', handleOpenModal);
+    };
+  }, []);
+
   const handleAllowLocation = async () => {
     setLoading(true);
     try {
@@ -47,7 +64,6 @@ export const LocationPermissionModal: React.FC<LocationPermissionModalProps> = (
         setIsOpen(false);
       }, 1400);
     } catch {
-      // If browser permission denied or error, default to prompt with combobox
       setLoading(false);
     } finally {
       setLoading(false);
@@ -69,6 +85,11 @@ export const LocationPermissionModal: React.FC<LocationPermissionModalProps> = (
     }, 1200);
   };
 
+  const handleToggleNewGuest = (checked: boolean) => {
+    setIsNewGuest(checked);
+    geolocationService.setNewGuest(checked);
+  };
+
   const handleDismiss = () => {
     geolocationService.dismissPermission();
     setIsOpen(false);
@@ -77,7 +98,7 @@ export const LocationPermissionModal: React.FC<LocationPermissionModalProps> = (
   if (!isOpen) return null;
 
   return (
-    <aside aria-label="Yêu cầu vị trí" className="fixed top-20 left-4 sm:left-6 z-40 w-[calc(100vw-2rem)] sm:w-[320px] max-w-[340px] animate-in fade-in slide-in-from-top-4 duration-300">
+    <aside aria-label="Yêu cầu vị trí" className="fixed top-20 left-4 sm:left-6 z-40 w-[calc(100vw-2rem)] sm:w-[340px] max-w-[360px] animate-in fade-in slide-in-from-top-4 duration-300">
       <div className="relative rounded-2xl bg-slate-950/95 backdrop-blur-xl border border-cyan-500/40 p-4 shadow-2xl shadow-cyan-950/60 text-slate-100 overflow-hidden">
         
         {/* Glow ambient background */}
@@ -179,6 +200,39 @@ export const LocationPermissionModal: React.FC<LocationPermissionModalProps> = (
                 <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               </div>
             </div>
+
+            {/* New Guest Simulator Checkbox */}
+            <div className="pt-2.5 border-t border-white/10">
+              <label 
+                className={`flex items-start gap-2.5 p-2 rounded-xl transition-all cursor-pointer border select-none ${
+                  isNewGuest
+                    ? 'bg-gradient-to-r from-cyan-950/70 via-blue-950/60 to-purple-950/50 border-cyan-400/60 shadow-lg shadow-cyan-950/40' 
+                    : 'bg-white/5 border-white/10 hover:border-white/20'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={isNewGuest}
+                  onChange={(e) => handleToggleNewGuest(e.target.checked)}
+                  className="w-4 h-4 mt-0.5 rounded border-cyan-500/40 bg-slate-900 text-cyan-400 focus:ring-cyan-400 cursor-pointer accent-cyan-400 shrink-0"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-xs font-bold text-white flex items-center gap-1">
+                      <Gift size={13} className="text-amber-400 animate-bounce" />
+                      <span>Tôi là khách mới lần đầu</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 font-mono">
+                      -25% Vé
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-slate-300 leading-tight mt-0.5 font-light">
+                    Mở gói quà chào mừng tân thủ, hướng dẫn đặt vé 3 bước chuẩn 5 sao và bí kíp chọn chỗ theo IP.
+                  </p>
+                </div>
+              </label>
+            </div>
+
           </div>
         )}
       </div>

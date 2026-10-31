@@ -131,6 +131,27 @@ export const geolocationService = {
     }
   },
 
+  isNewGuest: (): boolean => {
+    try {
+      const val = localStorage.getItem('vexe_is_new_guest');
+      if (val !== null) return val === 'true';
+      const hasToken = localStorage.getItem('token') || localStorage.getItem('auth_tokens') || localStorage.getItem('accessToken');
+      return !hasToken;
+    } catch {
+      return true;
+    }
+  },
+
+  setNewGuest: (isNew: boolean) => {
+    try {
+      localStorage.setItem('vexe_is_new_guest', isNew ? 'true' : 'false');
+      dispatchTrackAction('GUEST_TYPE_TOGGLED', { isNewGuest: isNew });
+      window.dispatchEvent(new CustomEvent('vexe_guest_type_updated', { detail: { isNewGuest: isNew } }));
+    } catch {
+      // ignore
+    }
+  },
+
   requestLocation: async (): Promise<UserLocationResult> => {
     return new Promise((resolve, reject) => {
       if (!('geolocation' in navigator)) {
