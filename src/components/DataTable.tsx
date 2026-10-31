@@ -50,13 +50,13 @@ export const DataTable = <T,>({
             {columns.map((col, idx) => (
               <th 
                 key={idx} 
-                className={`px-2.5 sm:px-3 py-3 whitespace-nowrap ${col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left'}`}
+                className={`px-2 sm:px-2.5 py-3 whitespace-nowrap ${col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left'}`}
                 style={{ width: col.width }}
               >
                 {col.header}
               </th>
             ))}
-            {(onEdit || onDelete) && <th className="px-2.5 sm:px-3 py-3 text-right whitespace-nowrap w-20">Thao tác</th>}
+            {(onEdit || onDelete) && <th className="px-2 sm:px-2.5 py-3 text-right whitespace-nowrap w-20">Thao tác</th>}
           </tr>
         </thead>
         <tbody className="divide-y divide-white/5">
@@ -65,13 +65,13 @@ export const DataTable = <T,>({
               {columns.map((col, idx) => (
                 <td 
                   key={idx} 
-                  className={`px-2.5 sm:px-3 py-2.5 ${col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left'}`}
+                  className={`px-2 sm:px-2.5 py-2.5 ${col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left'}`}
                 >
                   {typeof col.accessor === 'function' ? col.accessor(row) : (row[col.accessor] as React.ReactNode)}
                 </td>
               ))}
               {(onEdit || onDelete) && (
-                <td className="px-2.5 sm:px-3 py-2.5 text-right whitespace-nowrap">
+                <td className="px-2 sm:px-2.5 py-2.5 text-right whitespace-nowrap">
                   <div className="flex items-center justify-end gap-1">
                     {onEdit && (
                       <button 
