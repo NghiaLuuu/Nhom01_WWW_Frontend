@@ -211,20 +211,20 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
             </div>
 
             {/* Main Trip Card Content */}
-            <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            <div className="p-6 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 relative">
               
               {/* Left & Center: Route Timeline & Departure/Arrival */}
-              <div className="lg:col-span-8 space-y-4">
+              <div className="flex-1 min-w-0 space-y-4">
                 <div className="flex items-center justify-between sm:justify-start sm:space-x-8">
                   
                   {/* Departure Info */}
-                  <div className="space-y-1">
-                    <div className="text-2xl sm:text-3xl font-black text-white font-mono tracking-tight">
+                  <div className="space-y-1 min-w-[110px]">
+                    <div className="text-2xl sm:text-3xl font-black text-white font-mono tracking-tight leading-none">
                       {formatTime(trip.departureTime)}
                     </div>
                     <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-cyan-300">
                       <MapPin size={14} className="text-cyan-400 shrink-0" />
-                      <span>{trip.route?.departureLocation || 'Bến xe'}</span>
+                      <span className="truncate">{trip.route?.departureLocation || 'Bến xe'}</span>
                     </div>
                     <div className="text-[11px] text-slate-400 font-light hidden sm:block">
                       Xuất bến đúng giờ 99.8%
@@ -232,9 +232,9 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
                   </div>
 
                   {/* Travel Duration Timeline Indicator */}
-                  <div className="flex flex-col items-center px-2 sm:px-4">
+                  <div className="flex flex-col items-center px-2 sm:px-4 shrink-0">
                     <span className="text-[11px] font-mono text-slate-400 mb-1">~6h 30m</span>
-                    <div className="relative flex items-center w-24 sm:w-36">
+                    <div className="relative flex items-center w-20 sm:w-32">
                       <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 shrink-0 ring-4 ring-cyan-500/20"></div>
                       <div className="flex-1 h-0.5 bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 mx-1"></div>
                       <ArrowRight size={14} className="text-indigo-400 shrink-0" />
@@ -243,13 +243,13 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
                   </div>
 
                   {/* Arrival Info */}
-                  <div className="space-y-1 text-right sm:text-left">
-                    <div className="text-2xl sm:text-3xl font-black text-slate-200 font-mono tracking-tight">
+                  <div className="space-y-1 text-right sm:text-left min-w-[110px]">
+                    <div className="text-2xl sm:text-3xl font-black text-slate-200 font-mono tracking-tight leading-none">
                       {calculateArrival(trip.departureTime)}
                     </div>
                     <div className="flex items-center justify-end sm:justify-start gap-1.5 text-xs sm:text-sm font-semibold text-white">
                       <MapPin size={14} className="text-indigo-400 shrink-0" />
-                      <span>{trip.route?.arrivalLocation || 'Điểm đến'}</span>
+                      <span className="truncate">{trip.route?.arrivalLocation || 'Điểm đến'}</span>
                     </div>
                     <div className="text-[11px] text-slate-400 font-light hidden sm:block">
                       Có xe trung chuyển tận nơi
@@ -259,20 +259,20 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
                 </div>
 
                 {/* Amenities Badges */}
-                <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-slate-400">
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/5" title="Wifi 5G tốc độ cao miễn phí">
+                <div className="flex flex-wrap items-center gap-2.5 pt-1 text-xs text-slate-400">
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 shrink-0" title="Wifi 5G tốc độ cao miễn phí">
                     <Wifi size={13} className="text-cyan-400" />
                     <span className="hidden sm:inline">Wifi 5G</span>
                   </div>
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/5" title="Cổng sạc Type-C & USB tại mỗi ghế">
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 shrink-0" title="Cổng sạc Type-C & USB tại mỗi ghế">
                     <Zap size={13} className="text-amber-400" />
                     <span className="hidden sm:inline">Cổng sạc</span>
                   </div>
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/5" title="Nước suối và khăn lạnh miễn phí">
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 shrink-0" title="Nước suối và khăn lạnh miễn phí">
                     <Droplets size={13} className="text-blue-400" />
                     <span className="hidden sm:inline">Nước & Khăn</span>
                   </div>
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/5" title="Điều hòa ion âm khử khuẩn">
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 shrink-0" title="Điều hòa ion âm khử khuẩn">
                     <Wind size={13} className="text-emerald-400" />
                     <span className="hidden sm:inline">Điều hòa</span>
                   </div>
@@ -281,7 +281,7 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
               </div>
 
               {/* Right Side: Price & Select Seat Button */}
-              <div className="lg:col-span-4 flex flex-row lg:flex-col items-center lg:items-end justify-between border-t lg:border-t-0 lg:border-l border-white/10 pt-4 lg:pt-0 lg:pl-6 gap-4">
+              <div className="shrink-0 min-w-[200px] flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-center border-t lg:border-t-0 lg:border-l border-white/10 pt-4 lg:pt-0 lg:pl-6 gap-3">
                 <div className="text-left lg:text-right">
                   <div className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Giá vé 1 khách</div>
                   <div className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 tracking-tight font-mono">
@@ -292,14 +292,14 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
                 <button 
                   onClick={() => handleSelectTrip(trip)}
                   type="button"
-                  className={`px-6 py-3 rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-300 shadow-lg cursor-pointer ${
+                  className={`px-5 py-2.5 sm:px-6 sm:py-3 rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-300 shadow-lg cursor-pointer whitespace-nowrap shrink-0 ${
                     isExpanded 
                       ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-600' 
-                      : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 hover:scale-105 shadow-cyan-500/25'
+                      : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 hover:scale-105 shadow-cyan-500/25 active:scale-95'
                   }`}
                 >
-                  <span>{isExpanded ? 'Đóng chọn chỗ' : 'Chọn chuyến'}</span>
-                  {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  <span className="whitespace-nowrap shrink-0">{isExpanded ? 'Đóng chọn chỗ' : 'Chọn chuyến'}</span>
+                  {isExpanded ? <ChevronUp size={16} className="shrink-0" /> : <ChevronDown size={16} className="shrink-0" />}
                 </button>
               </div>
 

@@ -12,33 +12,33 @@ export const Footer: React.FC = () => {
         
         {/* Trust Badges Banner */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-12 mb-12 border-b border-white/10">
-          <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-            <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shrink-0">
+          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+            <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shrink-0 mt-0.5">
               <ShieldCheck className="text-cyan-400" size={24} />
             </div>
             <div>
-              <h4 className="text-white text-sm font-bold">Cam kết Giữ Chỗ 100%</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Hoàn tiền 150% nếu nhà xe không cung cấp đúng chuyến</p>
+              <h4 className="text-white text-sm font-bold leading-snug">Cam kết Giữ Chỗ 100%</h4>
+              <p className="text-xs text-slate-400 mt-1">Hoàn tiền 150% nếu nhà xe không cung cấp đúng chuyến</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shrink-0">
+          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shrink-0 mt-0.5">
               <CheckCircle2 className="text-emerald-400" size={24} />
             </div>
             <div>
-              <h4 className="text-white text-sm font-bold">Giá Vé Minh Bạch 3 Không</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Không tăng giá vô cớ - Không phí ẩn - Không hủy chuyến</p>
+              <h4 className="text-white text-sm font-bold leading-snug">Giá Vé Minh Bạch 3 Không</h4>
+              <p className="text-xs text-slate-400 mt-1">Không tăng giá vô cớ - Không phí ẩn - Không hủy chuyến</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-            <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shrink-0">
+          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+            <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shrink-0 mt-0.5">
               <Award className="text-purple-400" size={24} />
             </div>
             <div>
-              <h4 className="text-white text-sm font-bold">100+ Nhà Xe Tuyển Chọn</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Phương Trang, Thành Bưởi, Hoa Mai, Sao Việt,...</p>
+              <h4 className="text-white text-sm font-bold leading-snug">100+ Nhà Xe Tuyển Chọn</h4>
+              <p className="text-xs text-slate-400 mt-1">Phương Trang, Thành Bưởi, Hoa Mai, Sao Việt,...</p>
             </div>
           </div>
         </div>

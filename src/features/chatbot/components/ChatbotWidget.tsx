@@ -171,7 +171,7 @@ export const ChatbotWidget: React.FC = () => {
     <>
       {/* Floating Button with Smart Recommendation Bubble */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 flex items-end gap-3 z-50">
+        <div className="chat-widget fab fixed bottom-6 right-6 flex items-end gap-3 z-50">
           {bubbleText && (
             <div 
               onClick={() => setIsOpen(true)}
@@ -194,10 +194,10 @@ export const ChatbotWidget: React.FC = () => {
 
           <button
             onClick={() => setIsOpen(true)}
-            className="w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 animate-bounce group relative"
+            className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 animate-bounce group relative"
             title="Mở trợ lý AI"
           >
-            <MessageSquare size={26} className="group-hover:rotate-6 transition-transform text-white" />
+            <MessageSquare size={22} className="group-hover:rotate-6 transition-transform text-white" />
             <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-white"></span>

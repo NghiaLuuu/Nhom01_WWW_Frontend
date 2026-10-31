@@ -190,10 +190,10 @@ export const SearchPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-20">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-32">
       
       {/* Top Search Refinement Sticky Bar */}
-      <section className="sticky top-16 z-40 bg-slate-950/80 backdrop-blur-2xl border-b border-white/10 shadow-2xl py-4 px-4 sm:px-6 lg:px-8">
+      <section className="sticky top-16 z-40 bg-slate-950/90 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-cyan-950/30 py-4 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <form onSubmit={handleRefineSearch} className="flex flex-col lg:flex-row items-center gap-3">
             
@@ -215,7 +215,7 @@ export const SearchPage: React.FC = () => {
             <button
               type="button"
               onClick={handleSwapLocations}
-              className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-white border border-white/10 flex items-center justify-center transition-all duration-200 shrink-0 cursor-pointer"
+              className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-white border border-white/10 flex items-center justify-center transition-all duration-200 shrink-0 cursor-pointer active:scale-90"
               title="Đổi chiều điểm đi / điểm đến"
             >
               <ArrowLeftRight size={15} />
@@ -251,7 +251,7 @@ export const SearchPage: React.FC = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full lg:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-cyan-500/25 shrink-0 cursor-pointer"
+              className="w-full lg:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-cyan-500/25 shrink-0 cursor-pointer whitespace-nowrap active:scale-95"
             >
               <Search size={16} />
               <span>Tìm chuyến</span>
@@ -288,7 +288,7 @@ export const SearchPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Main Content Area: 2 Columns (Sidebar + Trip List) */}
+      {/* Main Content Area: Flex layout for sidebar + list */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         
         {/* Results Header Title */}
@@ -309,7 +309,7 @@ export const SearchPage: React.FC = () => {
           </div>
 
           {/* Quick Sort Tabs */}
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-white/10 overflow-x-auto">
+          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-white/10 overflow-x-auto shrink-0">
             <button
               onClick={() => setSortBy('RECOMMENDED')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
@@ -343,11 +343,11 @@ export const SearchPage: React.FC = () => {
           </div>
         </div>
 
-        {/* 2 Columns Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* 2 Columns: Flex sidebar + main trip list */}
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
           
           {/* Left Column: Multi-faceted Filter Sidebar */}
-          <aside className="lg:col-span-4 rounded-3xl bg-slate-900/60 backdrop-blur-2xl border border-white/10 p-6 space-y-6 shadow-2xl">
+          <aside className="w-full lg:w-[320px] xl:w-[340px] shrink-0 rounded-3xl bg-slate-900/70 backdrop-blur-2xl border border-white/10 p-6 space-y-6 shadow-2xl">
             
             {/* Sidebar Title & Reset Button */}
             <div className="flex items-center justify-between pb-4 border-b border-white/10">
@@ -413,17 +413,17 @@ export const SearchPage: React.FC = () => {
                       key={slot.key}
                       type="button"
                       onClick={() => toggleTimeSlot(slot.key)}
-                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                      className={`h-[60px] p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                         isActive 
                           ? 'bg-cyan-500/20 border-cyan-400 text-white font-bold' 
                           : 'bg-white/5 border-white/10 text-slate-300 hover:border-white/20'
                       }`}
                     >
-                      <div className="font-semibold text-xs flex items-center justify-between">
+                      <div className="h-4 font-semibold text-xs flex items-center justify-between">
                         <span>{slot.label}</span>
-                        {isActive && <Check size={12} className="text-cyan-400" />}
+                        {isActive && <Check size={12} className="text-cyan-400 shrink-0" />}
                       </div>
-                      <div className="text-[10px] text-slate-400 font-mono mt-0.5">{slot.desc}</div>
+                      <div className="text-[10px] text-slate-400 font-mono">{slot.desc}</div>
                     </button>
                   );
                 })}
@@ -485,7 +485,7 @@ export const SearchPage: React.FC = () => {
           </aside>
 
           {/* Right Column: Trip Cards List */}
-          <section className="lg:col-span-8">
+          <section className="flex-1 min-w-0 w-full">
             <TripList trips={filteredAndSortedTrips} isLoading={isLoading} />
           </section>
 
