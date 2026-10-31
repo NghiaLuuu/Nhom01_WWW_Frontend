@@ -14,6 +14,9 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 </head>
 <body>
+  <!-- Glowing Top Progress Bar -->
+  <div class="slide-progress-bar" id="slideProgressBar"></div>
+
   <!-- Ambient Cosmic Glows -->
   <div class="cosmic-bg"></div>
   <div class="cosmic-grid"></div>
@@ -71,14 +74,46 @@
     <section class="slide active" id="slide-0">
       <div class="slide-header">
         <div class="slide-category">
-          <i data-lucide="award"></i> Khóa Luận Tốt Nghiệp / Đồ Án Chuyên Đề WWW • Nhóm 01
+          <i data-lucide="award"></i> Khóa Luận Tốt Nghiệp / Đồ Án Chuyên Đề WWW • Nhóm 01 • IUH 2026
         </div>
         <h1 class="slide-title">
-          Nền Tảng Đặt Vé Xe Khách VEXE Thế Hệ Mới: <span>Spring AI, pgvector RAG & Giám Sát Hành Vi Thời Gian Thực</span>
+          Nền Tảng Đặt Vé Xe Khách VEXE Thế Hệ Mới: <span>Spring AI, pgvector RAG & Giám Sát Hành Vi Realtime</span>
         </h1>
         <p class="slide-desc">
           Ứng dụng Trí tuệ Nhân tạo thế hệ mới (Generative AI) và Cơ sở dữ liệu Vector để cá nhân hóa hành trình di chuyển, hỗ trợ khách hàng tức thời qua Chatbot và giám sát an ninh tác nghiệp thời gian thực.
         </p>
+      </div>
+
+      <!-- High-Impact KPI Row -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-icon-wrap kpi-cyan"><i data-lucide="map-pin"></i></div>
+          <div>
+            <div class="kpi-value">17</div>
+            <div class="kpi-label">Tuyến Đường Xe Chạy</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon-wrap kpi-emerald"><i data-lucide="bus"></i></div>
+          <div>
+            <div class="kpi-value">110</div>
+            <div class="kpi-label">Chuyến Xe Thực Tế</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon-wrap kpi-rose"><i data-lucide="database"></i></div>
+          <div>
+            <div class="kpi-value">117</div>
+            <div class="kpi-label">Vector Embeddings</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon-wrap kpi-amber"><i data-lucide="star"></i></div>
+          <div>
+            <div class="kpi-value">9.05 / 10</div>
+            <div class="kpi-label">Điểm Thẩm Định UX/UI</div>
+          </div>
+        </div>
       </div>
 
       <div class="grid-2">
@@ -109,21 +144,6 @@
               </tr>
             </table>
           </div>
-
-          <div style="margin-top: 18px;" class="grid-3">
-            <div style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.2); padding: 12px; border-radius: 10px; text-align: center;">
-              <div style="font-family: var(--font-mono); font-size: 20px; font-weight: 900; color: #22d3ee;">17</div>
-              <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Tuyến xe liên tỉnh</div>
-            </div>
-            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); padding: 12px; border-radius: 10px; text-align: center;">
-              <div style="font-family: var(--font-mono); font-size: 20px; font-weight: 900; color: #34d399;">110</div>
-              <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Chuyến xe thực tế</div>
-            </div>
-            <div style="background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.2); padding: 12px; border-radius: 10px; text-align: center;">
-              <div style="font-family: var(--font-mono); font-size: 20px; font-weight: 900; color: #fb7185;">117</div>
-              <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Vector Embeddings</div>
-            </div>
-          </div>
         </div>
 
         <!-- Card Agenda Thuyết Trình -->
@@ -140,7 +160,7 @@
             <div class="flow-step">
               <div class="step-num">2</div>
               <div class="step-content">
-                <div class="step-title">Động Cơ Thu Thập Hành Vi Thời Gian Thực (Tracking Engine)</div>
+                <div class="step-title">Động Cơ Thu Thập Hành Vi Realtime (Tracking Engine)</div>
                 <div class="step-desc">Đo lường thời gian xem thực tế (Active vs Idle 5 phút), Page Visibility API và Identity Stitching.</div>
               </div>
             </div>
@@ -190,8 +210,8 @@
             <div class="tier-modules">
               <div class="module-pill"><strong>React 18 + Vite:</strong> Single Page Application</div>
               <div class="module-pill"><strong>Tailwind CSS:</strong> Cyber-Slate Design System</div>
-              <div class="module-pill"><strong>useUserTracker Hook:</strong> Heartbeat 25s & Idle Detector</div>
-              <div class="module-pill"><strong>Geolocation API:</strong> GPS Browser + Demo Combobox</div>
+              <div class="module-pill"><strong>useUserTracker Hook:</strong> Heartbeat 8s & Idle Detector</div>
+              <div class="module-pill"><strong>Geolocation API:</strong> GPS Browser + 13 Hubs Combobox</div>
               <div class="module-pill"><strong>AI Chatbot Widget:</strong> Interactive Chat & Booking Actions</div>
             </div>
           </div>
@@ -242,16 +262,16 @@
 
       <div class="grid-3" style="margin-top: 18px;">
         <div class="glass-card">
-          <h3 style="font-size: 13px; font-weight: 800; color: #38bdf8; margin-bottom: 6px;">⚡ Tối Ưu Hóa Độ Trễ</h3>
-          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Micro-payload heartbeat (150 bytes) với câu lệnh SQL UPDATE trực tiếp chỉ mục; phản hồi trung bình chỉ <strong>3-8ms</strong>.</p>
+          <h3 style="font-size: 13.5px; font-weight: 800; color: #38bdf8; margin-bottom: 6px;">⚡ Tối Ưu Hóa Độ Trễ</h3>
+          <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">Micro-payload heartbeat (150 bytes) với câu lệnh SQL UPDATE trực tiếp chỉ mục; phản hồi trung bình chỉ <strong>3-8ms</strong>.</p>
         </div>
         <div class="glass-card">
-          <h3 style="font-size: 13px; font-weight: 800; color: #34d399; margin-bottom: 6px;">🛡️ Cách Ly Tuyệt Đối</h3>
-          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Khách hàng không bao giờ thấy bất kỳ menu hay endpoint nhạy cảm của Admin; mọi token đều được ký điện tử HMAC-SHA256.</p>
+          <h3 style="font-size: 13.5px; font-weight: 800; color: #34d399; margin-bottom: 6px;">🛡️ Cách Ly Tuyệt Đối</h3>
+          <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">Khách hàng không bao giờ thấy bất kỳ menu hay endpoint nhạy cảm của Admin; mọi token đều được ký điện tử HMAC-SHA256.</p>
         </div>
         <div class="glass-card">
-          <h3 style="font-size: 13px; font-weight: 800; color: #f59e0b; margin-bottom: 6px;">🔄 Single Source of Truth</h3>
-          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">pgvector nằm ngay trong PostgreSQL giúp đảm bảo tính toàn vẹn dữ liệu (ACID) tuyệt đối giữa giao dịch vé và vector.</p>
+          <h3 style="font-size: 13.5px; font-weight: 800; color: #f59e0b; margin-bottom: 6px;">🔄 Single Source of Truth</h3>
+          <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">pgvector nằm ngay trong PostgreSQL giúp đảm bảo tính toàn vẹn dữ liệu (ACID) tuyệt đối giữa giao dịch vé và vector.</p>
         </div>
       </div>
     </section>
@@ -321,7 +341,7 @@
             </div>
           </div>
 
-          <div style="margin-top: 14px; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+          <div style="margin-top: 14px; font-size: 12.5px; color: var(--text-muted); line-height: 1.55;">
             <p><strong>Điểm đáng chú ý trên giao diện:</strong></p>
             <ul style="padding-left: 18px; margin-top: 4px;">
               <li>Quản trị viên quan sát được chính xác luồng trang (PageView timeline) từng giây.</li>
@@ -343,11 +363,36 @@
         </p>
       </div>
 
+      <!-- Visual Corridor Map Banner -->
+      <div class="corridor-banner">
+        <div class="corridor-node">
+          <div class="corridor-icon"><i data-lucide="briefcase"></i></div>
+          <div>
+            <div style="font-size: 13px; font-weight: 800; color: #fff;">CĂN CỨ A: TP. HỒ CHÍ MINH</div>
+            <div style="font-size: 11px; color: #38bdf8;">Đô Thị Làm Việc & Học Tập (Base A)</div>
+          </div>
+        </div>
+
+        <div class="corridor-path">
+          <div style="font-size: 10px; font-family: var(--font-mono); font-weight: 700; color: #cbd5e1; letter-spacing: 0.1em;">HÀNH LANG 520 KM • ĐỀ XUẤT 2 CHIỀU THÔNG MINH</div>
+          <div class="corridor-line"><div class="corridor-pulse"></div></div>
+          <div style="font-size: 10px; color: #34d399; font-weight: 700;">TỰ ĐỘNG NHẬN DIỆN CHIỀU ĐI / VỀ THEO TỌA ĐỘ GPS</div>
+        </div>
+
+        <div class="corridor-node">
+          <div class="corridor-icon" style="background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); color: #34d399;"><i data-lucide="home"></i></div>
+          <div style="text-align: right;">
+            <div style="font-size: 13px; font-weight: 800; color: #fff;">CĂN CỨ B: TỈNH PHÚ YÊN</div>
+            <div style="font-size: 11px; color: #34d399;">Quê Hương & Gia Đình (Base B)</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Slide Internal Tabs -->
       <div class="slide-tabs">
-        <button class="tab-btn active" data-tab="tab-matrix">Ma Trận 4 Kịch Bản & Điểm Số</button>
-        <button class="tab-btn" data-tab="tab-algo">Công Thức Toán Học & Haversine</button>
-        <button class="tab-btn" data-tab="tab-live-img">Ảnh Minh Họa Hệ Thống Thật</button>
+        <button class="tab-btn active" data-tab="tab-matrix"><i data-lucide="table"></i> Ma Trận 4 Kịch Bản & Điểm Số</button>
+        <button class="tab-btn" data-tab="tab-algo"><i data-lucide="function-square"></i> Công Thức Toán Học & Haversine</button>
+        <button class="tab-btn" data-tab="tab-live-img"><i data-lucide="image"></i> Ảnh Minh Họa Hệ Thống Thật</button>
       </div>
 
       <!-- Tab Content 1: Ma trận kịch bản -->
@@ -407,7 +452,7 @@
             </tbody>
           </table>
 
-          <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">
+          <div style="margin-top: 12px; font-size: 12.5px; color: var(--text-muted);">
             💡 <em>Ghi chú: Đối với khách vãng lai chưa có thói quen, hệ thống tự động ưu tiên các chuyến xuất phát từ tỉnh thành hiện tại lên đầu với nhãn <code>Khởi hành gần bạn 📍</code> (Score 0.99).</em>
           </div>
         </div>
@@ -546,11 +591,11 @@
 <span class="kw">LIMIT</span> <span class="num">5</span>;
           </div>
 
-          <div style="margin-top: 12px; display: flex; gap: 10px;">
-            <div style="flex: 1; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 12px; border-radius: 8px; font-size: 12px;">
+          <div style="margin-top: 14px; display: flex; gap: 10px;">
+            <div style="flex: 1; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 9px 14px; border-radius: 10px; font-size: 12px;">
               <span style="color: #34d399; font-weight: 700;">Độ trễ truy vấn:</span> <span style="font-family: var(--font-mono);">&lt; 45ms</span>
             </div>
-            <div style="flex: 1; background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); padding: 8px 12px; border-radius: 8px; font-size: 12px;">
+            <div style="flex: 1; background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); padding: 9px 14px; border-radius: 10px; font-size: 12px;">
               <span style="color: #22d3ee; font-weight: 700;">Không gian giảm:</span> <span style="font-family: var(--font-mono);">-70% search space</span>
             </div>
           </div>
@@ -623,12 +668,12 @@
           <div class="preview-box">
             <img src="assets/demo-chatbot-rag.png" alt="Chatbot AI RAG Thực Tế">
             <div class="preview-caption">
-              <span>Chatbot trả lời giá vé 310k - 350k và xuất nút Đặt vé chuyến xe thực tế</span>
+              <span>Chatbot trả lời giá vé 310k - 380k và xuất nút Đặt vé chuyến xe thực tế</span>
               <span class="preview-badge">LIVE RAG CAPTURE</span>
             </div>
           </div>
 
-          <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+          <div style="margin-top: 14px; font-size: 12.5px; color: var(--text-muted); line-height: 1.55;">
             <strong>Cam kết chống ảo giác (Anti-Hallucination):</strong> Chatbot chỉ được phép trích xuất giá vé từ danh sách chuyến xe được nhúng trong Context. Tuyệt đối không tự suy đoán thông tin ngoài CSDL.
           </div>
         </div>
@@ -657,7 +702,7 @@
             </div>
           </div>
 
-          <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+          <div style="margin-top: 14px; font-size: 12.5px; color: var(--text-muted); line-height: 1.55;">
             <strong>Chỉ số hiển thị:</strong> IP mạng, loại thiết bị, trang đang xem, hành động mới nhất, thời gian dừng thực tế (Dwell Time) và phân khúc AI gán tạm thời.
           </div>
         </div>
@@ -673,7 +718,7 @@
             </div>
           </div>
 
-          <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+          <div style="margin-top: 14px; font-size: 12.5px; color: var(--text-muted); line-height: 1.55;">
             <strong>Ứng dụng kinh doanh:</strong> Phát hiện các điểm nghẽn (Drop-off point) tại bước chọn ghế hoặc bước thanh toán để tối ưu giao diện và điều chỉnh chính sách khuyến mãi.
           </div>
         </div>
@@ -728,9 +773,9 @@
             </table>
           </div>
 
-          <div style="margin-top: 12px; background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); padding: 10px 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <div style="margin-top: 14px; background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); padding: 12px 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
             <span style="font-weight: 700; color: #fff;">ĐIỂM TRUNG BÌNH TOÀN BỘ 18 MÀN HÌNH:</span>
-            <span style="font-family: var(--font-mono); font-size: 16px; font-weight: 900; color: #22d3ee;">9.05 / 10 (XUẤT SẮC)</span>
+            <span style="font-family: var(--font-mono); font-size: 17px; font-weight: 900; color: #22d3ee;">9.05 / 10 (XUẤT SẮC)</span>
           </div>
         </div>
 
@@ -745,7 +790,7 @@
             </div>
           </div>
 
-          <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+          <div style="margin-top: 14px; font-size: 12.5px; color: var(--text-muted); line-height: 1.55;">
             <strong>Tiêu chí kiểm thử nghiêm ngặt:</strong> Kiểm tra tự động trên cả <strong>Desktop (1440×900)</strong> và <strong>Laptop nhỏ (1024×768)</strong>. Không xảy ra tràn ngang, không chồng lấn thanh cuộn và giữ vững độ tương phản WCAG AAA.
           </div>
         </div>
@@ -848,7 +893,7 @@
       <div class="grid-3">
         <div class="glass-card">
           <h2 class="card-title"><i data-lucide="award" class="icon"></i> 1. Kết Quả Nổi Bật Đạt Được</h2>
-          <ul style="font-size: 13px; color: var(--text-muted); line-height: 1.6; padding-left: 18px;">
+          <ul style="font-size: 13px; color: var(--text-muted); line-height: 1.65; padding-left: 18px;">
             <li>Hoàn thành hệ thống thương mại điện tử bán vé xe khách từ A-Z với <strong>17 tuyến đường</strong> và <strong>110 chuyến xe thực tế</strong>.</li>
             <li>Hiện thực hóa thành công thuật toán đề xuất lai ghép thói quen đi lại cố định <strong>Dual-Anchor Commuter Habit</strong>.</li>
             <li>Triển khai Trợ lý ảo AI RAG kết hợp GPT-4o-mini với kho vé thực và tường lửa 6 lớp an toàn.</li>
@@ -859,7 +904,7 @@
 
         <div class="glass-card">
           <h2 class="card-title"><i data-lucide="lightbulb" class="icon"></i> 2. Bài Học Kinh Nghiệm Quý Báu</h2>
-          <ul style="font-size: 13px; color: var(--text-muted); line-height: 1.6; padding-left: 18px;">
+          <ul style="font-size: 13px; color: var(--text-muted); line-height: 1.65; padding-left: 18px;">
             <li><strong>Chống ảo giác (Anti-Hallucination):</strong> RAG hiệu quả đòi hỏi phải làm giàu ngữ cảnh CSDL thực tế (Context Enrichment) trước khi đưa sang LLM.</li>
             <li><strong>Tối ưu hóa Vector:</strong> Phân vùng siêu dữ liệu (Metadata Partitioning) là chìa khóa để giảm 70% chi phí tính toán Cosine Similarity.</li>
             <li><strong>Đo lường trung thực:</strong> Không thể dựa vào thời gian mở trang đơn thuần mà phải kết hợp Page Visibility API để lọc bỏ thời gian treo tab.</li>
@@ -868,7 +913,7 @@
 
         <div class="glass-card">
           <h2 class="card-title"><i data-lucide="rocket" class="icon"></i> 3. Hướng Mở Rộng Tương Lai</h2>
-          <ul style="font-size: 13px; color: var(--text-muted); line-height: 1.6; padding-left: 18px;">
+          <ul style="font-size: 13px; color: var(--text-muted); line-height: 1.65; padding-left: 18px;">
             <li><strong>Dự Báo Nhu Cầu Đi Lại (Demand Forecasting):</strong> Áp dụng mô hình Deep Learning dự báo lượng khách dịp Tết để tự động điều động thêm xe.</li>
             <li><strong>Voice AI Hotline Assistant:</strong> Tích hợp tổng đài AI tự động gọi điện xác nhận điểm đón trả cho hành khách và tài xế bằng giọng nói tự nhiên.</li>
             <li><strong>Dynamic Pricing:</strong> Thuật toán định giá động vé xe theo thời gian thực dựa trên tỷ lệ lấp đầy ghế.</li>
@@ -932,6 +977,9 @@
       <span>Chọn nhanh: <span class="kbd">1-9, 0</span></span>
     </div>
 
+    <!-- Interactive Slide Dots -->
+    <div class="slide-dots" id="slideDots"></div>
+
     <div style="color: var(--accent-cyan); font-family: var(--font-mono); font-size: 11px; font-weight: 700;">
       IUH • BÁO CÁO ĐỒ ÁN WWW (NHÓM 01) • LIVE PRODUCTION
     </div>
@@ -944,4 +992,3 @@
   </script>
 </body>
 </html>
-

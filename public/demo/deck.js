@@ -14,6 +14,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const scriptContent = document.getElementById('scriptContent');
   const qaContent = document.getElementById('qaContent');
   const drawerSlideNumber = document.getElementById('drawerSlideNumber');
+  const slideProgressBar = document.getElementById('slideProgressBar');
+  const slideDots = document.getElementById('slideDots');
+
+  // Initialize interactive slide dots
+  if (slideDots) {
+    slideDots.innerHTML = '';
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('data-index', i);
+      dot.title = `Nhảy đến Slide ${i + 1}`;
+      dot.addEventListener('click', () => showSlide(i));
+      slideDots.appendChild(dot);
+    }
+  }
 
   // Speaker notes data for all 10 slides
   const cheatsheetData = {
@@ -167,6 +182,19 @@ document.addEventListener('DOMContentLoaded', () => {
     slideIndicator.innerHTML = `<span>SLIDE</span> <strong>${currentSlide + 1}</strong> / ${totalSlides}`;
     slideSelect.value = currentSlide;
 
+    // Update progress bar
+    if (slideProgressBar) {
+      slideProgressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+    }
+
+    // Update dots
+    if (slideDots) {
+      const dots = slideDots.querySelectorAll('.slide-dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === currentSlide);
+      });
+    }
+
     // Update buttons state
     btnPrev.disabled = (currentSlide === 0);
     btnNext.disabled = (currentSlide === totalSlides - 1);
@@ -299,6 +327,15 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+
+  // Expose window.deck for programmatic control & testing
+  window.deck = {
+    goTo: showSlide,
+    next: () => showSlide(currentSlide + 1),
+    prev: () => showSlide(currentSlide - 1),
+    toggleDrawer,
+    getCurrent: () => currentSlide
+  };
 
   // Initialize first slide
   showSlide(0);
