@@ -77,7 +77,7 @@ export const LocationPermissionModal: React.FC<LocationPermissionModalProps> = (
   if (!isOpen) return null;
 
   return (
-    <aside aria-label="Yêu cầu vị trí" className="fixed top-20 left-4 sm:left-6 z-50 w-[calc(100vw-2rem)] sm:w-[350px] max-w-[360px] animate-in fade-in slide-in-from-top-4 duration-300">
+    <aside aria-label="Yêu cầu vị trí" className="fixed top-20 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[350px] max-w-[360px] animate-in fade-in slide-in-from-top-4 duration-300">
       <div className="relative rounded-2xl bg-slate-950/95 backdrop-blur-xl border border-cyan-500/40 p-4 shadow-2xl shadow-cyan-950/60 text-slate-100 overflow-hidden">
         
         {/* Glow ambient background */}

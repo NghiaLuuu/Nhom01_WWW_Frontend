@@ -241,10 +241,10 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
 
                   <button
                     onClick={() => handleSelectTrip(trip)}
-                    className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition-all shadow-md shadow-cyan-500/20 group-hover:scale-105 cursor-pointer flex items-center gap-1"
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 text-xs font-bold transition-all shadow-md shadow-cyan-500/25 hover:shadow-cyan-400/40 cursor-pointer flex items-center gap-1 shrink-0 whitespace-nowrap active:scale-95"
                   >
                     <span>Đặt ngay</span>
-                    <ArrowRight size={13} />
+                    <ArrowRight size={13} className="shrink-0" />
                   </button>
                 </div>
 

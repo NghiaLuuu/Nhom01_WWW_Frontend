@@ -146,7 +146,7 @@ export const Footer: React.FC = () => {
             {/* Payment Partners Icons */}
             <div className="pt-4 mt-4 border-t border-white/5">
               <span className="text-[10px] text-slate-500 uppercase tracking-wider block mb-2 font-semibold">Đối tác thanh toán bảo mật</span>
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
+              <div className="flex flex-wrap items-center gap-1.5 text-xs font-bold text-slate-400">
                 <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">VNPAY</span>
                 <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">MoMo</span>
                 <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">ZaloPay</span>

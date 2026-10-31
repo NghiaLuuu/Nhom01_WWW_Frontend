@@ -93,7 +93,7 @@ export const LandingPage: React.FC = () => {
       <section className="relative min-h-[calc(100vh-64px)] lg:min-h-[780px] flex items-center overflow-hidden">
         
         {/* Background Layer with Dark Vignette */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 origin-center transition-transform duration-1000"
             style={{ backgroundImage: `url(https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=2069&auto=format&fit=crop)` }}
@@ -281,15 +281,15 @@ export const LandingPage: React.FC = () => {
           ].map((metric, idx) => (
             <div 
               key={idx}
-              className="p-6 rounded-3xl bg-slate-900/60 border border-white/10 hover:border-cyan-500/40 transition-all duration-300 shadow-xl group text-center"
+              className="p-5 sm:p-6 rounded-3xl bg-gradient-to-b from-slate-900/80 to-slate-950/90 border border-white/10 hover:border-cyan-500/40 transition-all duration-300 shadow-xl group text-center flex flex-col justify-between"
             >
-              <div className="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 font-mono tracking-tight group-hover:scale-105 transition-transform">
+              <div className="text-2xl sm:text-3xl lg:text-2xl xl:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 font-mono tracking-tight group-hover:scale-105 transition-transform truncate">
                 {metric.number}
               </div>
-              <div className="font-bold text-white text-sm sm:text-base mt-2">
+              <div className="font-bold text-white text-xs sm:text-sm lg:text-base mt-2">
                 {metric.label}
               </div>
-              <div className="text-xs text-slate-400 font-light mt-1">
+              <div className="text-[11px] sm:text-xs text-slate-400 font-light mt-1">
                 {metric.desc}
               </div>
             </div>
