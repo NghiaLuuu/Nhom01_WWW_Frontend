@@ -148,8 +148,27 @@ export const TicketManagement: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await TicketService.getAllTickets();
-      if (res?.success && res.data?.length > 0) {
-        setTickets(res.data);
+      if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
+        // Map backend booking/ticket data with defensive fallback attributes
+        const mapped: Ticket[] = res.data.map((item: any) => ({
+          id: item.id,
+          bookingCode: item.bookingCode || item.ticketCode || item.code || `BKG-${String(item.id).padStart(6, '0')}`,
+          trip: item.trip || {
+            id: 0,
+            route: { id: 0, departureLocation: 'Chưa cập nhật', arrivalLocation: 'Chưa cập nhật', basePrice: 0, distance: 0, duration: 0 },
+            vehicle: { id: 0, licensePlate: 'N/A', capacity: 34 },
+            departureTime: item.createdAt || new Date().toISOString(),
+            price: item.totalPrice || item.price || 0
+          },
+          customer: item.customer || { id: 'anon', fullName: 'Khách vãng lai', email: '', status: 'ACTIVE' },
+          seats: Array.isArray(item.seats) && item.seats.length > 0 
+            ? item.seats 
+            : (item.seatNumber ? [item.seatNumber] : ['Tiêu chuẩn']),
+          totalPrice: typeof item.totalPrice === 'number' ? item.totalPrice : (Number(item.price) || 0),
+          status: item.status || 'PAID',
+          createdAt: item.createdAt || new Date().toISOString()
+        }));
+        setTickets(mapped);
       } else {
         setTickets(MOCK_FALLBACK_TICKETS);
       }
@@ -181,13 +200,17 @@ export const TicketManagement: React.FC = () => {
     }
   };
 
-  // Filtered tickets
+  // Filtered tickets with safe optional chaining
   const filteredTickets = useMemo(() => {
+    const q = (searchTerm || '').trim().toLowerCase();
     return tickets.filter((t) => {
-      const matchSearch = 
-        t.bookingCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (t.customer?.fullName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        `${t.trip?.route?.departureLocation} ${t.trip?.route?.arrivalLocation}`.toLowerCase().includes(searchTerm.toLowerCase());
+      const bCode = (t.bookingCode || (t as any).ticketCode || (t as any).code || `BKG-${t.id}` || '').toLowerCase();
+      const cName = (t.customer?.fullName || (t as any).customerName || '').toLowerCase();
+      const dep = (t.trip?.route?.departureLocation || '').toLowerCase();
+      const arr = (t.trip?.route?.arrivalLocation || '').toLowerCase();
+      const routeStr = `${dep} ${arr}`;
+
+      const matchSearch = !q || bCode.includes(q) || cName.includes(q) || routeStr.includes(q);
       const matchStatus = statusFilter === 'ALL' || t.status === statusFilter;
       return matchSearch && matchStatus;
     });
@@ -198,7 +221,7 @@ export const TicketManagement: React.FC = () => {
     const total = tickets.length;
     const paidRevenue = tickets
       .filter(t => t.status === 'PAID' || t.status === 'USED')
-      .reduce((acc, cur) => acc + cur.totalPrice, 0);
+      .reduce((acc, cur) => acc + (cur.totalPrice || 0), 0);
     const cancelRequests = tickets.filter(t => t.status === 'CANCEL_REQUESTED').length;
     const usedCount = tickets.filter(t => t.status === 'USED').length;
     return { total, paidRevenue, cancelRequests, usedCount };
@@ -209,8 +232,12 @@ export const TicketManagement: React.FC = () => {
       header: 'Mã & Khách Hàng', 
       accessor: (row) => (
         <div className="min-w-0">
-          <div className="font-mono font-bold text-cyan-300 text-xs whitespace-nowrap">#{row.bookingCode}</div>
-          <div className="font-medium text-white text-xs whitespace-nowrap">{row.customer?.fullName || 'Khách vãng lai'}</div>
+          <div className="font-mono font-bold text-cyan-300 text-xs whitespace-nowrap">
+            #{row.bookingCode || (row as any).ticketCode || `BKG-${row.id}`}
+          </div>
+          <div className="font-medium text-white text-xs whitespace-nowrap">
+            {row.customer?.fullName || 'Khách vãng lai'}
+          </div>
         </div>
       ), 
       width: '24%' 
@@ -220,13 +247,14 @@ export const TicketManagement: React.FC = () => {
       accessor: (row) => (
         <div className="min-w-0 text-xs">
           <div className="font-medium text-white whitespace-nowrap">
-            <span>{row.trip.route?.departureLocation}</span>
+            <span>{row.trip?.route?.departureLocation || 'Bến xuất phát'}</span>
             <span className="text-cyan-400 mx-1">➔</span>
-            <span>{row.trip.route?.arrivalLocation}</span>
+            <span>{row.trip?.route?.arrivalLocation || 'Bến đến'}</span>
           </div>
           <div className="text-[10px] text-slate-400 font-mono">
-            {new Date(row.trip.departureTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}{' '}
-            {new Date(row.trip.departureTime).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}
+            {row.trip?.departureTime ? (
+              `${new Date(row.trip.departureTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} ${new Date(row.trip.departureTime).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}`
+            ) : 'Chưa định giờ'}
           </div>
         </div>
       ), 
@@ -236,7 +264,7 @@ export const TicketManagement: React.FC = () => {
       header: 'Ghế', 
       accessor: (row) => (
         <span className="font-mono text-xs font-semibold text-cyan-300 whitespace-nowrap">
-          {row.seats?.join(', ')}
+          {Array.isArray(row.seats) && row.seats.length > 0 ? row.seats.join(', ') : 'Tiêu chuẩn'}
         </span>
       ), 
       align: 'left', 
@@ -246,7 +274,7 @@ export const TicketManagement: React.FC = () => {
       header: 'Tổng Tiền', 
       accessor: (row) => (
         <span className="font-mono font-bold text-emerald-400 whitespace-nowrap text-xs">
-          {new Intl.NumberFormat('vi-VN').format(row.totalPrice)}đ
+          {new Intl.NumberFormat('vi-VN').format(row.totalPrice || 0)}đ
         </span>
       ), 
       align: 'right', 

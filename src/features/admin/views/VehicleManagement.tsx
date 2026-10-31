@@ -113,9 +113,10 @@ export const VehicleManagement: React.FC = () => {
 
   // Filtered vehicles
   const filteredVehicles = useMemo(() => {
+    const q = (searchTerm || '').toLowerCase();
     return vehicles.filter((v) => {
-      const matchSearch = v.licensePlate.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchCapacity = capacityFilter === 'ALL' || v.capacity.toString() === capacityFilter;
+      const matchSearch = !q || (v.licensePlate || '').toLowerCase().includes(q);
+      const matchCapacity = capacityFilter === 'ALL' || (v.capacity !== undefined && v.capacity.toString() === capacityFilter);
       return matchSearch && matchCapacity;
     });
   }, [vehicles, searchTerm, capacityFilter]);

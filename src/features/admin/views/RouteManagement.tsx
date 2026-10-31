@@ -124,9 +124,10 @@ export const RouteManagement: React.FC = () => {
 
   // Filtered routes
   const filteredRoutes = useMemo(() => {
+    const q = (searchTerm || '').toLowerCase();
     return routes.filter((r) => {
-      const fullText = `${r.departureLocation} ${r.arrivalLocation}`.toLowerCase();
-      return fullText.includes(searchTerm.toLowerCase());
+      const fullText = `${r.departureLocation || ''} ${r.arrivalLocation || ''}`.toLowerCase();
+      return !q || fullText.includes(q);
     });
   }, [routes, searchTerm]);
 

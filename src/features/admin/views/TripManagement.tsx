@@ -218,10 +218,11 @@ export const TripManagement: React.FC = () => {
 
   // Filtered trips
   const filteredTrips = useMemo(() => {
+    const q = (searchTerm || '').toLowerCase();
     return trips.filter((t) => {
-      const routeStr = t.route ? `${t.route.departureLocation} ${t.route.arrivalLocation}`.toLowerCase() : '';
-      const plateStr = t.vehicle ? t.vehicle.licensePlate.toLowerCase() : '';
-      const matchSearch = routeStr.includes(searchTerm.toLowerCase()) || plateStr.includes(searchTerm.toLowerCase());
+      const routeStr = t.route ? `${t.route.departureLocation || ''} ${t.route.arrivalLocation || ''}`.toLowerCase() : '';
+      const plateStr = t.vehicle ? (t.vehicle.licensePlate || '').toLowerCase() : '';
+      const matchSearch = !q || routeStr.includes(q) || plateStr.includes(q);
       const matchStatus = statusFilter === 'ALL' || t.status === statusFilter;
       return matchSearch && matchStatus;
     });

@@ -442,8 +442,10 @@ export const UserManagement: React.FC = () => {
 
   const currentData = activeTab === 'STAFF' ? staffs : customers;
   const filteredData = currentData.filter(user => {
-    const matchesSearch = user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          user.email.toLowerCase().includes(searchQuery.toLowerCase());
+    const q = (searchQuery || '').toLowerCase();
+    const name = (user.fullName || '').toLowerCase();
+    const email = (user.email || '').toLowerCase();
+    const matchesSearch = !q || name.includes(q) || email.includes(q);
     const matchesStatus = statusFilter === 'ALL' || user.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
