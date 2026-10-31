@@ -179,6 +179,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (container) container.scrollTop = 0;
 
     if (window.lucide) window.lucide.createIcons();
+    renderMath();
+  }
+
+  function renderMath() {
+    if (window.renderMathInElement) {
+      try {
+        window.renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      } catch (e) {}
+    }
   }
 
   function updateCheatsheetDrawer() {
@@ -280,6 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         parentSlide.querySelectorAll('.tab-content').forEach(content => {
           content.classList.toggle('active', content.id === targetId);
         });
+        renderMath();
       });
     });
   });
