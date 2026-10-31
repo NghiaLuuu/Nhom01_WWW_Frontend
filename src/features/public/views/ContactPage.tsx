@@ -92,17 +92,17 @@ export const ContactPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Main Grid: Form & Contact Info */}
+      {/* Main Container: Flex for Form & Contact Info */}
       <section className="py-12 px-6 sm:px-12 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div className="flex flex-col lg:flex-row gap-10 items-start">
           
           {/* Left Column: Contact Cards */}
-          <div className="lg:col-span-5 space-y-6">
+          <div className="w-full lg:w-[440px] shrink-0 space-y-6">
             <div className="p-8 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl space-y-6">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <Phone className="text-cyan-400" size={20} />
                 <span>Kênh Liên Lạc Trực Tiếp</span>
-              </h3>
+              </h2>
 
               <div className="space-y-4">
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/30 transition-colors">
@@ -134,9 +134,9 @@ export const ContactPage: React.FC = () => {
           </div>
 
           {/* Right Column: Contact Form */}
-          <div className="lg:col-span-7">
+          <div className="flex-1 min-w-0 w-full">
             <div className="p-8 sm:p-10 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-2xl">
-              <h3 className="text-2xl font-bold text-white mb-2">Gửi Tin Nhắn / Yêu Cầu Hỗ Trợ</h3>
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Gửi Tin Nhắn / Yêu Cầu Hỗ Trợ</h2>
               <p className="text-slate-400 text-sm mb-6 font-light">
                 Điền thông tin bên dưới, nhân viên hỗ trợ sẽ liên hệ lại qua điện thoại hoặc email ngay khi nhận được.
               </p>
@@ -270,17 +270,19 @@ export const ContactPage: React.FC = () => {
           {offices.map((off, idx) => (
             <div
               key={idx}
-              className="p-6 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 hover:border-cyan-500/30 transition-all shadow-xl space-y-4"
+              className="p-6 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 hover:border-cyan-500/30 transition-all shadow-xl flex flex-col justify-between space-y-4"
             >
-              <div className="flex items-center gap-2 text-white font-bold text-base">
-                <Building2 className="text-cyan-400" size={20} />
-                <span>{off.city}</span>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-white font-bold text-base min-h-[32px]">
+                  <Building2 className="text-cyan-400 shrink-0" size={20} />
+                  <span>{off.city}</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs text-slate-300 font-light min-h-[48px]">
+                  <MapPin className="text-slate-400 shrink-0 mt-0.5" size={15} />
+                  <span className="leading-relaxed">{off.address}</span>
+                </div>
               </div>
-              <div className="flex items-start gap-2 text-xs text-slate-300 font-light">
-                <MapPin className="text-slate-400 shrink-0 mt-0.5" size={15} />
-                <span>{off.address}</span>
-              </div>
-              <div className="pt-2 border-t border-white/10 space-y-1.5 text-xs text-slate-400">
+              <div className="pt-3 border-t border-white/10 space-y-1.5 text-xs text-slate-400">
                 <div>Điện thoại: <span className="text-white font-medium">{off.hotline}</span></div>
                 <div>Email: <span className="text-white font-medium">{off.email}</span></div>
                 <div>Giờ tiếp nhận: <span className="text-cyan-400 font-mono">{off.hours}</span></div>

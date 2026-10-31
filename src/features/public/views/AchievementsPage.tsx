@@ -101,23 +101,27 @@ export const AchievementsPage: React.FC = () => {
 
       {/* Metrics Counters */}
       <section className="py-12 px-6 sm:px-12 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {metrics.map((item, idx) => {
             const Icon = item.icon;
             return (
               <div
                 key={idx}
-                className="relative p-6 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-300 shadow-xl group overflow-hidden"
+                className="relative p-6 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-300 shadow-xl group overflow-hidden flex flex-col justify-between h-full min-h-[200px]"
               >
-                <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-colors" />
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
-                  <Icon size={20} className="text-cyan-400" />
+                <div aria-hidden="true" className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-colors pointer-events-none" />
+                <div className="flex-1">
+                  <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+                    <Icon size={20} className="text-cyan-400" />
+                  </div>
+                  <div className={`text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r ${item.color} tracking-tight`}>
+                    {item.value}
+                  </div>
                 </div>
-                <div className={`text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r ${item.color} tracking-tight`}>
-                  {item.value}
+                <div className="mt-auto pt-3 border-t border-white/5 shrink-0">
+                  <div className="text-white font-semibold text-sm leading-tight h-10 flex items-center">{item.label}</div>
+                  <div className="text-slate-400 text-xs mt-1 font-light">{item.note}</div>
                 </div>
-                <div className="text-white font-semibold text-sm mt-2">{item.label}</div>
-                <div className="text-slate-400 text-xs mt-1 font-light">{item.note}</div>
               </div>
             );
           })}
@@ -131,13 +135,13 @@ export const AchievementsPage: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">Được Tôn Vinh Bởi Các Tổ Chức Uy Tín</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
           {awards.map((award, idx) => (
             <div
               key={idx}
-              className={`relative p-8 rounded-3xl border backdrop-blur-xl transition-all duration-300 shadow-2xl flex flex-col justify-between ${award.glow}`}
+              className={`relative p-8 rounded-3xl border backdrop-blur-xl transition-all duration-300 shadow-2xl flex flex-col justify-between h-full ${award.glow}`}
             >
-              <div>
+              <div className="flex-1">
                 <div className="flex items-center justify-between gap-2 mb-6">
                   <div className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono font-bold">
                     {award.year}
@@ -151,9 +155,9 @@ export const AchievementsPage: React.FC = () => {
                 <p className="text-slate-300 text-sm leading-relaxed font-light">{award.desc}</p>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-white/10 flex items-center gap-2 text-xs text-slate-400">
-                <CheckCircle2 size={16} className="text-emerald-400" />
-                <span>Đã kiểm định & chứng nhận chính thức</span>
+              <div className="mt-8 pt-4 border-t border-white/10 flex items-center gap-2 text-xs text-slate-400 shrink-0 h-10">
+                <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                <span className="truncate">Đã kiểm định & chứng nhận chính thức</span>
               </div>
             </div>
           ))}
@@ -197,13 +201,13 @@ export const AchievementsPage: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">Trải Nghiệm Thực Tế Từ Triệu Hành Trình</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
           {customerReviews.map((rev, idx) => (
             <div
               key={idx}
-              className="p-8 rounded-3xl bg-slate-900/50 backdrop-blur-xl border border-white/10 flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-300"
+              className="p-8 rounded-3xl bg-slate-900/50 backdrop-blur-xl border border-white/10 flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-300 h-full"
             >
-              <div>
+              <div className="flex-1">
                 <div className="flex items-center gap-1 mb-4 text-amber-400">
                   {[...Array(rev.rating)].map((_, i) => (
                     <Star key={i} size={16} fill="currentColor" />
@@ -212,10 +216,10 @@ export const AchievementsPage: React.FC = () => {
                 <p className="text-slate-300 text-sm leading-relaxed italic font-light">"{rev.content}"</p>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-white/10">
+              <div className="mt-6 pt-4 border-t border-white/10 shrink-0 min-h-[76px] flex flex-col justify-center">
                 <div className="text-white font-bold text-sm">{rev.name}</div>
                 <div className="text-slate-400 text-xs">{rev.role}</div>
-                <div className="mt-2 text-[11px] text-cyan-400 font-medium">Chuyến: {rev.route}</div>
+                <div className="mt-1 text-[11px] text-cyan-400 font-medium leading-tight">Chuyến: {rev.route}</div>
               </div>
             </div>
           ))}
