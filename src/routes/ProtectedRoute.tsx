@@ -11,17 +11,32 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowe
   const { isAuthenticated, user } = useAuthStore();
   const location = useLocation();
 
-  if (!isAuthenticated) {
+  // Check localStorage directly for immediate synchronous hydration protection on initial mount / F5
+  const storedAuth = React.useMemo(() => {
+    try {
+      const raw = localStorage.getItem('auth-storage');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return parsed?.state;
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  }, []);
+
+  const authed = isAuthenticated || Boolean(storedAuth?.isAuthenticated && storedAuth?.accessToken);
+  const currentUser = user || storedAuth?.user;
+
+  if (!authed) {
     // Redirect to login but save the attempted url
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (allowedRoles && allowedRoles.length > 0) {
     // Check if user has at least one of the allowed roles
-    const hasRole = user?.roles?.some(role => allowedRoles.includes(role));
+    const hasRole = currentUser?.roles?.some((role: string) => allowedRoles.includes(role));
     if (!hasRole) {
-      // If user is authenticated but not authorized, redirect to home or unauthorized page
-      // Assuming non-admin goes to / or a forbidden page
       return <Navigate to="/" replace />;
     }
   }

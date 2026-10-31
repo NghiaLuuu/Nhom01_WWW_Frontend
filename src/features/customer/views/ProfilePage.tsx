@@ -210,14 +210,14 @@ export const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 py-10 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Glow Mesh */}
-      <div className="absolute top-10 left-1/4 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-40 right-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div aria-hidden="true" className="absolute top-10 left-1/4 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div aria-hidden="true" className="absolute top-40 right-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-5xl mx-auto relative z-10 space-y-8">
         
         {/* Member Profile Header Card */}
         <div className="bg-gradient-to-r from-slate-900/90 via-slate-900/80 to-indigo-950/70 border border-white/10 rounded-3xl p-6 sm:p-8 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
-          <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div aria-hidden="true" className="absolute right-0 bottom-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
           
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
             {/* Left: Avatar & Identity */}
