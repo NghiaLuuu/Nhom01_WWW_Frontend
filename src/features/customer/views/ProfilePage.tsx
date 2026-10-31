@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { ProfileService } from '../../../services/profile.service';
 import { Link } from 'react-router-dom';
+import { CustomerPersonalizedHub } from '../components/CustomerPersonalizedHub';
 
 export const ProfilePage: React.FC = () => {
   const { user, setUser } = useAuthStore();
@@ -37,8 +38,8 @@ export const ProfilePage: React.FC = () => {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   
-  // Tabs
-  const [activeTab, setActiveTab] = useState<'PROFILE' | 'HISTORY' | 'PASSWORD'>('PROFILE');
+  // Tabs: RECOMMENDATIONS | PROFILE | HISTORY | PASSWORD
+  const [activeTab, setActiveTab] = useState<'RECOMMENDATIONS' | 'PROFILE' | 'HISTORY' | 'PASSWORD'>('RECOMMENDATIONS');
   
   // Password change state
   const [oldPassword, setOldPassword] = useState('');
@@ -279,10 +280,27 @@ export const ProfilePage: React.FC = () => {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 bg-slate-900/60 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl">
+        <div className="flex items-center gap-2 bg-slate-900/60 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl overflow-x-auto">
+          <button
+            onClick={() => setActiveTab('RECOMMENDATIONS')}
+            className={`flex-1 min-w-[170px] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all relative cursor-pointer ${
+              activeTab === 'RECOMMENDATIONS'
+                ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black shadow-lg shadow-cyan-500/30 border border-cyan-300'
+                : 'text-cyan-300 hover:text-white hover:bg-slate-800/40'
+            }`}
+          >
+            <Sparkles size={17} className={activeTab === 'RECOMMENDATIONS' ? 'text-slate-950 animate-bounce' : 'text-cyan-400 animate-pulse'} />
+            <span>Gợi Ý Dành Cho Bạn</span>
+            <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black uppercase ${
+              activeTab === 'RECOMMENDATIONS' ? 'bg-slate-950 text-cyan-300' : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+            }`}>
+              AI
+            </span>
+          </button>
+
           <button
             onClick={() => setActiveTab('PROFILE')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex-1 min-w-[160px] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'PROFILE'
                 ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-indigo-600/30 border border-indigo-400/30'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
@@ -294,7 +312,7 @@ export const ProfilePage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('HISTORY')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'HISTORY'
                 ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-indigo-600/30 border border-indigo-400/30'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
@@ -306,7 +324,7 @@ export const ProfilePage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('PASSWORD')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex-1 min-w-[160px] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'PASSWORD'
                 ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-indigo-600/30 border border-indigo-400/30'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
@@ -316,6 +334,11 @@ export const ProfilePage: React.FC = () => {
             <span>Bảo Mật & Mật Khẩu</span>
           </button>
         </div>
+
+        {/* Tab 0: AI Personalized Hub */}
+        {activeTab === 'RECOMMENDATIONS' && (
+          <CustomerPersonalizedHub />
+        )}
 
         {/* Tab 1: Profile Form */}
         {activeTab === 'PROFILE' && (

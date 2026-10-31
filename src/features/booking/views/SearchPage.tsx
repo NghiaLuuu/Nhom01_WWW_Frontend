@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { type Trip } from '../../admin/api/trip.service';
 import { BookingService } from '../api/booking.service';
 import { TripList } from '../components/TripList';
+import { SearchSmartSpotlight } from '../components/SearchSmartSpotlight';
 import { 
   Search, 
   MapPin, 
@@ -486,7 +487,15 @@ export const SearchPage: React.FC = () => {
 
           {/* Right Column: Trip Cards List */}
           <section className="flex-1 min-w-0 w-full">
-            <TripList trips={filteredAndSortedTrips} isLoading={isLoading} />
+            <SearchSmartSpotlight
+              trips={filteredAndSortedTrips}
+              isLoading={isLoading}
+              departureParam={departureParam}
+              arrivalParam={arrivalParam}
+            />
+            {filteredAndSortedTrips.length > 0 && (
+              <TripList trips={filteredAndSortedTrips} isLoading={isLoading} />
+            )}
           </section>
 
         </div>

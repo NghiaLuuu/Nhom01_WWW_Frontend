@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   AlertTriangle
 } from 'lucide-react';
+import { CheckoutSmartAddons } from '../components/CheckoutSmartAddons';
 
 // Fallback demo trip for direct navigation / testing
 const FALLBACK_TRIP = {
@@ -447,6 +448,13 @@ export const CheckoutPage: React.FC = () => {
               <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">Tóm tắt đơn hàng</span>
               <h2 className="text-xl font-black text-white tracking-tight">Chi tiết vé & Lộ trình</h2>
             </div>
+
+            {/* AI Return Trip & Onboarding Suggestion */}
+            <CheckoutSmartAddons 
+              departureLocation={activeTrip.route?.departureLocation}
+              arrivalLocation={activeTrip.route?.arrivalLocation}
+              departureTime={activeTrip.departureTime}
+            />
 
             <div className="relative rounded-3xl bg-slate-900/90 backdrop-blur-2xl border border-cyan-500/30 p-6 shadow-2xl shadow-cyan-950/40 sticky top-24 space-y-6 overflow-hidden">
               

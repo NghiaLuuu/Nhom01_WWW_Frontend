@@ -16,6 +16,7 @@ import {
   Ticket,
   ChevronRight
 } from 'lucide-react';
+import { PostBookingRecommendations } from '../components/PostBookingRecommendations';
 
 // Fallback demo booking details for robust rendering and testing
 const FALLBACK_BOOKING = {
@@ -321,6 +322,13 @@ export const BookingSuccessPage: React.FC = () => {
           </button>
 
         </div>
+
+        {/* AI Smart Post-Booking Follow-up & Recommendations */}
+        <PostBookingRecommendations
+          departureLocation={bookingDetails.departureLocation}
+          arrivalLocation={bookingDetails.arrivalLocation}
+          departureTime={bookingDetails.departureTime}
+        />
 
       </div>
     </div>
