@@ -5,7 +5,7 @@ import { DataTable, type Column } from '../../../components/DataTable';
 import { FormModal } from '../../../components/FormModal';
 import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
-import { Plus, Users, UserCheck, Search, Shield, KeyRound, Lock, Unlock, CheckCircle2, AlertCircle, Sparkles, Pencil } from 'lucide-react';
+import { Plus, Users, UserCheck, Search, Shield, KeyRound, Lock, Unlock, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
 
 const MOCK_FALLBACK_ROLES: Role[] = [
   { id: 1, name: 'ROLE_ADMIN', description: 'Toàn quyền quản trị hệ thống' },
@@ -105,7 +105,7 @@ export const UserManagement: React.FC = () => {
   const [customers, setCustomers] = useState<User[]>(MOCK_FALLBACK_CUSTOMERS);
   const [roles, setRoles] = useState<Role[]>(MOCK_FALLBACK_ROLES);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const AVAILABLE_PERMISSIONS = [
     { id: 'TRIP_MANAGE', label: 'Quản lý chuyến xe' },
     { id: 'MANAGE_TICKET', label: 'Quản lý đặt vé' },
@@ -116,7 +116,7 @@ export const UserManagement: React.FC = () => {
     { id: 'ROUTE_MANAGE', label: 'Quản lý tuyến đường' },
     { id: 'VEHICLE_MANAGE', label: 'Quản lý xe & tài xế' }
   ];
-  
+
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState<User | null>(null);
@@ -272,8 +272,8 @@ export const UserManagement: React.FC = () => {
   };
 
   const staffColumns: Column<User>[] = [
-    { 
-      header: 'Nhân Viên', 
+    {
+      header: 'Nhân Viên',
       accessor: (row) => (
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
@@ -282,11 +282,11 @@ export const UserManagement: React.FC = () => {
           </div>
           <div className="text-[10px] text-slate-400 font-mono truncate">{row.email}</div>
         </div>
-      ), 
-      width: '34%' 
+      ),
+      width: '34%'
     },
-    { 
-      header: 'Vai Trò', 
+    {
+      header: 'Vai Trò',
       accessor: (row) => (
         <span className="font-semibold text-cyan-300 text-xs whitespace-nowrap">
           {row.role?.name === 'ROLE_ADMIN' ? 'Quản Trị Viên' : 'Nhân Viên'}
@@ -294,8 +294,8 @@ export const UserManagement: React.FC = () => {
       ),
       width: '18%'
     },
-    { 
-      header: 'Phân Quyền', 
+    {
+      header: 'Phân Quyền',
       accessor: (row) => {
         const adHocPerms = row.permissions || [];
         const rolePerms = row.role?.permissions?.map((p: any) => p.code) || [];
@@ -321,14 +321,13 @@ export const UserManagement: React.FC = () => {
       },
       width: '20%'
     },
-    { 
-      header: 'Trạng Thái', 
+    {
+      header: 'Trạng Thái',
       accessor: (row) => (
-        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold whitespace-nowrap ${
-          row.status === 'ACTIVE' 
-            ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30' 
-            : 'bg-rose-500/10 text-rose-300 border border-rose-500/30'
-        }`}>
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold whitespace-nowrap ${row.status === 'ACTIVE'
+          ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30'
+          : 'bg-rose-500/10 text-rose-300 border border-rose-500/30'
+          }`}>
           {row.status === 'ACTIVE' ? <CheckCircle2 size={11} /> : <AlertCircle size={11} />}
           <span>{row.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'}</span>
         </span>
@@ -340,25 +339,17 @@ export const UserManagement: React.FC = () => {
       header: 'Thao Tác',
       accessor: (row) => (
         <div className="flex items-center justify-end gap-1.5 whitespace-nowrap">
-          <button 
-            onClick={() => handleOpenEdit(row)}
-            className="p-1 rounded-md text-[10px] font-bold text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 transition-colors cursor-pointer"
-            title="Chỉnh sửa quyền"
-          >
-            <Pencil size={13} />
-          </button>
-          <button 
+          <button
             onClick={() => handleToggleStatus(row, true)}
-            className={`p-1 rounded-md text-[10px] font-bold border transition-colors cursor-pointer ${
-              row.status === 'ACTIVE' 
-                ? 'text-rose-400 border-rose-500/30 hover:bg-rose-500/20' 
-                : 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
-            }`}
+            className={`p-1 rounded-md text-[10px] font-bold border transition-colors cursor-pointer ${row.status === 'ACTIVE'
+              ? 'text-rose-400 border-rose-500/30 hover:bg-rose-500/20'
+              : 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
+              }`}
             title={row.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}
           >
             {row.status === 'ACTIVE' ? <Lock size={13} /> : <Unlock size={13} />}
           </button>
-          <button 
+          <button
             onClick={() => handleResetPassword(row.id, true)}
             className="p-1 rounded-md text-[10px] font-bold text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/20 transition-colors cursor-pointer"
             title="Reset mật khẩu về mặc định"
@@ -368,13 +359,13 @@ export const UserManagement: React.FC = () => {
         </div>
       ),
       align: 'right',
-      width: '16%'
+      width: '14%'
     }
   ];
 
   const customerColumns: Column<User>[] = [
-    { 
-      header: 'Khách Hàng', 
+    {
+      header: 'Khách Hàng',
       accessor: (row) => (
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
@@ -383,27 +374,26 @@ export const UserManagement: React.FC = () => {
           </div>
           <div className="text-[10px] text-slate-400 font-mono truncate">{row.email}</div>
         </div>
-      ), 
-      width: '42%' 
+      ),
+      width: '42%'
     },
-    { 
-      header: 'Hạng Khách Hàng', 
+    {
+      header: 'Hạng Khách Hàng',
       accessor: (row) => (
         <div className="flex items-center gap-1.5 text-xs whitespace-nowrap font-medium text-slate-300">
           <Sparkles size={12} className="text-amber-400 shrink-0" />
           <span>{row.email.includes('luutrungnghia') ? 'VIP (Commuter)' : 'Thân Thiết'}</span>
         </div>
-      ), 
-      width: '28%' 
+      ),
+      width: '28%'
     },
-    { 
-      header: 'Trạng Thái', 
+    {
+      header: 'Trạng Thái',
       accessor: (row) => (
-        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold whitespace-nowrap ${
-          row.status === 'ACTIVE' 
-            ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30' 
-            : 'bg-rose-500/10 text-rose-300 border border-rose-500/30'
-        }`}>
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold whitespace-nowrap ${row.status === 'ACTIVE'
+          ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30'
+          : 'bg-rose-500/10 text-rose-300 border border-rose-500/30'
+          }`}>
           {row.status === 'ACTIVE' ? <CheckCircle2 size={11} /> : <AlertCircle size={11} />}
           <span>{row.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'}</span>
         </span>
@@ -415,18 +405,17 @@ export const UserManagement: React.FC = () => {
       header: 'Thao Tác',
       accessor: (row) => (
         <div className="flex items-center justify-end gap-1.5 whitespace-nowrap">
-          <button 
+          <button
             onClick={() => handleToggleStatus(row, false)}
-            className={`p-1 rounded-md text-[10px] font-bold border transition-colors cursor-pointer ${
-              row.status === 'ACTIVE' 
-                ? 'text-rose-400 border-rose-500/30 hover:bg-rose-500/20' 
-                : 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
-            }`}
+            className={`p-1 rounded-md text-[10px] font-bold border transition-colors cursor-pointer ${row.status === 'ACTIVE'
+              ? 'text-rose-400 border-rose-500/30 hover:bg-rose-500/20'
+              : 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
+              }`}
             title={row.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}
           >
             {row.status === 'ACTIVE' ? <Lock size={13} /> : <Unlock size={13} />}
           </button>
-          <button 
+          <button
             onClick={() => handleResetPassword(row.id, false)}
             className="p-1 rounded-md text-[10px] font-bold text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/20 transition-colors cursor-pointer"
             title="Reset mật khẩu"
@@ -488,7 +477,7 @@ export const UserManagement: React.FC = () => {
   );
 
   const actionButton = activeTab === 'STAFF' ? (
-    <button 
+    <button
       onClick={handleOpenAdd}
       className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
     >
@@ -499,7 +488,7 @@ export const UserManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      
+
       {/* 4 Summary Stat Chips: 2 cols on laptop 1024, 4 cols on desktop xl */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
@@ -549,37 +538,36 @@ export const UserManagement: React.FC = () => {
         <div className="flex items-center border-b border-white/10 px-4 bg-slate-950/40">
           <button
             onClick={() => setActiveTab('STAFF')}
-            className={`flex items-center space-x-2 px-5 py-3 border-b-2 text-xs font-bold transition-colors cursor-pointer ${
-              activeTab === 'STAFF' 
-                ? 'border-cyan-400 text-cyan-300' 
-                : 'border-transparent text-slate-400 hover:text-white'
-            }`}
+            className={`flex items-center space-x-2 px-5 py-3 border-b-2 text-xs font-bold transition-colors cursor-pointer ${activeTab === 'STAFF'
+              ? 'border-cyan-400 text-cyan-300'
+              : 'border-transparent text-slate-400 hover:text-white'
+              }`}
           >
             <UserCheck size={15} />
             <span>Đội Ngũ Nhân Viên ({staffs.length})</span>
           </button>
           <button
             onClick={() => setActiveTab('CUSTOMER')}
-            className={`flex items-center space-x-2 px-5 py-3 border-b-2 text-xs font-bold transition-colors cursor-pointer ${
-              activeTab === 'CUSTOMER' 
-                ? 'border-cyan-400 text-cyan-300' 
-                : 'border-transparent text-slate-400 hover:text-white'
-            }`}
+            className={`flex items-center space-x-2 px-5 py-3 border-b-2 text-xs font-bold transition-colors cursor-pointer ${activeTab === 'CUSTOMER'
+              ? 'border-cyan-400 text-cyan-300'
+              : 'border-transparent text-slate-400 hover:text-white'
+              }`}
           >
             <Users size={15} />
             <span>Khách Hàng Thành Viên ({customers.length})</span>
           </button>
         </div>
 
-        <DataTable 
-          data={filteredData} 
-          columns={activeTab === 'STAFF' ? staffColumns : customerColumns} 
+        <DataTable
+          data={filteredData}
+          columns={activeTab === 'STAFF' ? staffColumns : customerColumns}
           isLoading={isLoading}
+          onEdit={activeTab === 'STAFF' ? handleOpenEdit : undefined}
           keyExtractor={(row) => row.id}
         />
 
-        <FormModal 
-          isOpen={isModalOpen} 
+        <FormModal
+          isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           title={editingStaff ? "Cập Nhật Quyền Nhân Viên" : "Thêm Nhân Viên Mới"}
           maxWidth="max-w-lg"
@@ -587,7 +575,7 @@ export const UserManagement: React.FC = () => {
           <form onSubmit={handleSubmitStaff} className="space-y-4">
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Họ & Tên</label>
-              <input 
+              <input
                 required
                 type="text"
                 value={fullName}
@@ -596,10 +584,10 @@ export const UserManagement: React.FC = () => {
                 placeholder="VD: Nguyễn Văn A"
               />
             </div>
-            
+
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Email Đăng Nhập</label>
-              <input 
+              <input
                 required
                 type="email"
                 value={email}
@@ -632,7 +620,7 @@ export const UserManagement: React.FC = () => {
               <div className="grid grid-cols-2 gap-2 bg-slate-950/60 p-3 rounded-2xl border border-white/10">
                 {AVAILABLE_PERMISSIONS.map(p => (
                   <label key={p.id} className="flex items-center space-x-2 text-xs text-slate-200 cursor-pointer hover:text-cyan-300 transition-colors">
-                    <input 
+                    <input
                       type="checkbox"
                       checked={selectedPermissions.includes(p.id)}
                       onChange={() => handleTogglePermission(p.id)}
@@ -645,15 +633,15 @@ export const UserManagement: React.FC = () => {
             </div>
 
             <div className="pt-5 mt-4 flex justify-end space-x-3 border-t border-white/10">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setIsModalOpen(false)}
                 className="px-4 py-2 text-xs font-semibold text-slate-300 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors cursor-pointer"
               >
                 Hủy
               </button>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 disabled={isSubmitting}
                 className="px-5 py-2 text-xs font-bold text-slate-950 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl hover:from-cyan-400 hover:to-blue-500 transition-colors disabled:opacity-50 cursor-pointer shadow-lg shadow-cyan-500/20"
               >
