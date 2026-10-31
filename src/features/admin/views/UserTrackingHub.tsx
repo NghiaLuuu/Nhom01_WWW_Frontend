@@ -646,12 +646,12 @@ export const UserTrackingHub: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {filteredLiveVisitors.map((v) => {
+                  {filteredLiveVisitors.map((v, vIdx) => {
                     const isOnline = v.computedStatus === 'ONLINE';
                     const isIdle = v.computedStatus === 'IDLE';
 
                     return (
-                      <tr key={v.sessionId} className="hover:bg-white/[0.02] transition-colors">
+                      <tr key={`${v.sessionId}-${vIdx}`} className="hover:bg-white/[0.02] transition-colors">
                         
                         {/* 1. Customer & IP */}
                         <td className="py-3 px-3 sm:px-4">
@@ -947,8 +947,8 @@ export const UserTrackingHub: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {(analytics.recentSessions || []).map((s) => (
-                    <tr key={s.sessionId} className="hover:bg-white/[0.02] transition-colors">
+                  {(analytics.recentSessions || []).map((s, sIdx) => (
+                    <tr key={`${s.sessionId}-${sIdx}`} className="hover:bg-white/[0.02] transition-colors">
                       <td className="py-2 px-3">
                         <div className="font-mono font-semibold text-white truncate">
                           {s.customerId ? (
@@ -1338,8 +1338,8 @@ export const UserTrackingHub: React.FC = () => {
                           <span>Chuyến Xe AI Gợi Ý Theo Sở Thích Khách:</span>
                         </div>
                         <div className="space-y-1.5">
-                          {vis.recommendedTrips.map((rt) => (
-                            <div key={rt.tripId} className="flex items-center justify-between p-2 rounded-lg bg-slate-950/60 border border-white/5 text-xs">
+                          {vis.recommendedTrips.map((rt, rtIdx) => (
+                            <div key={`${rt.tripId}-${rtIdx}`} className="flex items-center justify-between p-2 rounded-lg bg-slate-950/60 border border-white/5 text-xs">
                               <div>
                                 <span className="font-bold text-white">{rt.route}</span>
                                 <span className="text-slate-400 ml-2">({rt.departureTime})</span>
@@ -1423,3 +1423,4 @@ export const UserTrackingHub: React.FC = () => {
     </div>
   );
 };
+
