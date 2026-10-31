@@ -12,10 +12,10 @@ export const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({
   children
 }) => {
   return (
-    <div className="flex flex-col h-full space-y-4">
+    <div className="flex flex-col space-y-6">
       {/* Header section with Toolbar */}
       {(actionButton || filters) && (
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl">
           <div className="flex flex-wrap items-center gap-3">
             {filters}
           </div>
@@ -26,7 +26,7 @@ export const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({
       )}
 
       {/* Main content surface */}
-      <div className="bg-white border border-gray-200 rounded-lg">
+      <div className="rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden">
         {children}
       </div>
     </div>
