@@ -44,8 +44,8 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
   };
 
   return (
-    <header className="h-14 min-h-[3.5rem] bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
-      <h1 className="text-lg font-semibold text-gray-800 tracking-tight">
+    <header className="h-14 min-h-[3.5rem] bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 flex items-center justify-between px-6 sticky top-0 z-10">
+      <h1 className="text-base sm:text-lg font-bold text-white tracking-tight">
         {title || ''}
       </h1>
 

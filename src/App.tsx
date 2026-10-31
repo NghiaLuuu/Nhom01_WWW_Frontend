@@ -21,6 +21,7 @@ import { TicketManagement } from './features/admin/views/TicketManagement';
 import { UserBehaviorAnalytics } from './features/admin/views/UserBehaviorAnalytics';
 import { LiveVisitorsDashboard } from './features/admin/views/LiveVisitorsDashboard';
 import { LiveVisitorDetailView } from './features/admin/views/LiveVisitorDetailView';
+import { AdminDashboard } from './features/admin/views/AdminDashboard';
 import { AboutPage } from './features/public/views/AboutPage';
 import { AchievementsPage } from './features/public/views/AchievementsPage';
 import { ContactPage } from './features/public/views/ContactPage';
@@ -75,12 +76,7 @@ function App() {
           </AdminRoute>
         }>
           {/* Outlet contents */}
-          <Route index element={
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Bảng Điều Khiển</h2>
-              <p className="text-gray-500">Chào mừng bạn đến với hệ thống quản trị VEXE.</p>
-            </div>
-          } />
+          <Route index element={<AdminDashboard />} />
           
           <Route path="trips" element={<TripManagement />} />
           <Route path="users" element={<UserManagement />} />
