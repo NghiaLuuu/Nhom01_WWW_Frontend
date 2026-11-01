@@ -116,13 +116,13 @@ export const AboutPage: React.FC = () => {
           </h1>
 
           <p className="text-slate-300 text-base sm:text-lg leading-relaxed font-light max-w-3xl mx-auto">
-            VEXE không chỉ là một trang web bán vé xe thông thường. Chúng tôi là hệ sinh thái công nghệ số toàn diện, kết nối trực tiếp hàng triệu hành khách với hơn 100+ nhà xe uy tín trên 550+ tuyến đường toàn quốc, mang đến sự an tâm, minh bạch và đẳng cấp trên từng chuyến đi.
+            VEXE không chỉ là một trang web bán vé xe thông thường. Chúng tôi là hệ sinh thái công nghệ số toàn diện, kết nối trực tiếp hàng triệu hành khách với hơn 100+ nhà xe uy tín trên 550+ tuyến đường toàn quốc, mang đến sự an tâm, minh bạch và tiện nghi trên từng chuyến đi.
           </p>
 
           {/* Quick Metrics Ribbon */}
           <div className="pt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { val: "1.500.000+", label: "Vé Điện Tử Xuất Xưởng", sub: "Tăng trưởng 180%/năm" },
+              { val: "1.500.000+", label: "Vé Điện Tử Đã Phục Vụ", sub: "Tăng trưởng 180%/năm" },
               { val: "120+", label: "Hãng Xe Đối Tác Uy Tín", sub: "Phương Trang, Thành Bưởi..." },
               { val: "550+", label: "Tuyến Đường Phủ Khắp", sub: "Kết nối 63 tỉnh thành" },
               { val: "99.8%", label: "Tỷ Lệ Đúng Giờ & Giữ Chỗ", sub: "Bảo chứng 100% chuyến xe" }

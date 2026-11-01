@@ -3,11 +3,11 @@ import { Navigation, MapPin, Sparkles, X, CheckCircle2, ChevronDown, Gift, HelpC
 import { geolocationService, type UserLocationResult } from '../../../services/geolocation.service';
 
 export const DEMO_CITIES = [
-  { city: 'TP.HCM', label: 'TP. Hồ Chí Minh', note: 'Đô thị / Đi làm' },
+  { city: 'TP.HCM', label: 'TP. Hồ Chí Minh', note: 'Trung tâm / Đi làm' },
   { city: 'Phú Yên', label: 'Phú Yên (Tuy Hòa)', note: 'Quê hương / Thăm nhà' },
-  { city: 'Đà Nẵng', label: 'Đà Nẵng', note: 'Tỉnh thứ 3 / Về căn cứ' },
+  { city: 'Đà Nẵng', label: 'Đà Nẵng', note: 'Điểm đến trung gian' },
   { city: 'Nha Trang', label: 'Nha Trang (Khánh Hòa)', note: 'Du lịch biển' },
-  { city: 'Đà Lạt', label: 'Đà Lạt (Lâm Đồng)', note: 'Phượt VIP Limousine' },
+  { city: 'Đà Lạt', label: 'Đà Lạt (Lâm Đồng)', note: 'Du lịch nghỉ dưỡng' },
   { city: 'Hà Nội', label: 'Hà Nội', note: 'Thủ đô / Miền Bắc' },
   { city: 'Cần Thơ', label: 'Cần Thơ', note: 'Miền Tây sông nước' },
   { city: 'Vũng Tàu', label: 'Bà Rịa - Vũng Tàu', note: 'Du lịch ngắn ngày' },

@@ -125,7 +125,7 @@ export const LandingPage: React.FC = () => {
             
             {/* Mission Statement */}
             <p className="text-slate-300 text-base sm:text-lg max-w-xl leading-relaxed font-light">
-              VEXE kết hợp đội xe Limousine hàng không mặt đất cùng trí tuệ nhân tạo AI pgvector để mang đến trải nghiệm di chuyển sang trọng, đúng giờ tuyệt đối và đúng gu của bạn.
+              VEXE kết hợp đội xe Limousine chuyên cơ mặt đất cùng trí tuệ nhân tạo AI pgvector để mang đến trải nghiệm di chuyển sang trọng, đúng giờ tuyệt đối và đúng gu của bạn.
             </p>
 
             {/* Credibility Trust Badges */}

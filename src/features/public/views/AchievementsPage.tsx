@@ -25,7 +25,7 @@ export const AchievementsPage: React.FC = () => {
   useDocumentTitle("Thành tích & Đối tác uy tín | VEXE AI");
 
   const metrics = [
-    { label: "Vé Điện Tử Xuất Xưởng", value: "1.500.000+", note: "Tăng trưởng 180% năm 2025", color: "from-cyan-400 to-blue-500", icon: Trophy },
+    { label: "Vé Điện Tử Đã Phục Vụ", value: "1.500.000+", note: "Tăng trưởng 180% năm 2025", color: "from-cyan-400 to-blue-500", icon: Trophy },
     { label: "Hãng Xe Đối Tác Liên Kết", value: "120+", note: "Các nhà xe hàng đầu toàn quốc", color: "from-blue-400 to-indigo-500", icon: ShieldCheck },
     { label: "Tuyến Đường Vận Tải Phủ Khắp", value: "550+", note: "Kết nối trọn vẹn 63 tỉnh thành", color: "from-indigo-400 to-purple-500", icon: RouteIcon },
     { label: "Tỷ Lệ Hành Khách Hài Lòng", value: "99.4%", note: "4.9/5 sao từ hơn 500.000 đánh giá", color: "from-emerald-400 to-teal-500", icon: Users },
@@ -138,7 +138,7 @@ export const AchievementsPage: React.FC = () => {
         <div className="relative z-10 text-center max-w-4xl mx-auto space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider backdrop-blur-xl shadow-lg shadow-amber-950/50">
             <Trophy size={14} className="text-amber-400 animate-bounce" />
-            <span>Dấu Ấn Khẳng Định Đẳng Cấp & Uy Tín Quốc Gia</span>
+            <span>Dấu Ấn Khẳng Định Chất Lượng & Uy Tín Quốc Gia</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
