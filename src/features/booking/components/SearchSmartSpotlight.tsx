@@ -116,9 +116,9 @@ export const SearchSmartSpotlight: React.FC<SearchSmartSpotlightProps> = ({
           {/* Left info column */}
           <div className="space-y-2.5 max-w-2xl">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-bold font-mono tracking-wide">
-                <Sparkles size={13} className="text-cyan-400 animate-pulse" />
-                <span>VEXE AI BEST MATCH</span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500/25 via-cyan-500/25 to-blue-500/25 border border-cyan-400/50 text-cyan-300 text-xs font-black font-mono tracking-wide shadow-md shadow-cyan-950/40">
+                <Sparkles size={14} className="text-cyan-400 animate-pulse" />
+                <span>✨ VEXE AI ĐỀ XUẤT TỐT NHẤT</span>
                 <span className="px-1.5 py-0.2 rounded-full bg-cyan-400 text-slate-950 text-[10px] font-black">95%</span>
               </span>
 
@@ -137,12 +137,22 @@ export const SearchSmartSpotlight: React.FC<SearchSmartSpotlightProps> = ({
 
             <div>
               <h3 className="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2">
-                <span>Chuyến xe AI gợi ý phù hợp nhất với bạn</span>
+                <span>Chuyến xe AI gợi ý phù hợp nhất với hành trình</span>
               </h3>
-              <p className="text-xs sm:text-sm text-cyan-200/90 font-light mt-1 leading-relaxed">
+            </div>
+
+            {/* AI Recommendation Rationale Box */}
+            <div className="rounded-2xl bg-cyan-950/60 border border-cyan-500/40 p-3 sm:p-3.5 text-xs text-slate-200 shadow-inner">
+              <div className="flex items-center gap-1.5 font-bold text-cyan-300 mb-1 text-xs">
+                <Sparkles size={13} className="text-cyan-400 shrink-0" />
+                <span>💡 Lý do AI lựa chọn đề xuất chuyến này:</span>
+              </div>
+              <p className="text-slate-200 leading-relaxed font-light pl-4">
                 {recMatch?.reason || (isNewGuest 
-                  ? 'Chuyến xe được 98% khách hàng mới đánh giá xuất sắc về độ êm ái, khoang xe rộng rãi và tài xế chạy an toàn.' 
-                  : (persona?.description || 'Tối ưu hóa hành trình dựa trên thời gian xuất bến vàng và phương tiện chất lượng cao.'))}
+                  ? 'Chuyến xe được 98% khách hàng mới đánh giá xuất sắc về độ êm ái, khoang xe rộng rãi, vị trí ghế tầng dưới chống say xe và tài xế chạy an toàn.' 
+                  : (persona?.description 
+                      ? `Tối ưu hóa riêng cho phân khúc ${persona.displayName}: ${persona.description}` 
+                      : 'Tối ưu hóa hành trình dựa trên thời gian xuất bến vàng và phương tiện Limousine chất lượng cao.'))}
               </p>
             </div>
 
@@ -218,11 +228,12 @@ export const SearchSmartSpotlight: React.FC<SearchSmartSpotlightProps> = ({
             >
               <div>
                 <div className="flex items-center justify-between gap-1 mb-2">
+                  <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-cyan-400/40 text-[10px] font-bold text-cyan-300">
+                    <Sparkles size={10} className="text-cyan-400" />
+                    <span>✨ AI ĐỀ XUẤT</span>
+                  </div>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 font-mono">
                     Khớp {(rec.matchScore * 100).toFixed(0)}%
-                  </span>
-                  <span className="text-[10px] text-emerald-400 font-medium">
-                    Còn {rec.availableSeats} chỗ
                   </span>
                 </div>
 
@@ -237,8 +248,16 @@ export const SearchSmartSpotlight: React.FC<SearchSmartSpotlightProps> = ({
                   <span>{formatTime(rec.departureTime)}</span>
                 </div>
 
-                <div className="text-[11px] text-amber-300/90 font-medium leading-snug line-clamp-2">
-                  {rec.badgeText || rec.reason}
+                {/* AI Rationale Box */}
+                <div className="p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/20 text-[11px] text-cyan-200 mt-2 mb-2">
+                  <span className="font-bold text-cyan-300 block mb-0.5">💡 Lý do AI đề xuất:</span>
+                  <span className="text-slate-300 font-light leading-relaxed">
+                    {rec.reason || rec.badgeText || 'Chuyến xe có thời gian xuất bến vàng và đánh giá hài lòng cao.'}
+                  </span>
+                </div>
+
+                <div className="text-[10px] text-emerald-400 font-medium">
+                  Còn {rec.availableSeats} chỗ trống
                 </div>
               </div>
 

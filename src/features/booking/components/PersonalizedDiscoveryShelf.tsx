@@ -666,14 +666,20 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
                 >
                   {/* Header: Route & Match Score */}
                   <div>
-                    <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-md bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 font-mono">
+                    {/* Explicit AI Recommendation Badge */}
+                    <div className="flex items-center justify-between gap-2 mb-2.5">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-500/20 via-cyan-500/20 to-blue-500/20 border border-cyan-400/50 text-[11px] font-bold text-cyan-300 shadow-sm shadow-cyan-500/10">
+                        <Sparkles size={11} className="text-cyan-400 animate-pulse" />
+                        <span>✨ VEXE AI ĐỀ XUẤT</span>
+                      </div>
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 font-mono">
                         {isNewGuest ? `⭐ 4.9/5 Tân thủ` : `Khớp ${scorePercent}%`}
                       </span>
-                      <span className="text-[11px] font-medium text-emerald-400 flex items-center gap-1">
-                        <Users size={12} />
-                        <span>Còn {trip.availableSeats} chỗ</span>
-                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-end text-[11px] font-medium text-emerald-400 gap-1 mb-2">
+                      <Users size={12} />
+                      <span>Còn {trip.availableSeats} chỗ</span>
                     </div>
 
                     {/* Route From -> To */}
@@ -684,7 +690,7 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
                     </div>
 
                     {/* Departure Time */}
-                    <div className="flex items-center gap-1.5 text-xs text-slate-400 font-light mb-3">
+                    <div className="flex items-center gap-1.5 text-xs text-slate-400 font-light mb-2">
                       <Clock size={13} className="text-slate-400" />
                       <span>{formatTime(trip.departureTime)}</span>
                     </div>
@@ -693,6 +699,19 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 font-medium mb-3">
                       <Bus size={13} className="text-cyan-400 shrink-0" />
                       <span className="truncate">{trip.vehicleType}</span>
+                    </div>
+
+                    {/* AI Recommendation Rationale Box */}
+                    <div className="rounded-xl bg-cyan-950/50 border border-cyan-500/30 p-2.5 text-xs text-slate-200 mb-3 shadow-inner">
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-cyan-300 mb-0.5">
+                        <Sparkles size={11} className="text-cyan-400 shrink-0" />
+                        <span>💡 Lý do AI đề xuất:</span>
+                      </div>
+                      <p className="text-[11px] text-slate-300 leading-relaxed font-light">
+                        {trip.reason || (isNewGuest 
+                          ? `Tuyến xe từ ${currentCityName} có chất lượng 5 sao, độ lắc lư thấp chống say xe tối đa cho khách mới.` 
+                          : trip.badgeText || 'Phù hợp với thói quen di chuyển thường lệ và khung giờ ưa thích của bạn.')}
+                      </p>
                     </div>
 
                     {/* Badge Text */}

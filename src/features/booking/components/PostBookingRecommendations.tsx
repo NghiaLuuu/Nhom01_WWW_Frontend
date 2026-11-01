@@ -94,19 +94,26 @@ export const PostBookingRecommendations: React.FC<PostBookingRecommendationsProp
         <div aria-hidden="true" className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-2 max-w-xl">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-bold font-mono">
-              <Sparkles size={13} className="text-cyan-400" />
-              <span>GỢI Ý THÔNG MINH CHO CHIỀU VỀ</span>
+          <div className="space-y-2.5 max-w-xl">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500/20 via-cyan-500/20 to-blue-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-bold font-mono">
+              <Sparkles size={13} className="text-cyan-400 animate-pulse" />
+              <span>✨ VEXE AI ĐỀ XUẤT CHIỀU VỀ (RETURN TRIP)</span>
             </span>
 
             <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
               Lên lịch chuyến về {arrivalLocation} → {departureLocation}
             </h3>
 
-            <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
-              Bạn chưa có vé chiều về? Đặt ngay chiều về vào <strong>{returnDate}</strong> để nhận ưu đãi giảm 10% và đảm bảo có ghế đẹp khoang giữa.
-            </p>
+            {/* AI Rationale Box */}
+            <div className="rounded-2xl bg-cyan-950/60 border border-cyan-500/30 p-3 text-xs text-slate-200">
+              <div className="flex items-center gap-1.5 font-bold text-cyan-300 mb-1 text-xs">
+                <Sparkles size={13} className="text-cyan-400 shrink-0" />
+                <span>💡 Lý do AI đề xuất:</span>
+              </div>
+              <p className="text-slate-300 leading-relaxed font-light pl-4">
+                Hệ thống AI nhận diện bạn đã đặt xong chuyến đi. Dựa trên chu kỳ hành trình du lịch/công tác phổ biến 3 ngày, AI gợi ý đặt vé về vào <strong>{returnDate}</strong> từ {arrivalLocation} về {departureLocation} để đảm bảo vị trí phòng đẹp nhất và nhận ưu đãi giảm giá khứ hồi 10%.
+              </p>
+            </div>
           </div>
 
           <button
@@ -170,10 +177,13 @@ export const PostBookingRecommendations: React.FC<PostBookingRecommendationsProp
               >
                 <div>
                   <div className="flex items-center justify-between text-[11px] mb-2">
+                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-cyan-400/40 text-[10px] font-bold text-cyan-300">
+                      <Sparkles size={10} className="text-cyan-400" />
+                      <span>✨ AI ĐỀ XUẤT</span>
+                    </div>
                     <span className="font-mono text-cyan-300 font-bold px-2 py-0.5 rounded bg-cyan-950/80 border border-cyan-500/30">
                       Khớp {(trip.matchScore * 100).toFixed(0)}%
                     </span>
-                    <span className="text-emerald-400">Còn {trip.availableSeats} chỗ</span>
                   </div>
 
                   <div className="text-sm font-bold text-white flex items-center gap-2 mb-1">
@@ -187,8 +197,16 @@ export const PostBookingRecommendations: React.FC<PostBookingRecommendationsProp
                     <span>{formatTime(trip.departureTime)}</span>
                   </div>
 
-                  <div className="text-[11px] text-amber-300/90 font-medium line-clamp-2">
-                    {trip.badgeText || trip.reason}
+                  {/* AI Rationale Box */}
+                  <div className="p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/25 text-[11px] text-cyan-200 mt-2 mb-2">
+                    <span className="font-bold text-cyan-300 block mb-0.5">💡 Lý do AI đề xuất:</span>
+                    <span className="text-slate-300 font-light leading-relaxed">
+                      {trip.reason || trip.badgeText || 'Chuyến xe được AI tính toán phù hợp với sở thích tuyến đường và khung giờ của bạn.'}
+                    </span>
+                  </div>
+
+                  <div className="text-[10px] text-emerald-400 font-medium">
+                    Còn {trip.availableSeats} chỗ trống
                   </div>
                 </div>
 

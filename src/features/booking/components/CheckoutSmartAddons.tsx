@@ -85,17 +85,31 @@ export const CheckoutSmartAddons: React.FC<CheckoutSmartAddonsProps> = ({
 
         <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
           <div className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">
-              <ArrowLeftRight size={14} />
+            <span className="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold shrink-0">
+              <ArrowLeftRight size={15} />
             </span>
             <div>
-              <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block">Gợi ý AI khứ hồi</span>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-[10px] font-bold font-mono mb-1">
+                <Sparkles size={11} className="text-cyan-400 animate-pulse" />
+                <span>✨ VEXE AI ĐỀ XUẤT CHIỀU VỀ</span>
+              </div>
               <h4 className="text-sm font-black text-white">Bạn có muốn đặt luôn vé chiều về?</h4>
             </div>
           </div>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono shrink-0">
             -10% Khứ hồi
           </span>
+        </div>
+
+        {/* AI Rationale Box */}
+        <div className="mt-3 p-3 rounded-2xl bg-cyan-950/50 border border-cyan-500/30 text-xs text-slate-200">
+          <div className="flex items-center gap-1.5 font-bold text-cyan-300 mb-1 text-xs">
+            <Sparkles size={13} className="text-cyan-400 shrink-0" />
+            <span>💡 Lý do AI đề xuất:</span>
+          </div>
+          <p className="text-slate-300 leading-relaxed font-light pl-4">
+            Hệ thống AI nhận diện hành trình di chuyển tuyến <strong>{departureLocation} ↔ {arrivalLocation}</strong> có tỉ lệ khách đặt khứ hồi sau 3 ngày lên tới 92%. Đặt trước ngay giúp bạn giữ được phòng VIP ưng ý và tiết kiệm 10%.
+          </p>
         </div>
 
         <div className="pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -125,26 +139,45 @@ export const CheckoutSmartAddons: React.FC<CheckoutSmartAddonsProps> = ({
 
       {/* 2. Personalized Onboarding / Persona Advice */}
       {isNewGuest ? (
-        <div className="rounded-2xl bg-gradient-to-r from-amber-950/40 via-slate-900/60 to-purple-950/40 border border-amber-500/30 p-4 text-xs text-slate-300 space-y-2">
+        <div className="rounded-2xl bg-gradient-to-r from-amber-950/40 via-slate-900/60 to-purple-950/40 border border-amber-500/30 p-4 text-xs text-slate-300 space-y-2.5">
           <div className="flex items-center justify-between text-amber-300 font-bold">
-            <span className="flex items-center gap-1.5">
-              <Gift size={15} className="text-amber-400 animate-bounce" />
-              <span>Đặc quyền Tân thủ VEXE</span>
-            </span>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-mono">
+              <Sparkles size={11} className="text-amber-400" />
+              <span>✨ VEXE AI ĐỀ XUẤT ĐẶC QUYỀN TÂN THỦ</span>
+            </div>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
               Mã: BANMOI25
             </span>
           </div>
+
+          <div className="p-2.5 rounded-xl bg-black/40 border border-amber-500/20 text-xs">
+            <span className="font-bold text-amber-300">💡 Lý do AI áp dụng: </span>
+            <span className="text-slate-300 font-light">
+              Nhận diện khách hàng mới đặt vé lần đầu từ vị trí địa lý hiện tại. AI tự động kích hoạt mã ưu đãi độc quyền BANMOI25 giảm 25% và gói xe trung chuyển miễn phí.
+            </span>
+          </div>
+
           <p className="text-[11px] text-slate-300 font-light leading-relaxed">
-            Bạn đang hưởng đặc quyền khách mới! Tổng đài nhà xe sẽ tự động gọi trước 30 phút để xác nhận vị trí đón và trung chuyển miễn phí tận nơi.
+            Bạn đang hưởng trọn đặc quyền khách mới! Tổng đài nhà xe sẽ chủ động liên hệ trước 30 phút để xác nhận vị trí đón và đưa đón miễn phí.
           </p>
         </div>
       ) : persona ? (
-        <div className="rounded-2xl bg-slate-900/80 border border-purple-500/30 p-4 text-xs text-slate-300 space-y-1.5">
-          <div className="flex items-center gap-1.5 text-purple-300 font-bold">
-            <Sparkles size={14} className="text-purple-400" />
-            <span>Phân khúc: {persona.displayName}</span>
+        <div className="rounded-2xl bg-slate-900/80 border border-purple-500/30 p-4 text-xs text-slate-300 space-y-2.5">
+          <div className="flex items-center justify-between">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-300 text-[10px] font-mono">
+              <Sparkles size={11} className="text-purple-400" />
+              <span>✨ VEXE AI CÁ NHÂN HÓA HỘI VIÊN</span>
+            </div>
+            <span className="text-[11px] font-bold text-purple-300">{persona.displayName}</span>
           </div>
+
+          <div className="p-2.5 rounded-xl bg-black/40 border border-purple-500/20 text-xs">
+            <span className="font-bold text-purple-300">💡 Lý do AI áp dụng: </span>
+            <span className="text-slate-300 font-light">
+              Phân tích dữ liệu hội viên khớp phân khúc "{persona.displayName}". Hệ thống tự động ưu tiên dịch vụ Limousine cao cấp và hỗ trợ hoàn vé linh hoạt.
+            </span>
+          </div>
+
           <p className="text-[11px] text-slate-400 font-light leading-relaxed">
             {persona.description}. Chuyến đi được tích điểm VEXE Rewards và ưu tiên hỗ trợ đổi trả linh hoạt.
           </p>

@@ -98,9 +98,16 @@ export const CustomerPersonalizedHub: React.FC = () => {
               {persona?.displayName || 'Hội viên Du Lịch & Thường Lệ'}
             </h2>
 
-            <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
-              {persona?.description || 'Hệ thống VEXE AI tự động phân tích lịch sử các chuyến xe đã hoàn tất của bạn để cá nhân hóa đề xuất giờ khởi hành vàng và các dòng xe cao cấp nhất.'}
-            </p>
+            {/* AI Reasoning on Persona Classification */}
+            <div className="rounded-2xl bg-black/40 border border-purple-500/30 p-3.5 text-xs text-slate-200">
+              <div className="flex items-center gap-1.5 font-bold text-purple-300 mb-1 text-xs">
+                <Sparkles size={13} className="text-purple-400 shrink-0" />
+                <span>💡 Lý do AI phân tích & xếp loại phân khúc:</span>
+              </div>
+              <p className="text-slate-300 leading-relaxed font-light pl-4">
+                {persona?.description || 'Dựa trên việc phân tích lịch sử các giao dịch đặt vé đã hoàn tất, thói quen tuyến đường yêu thích và tần suất di chuyển của bạn trong hệ thống.'}
+              </p>
+            </div>
 
             <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-slate-300">
               <span className="flex items-center gap-1 px-3 py-1 rounded-xl bg-white/5 border border-white/10">
@@ -170,10 +177,17 @@ export const CustomerPersonalizedHub: React.FC = () => {
               >
                 <div>
                   <div className="flex items-center justify-between text-xs mb-3">
-                    <span className="px-2.5 py-0.5 rounded-md bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 font-mono font-bold">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-cyan-400/40 text-[10px] font-bold text-cyan-300">
+                      <Sparkles size={11} className="text-cyan-400" />
+                      <span>✨ VEXE AI ĐỀ XUẤT</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-md bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 font-mono font-bold text-[10px]">
                       ⭐ Khớp {(trip.matchScore * 100).toFixed(0)}%
                     </span>
-                    <span className="text-emerald-400 font-medium">Còn {trip.availableSeats} chỗ</span>
+                  </div>
+
+                  <div className="flex items-center justify-end text-[10px] text-emerald-400 font-medium mb-1.5">
+                    Còn {trip.availableSeats} chỗ
                   </div>
 
                   <div className="text-base font-bold text-white flex items-center gap-2 mb-1.5">
@@ -192,8 +206,19 @@ export const CustomerPersonalizedHub: React.FC = () => {
                     <span className="truncate">{trip.vehicleType}</span>
                   </div>
 
-                  <p className="text-xs text-amber-300/90 font-medium leading-relaxed">
-                    {trip.badgeText || trip.reason}
+                  {/* AI Rationale Box */}
+                  <div className="rounded-xl bg-cyan-950/40 border border-cyan-500/30 p-2.5 text-xs text-slate-200 mb-2">
+                    <div className="flex items-center gap-1 text-[11px] font-bold text-cyan-300 mb-0.5">
+                      <Sparkles size={11} className="text-cyan-400 shrink-0" />
+                      <span>Lý do AI đề xuất:</span>
+                    </div>
+                    <p className="text-[11px] text-slate-300 font-light leading-relaxed">
+                      {trip.reason || trip.badgeText || 'Chuyến xe khớp với sở thích tuyến đường và lịch trình quen thuộc của bạn.'}
+                    </p>
+                  </div>
+
+                  <p className="text-[11px] text-amber-300/90 font-medium leading-relaxed">
+                    {trip.badgeText}
                   </p>
                 </div>
 
