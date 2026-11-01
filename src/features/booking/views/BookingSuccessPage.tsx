@@ -1,3 +1,4 @@
+import { PostBookingRecommendations } from '../components/PostBookingRecommendations';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { 
@@ -331,6 +332,15 @@ export const BookingSuccessPage: React.FC = () => {
             <span>Về trang chủ</span>
           </Link>
         </div>
+
+        {booking?.trip?.route && (
+          <div className="pt-6">
+            <PostBookingRecommendations
+              departureLocation={booking.trip.route.departureLocation}
+              arrivalLocation={booking.trip.route.arrivalLocation}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

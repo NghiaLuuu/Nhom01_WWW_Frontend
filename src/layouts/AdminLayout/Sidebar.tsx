@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Bus, LayoutDashboard, Ticket, Users, Car, Map, 
-  BarChart3, UserCircle, FileText, ChevronLeft, ChevronRight, LogOut 
+  BarChart3, UserCircle, FileText, ChevronLeft, ChevronRight, LogOut, Activity, Radio 
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -30,6 +30,7 @@ const MENU_GROUPS = [
   {
     title: 'Hệ Thống',
     items: [
+      { name: 'Giám Sát & Phân Tích Khách', icon: Activity, path: '/admin/tracking', roles: ['ROLE_ADMIN'] },
       { name: 'Báo Cáo Thống Kê', icon: BarChart3, path: '/admin/reports', roles: ['ROLE_ADMIN', 'VIEW_STATISTICS'] },
       { name: 'Tài Khoản & Quyền', icon: Users, path: '/admin/users', roles: ['ROLE_ADMIN', 'STAFF_MANAGE', 'CUSTOMER_MANAGE'] },
       { name: 'Nhật Ký Hệ Thống', icon: FileText, path: '/admin/audit-logs', roles: ['ROLE_ADMIN'] },
@@ -105,7 +106,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
       {/* Footer / Logout */}
       <div className="p-3 border-t border-slate-800 bg-slate-900/50">
         <button 
-          onClick={() => { logout(); window.location.href = '/'; }}
+          onClick={() => { logout(); window.location.href = '/login/admin'; }}
           title={isCollapsed ? "Đăng xuất" : undefined}
           className="w-full flex items-center px-3 py-2 rounded-md text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors group"
         >

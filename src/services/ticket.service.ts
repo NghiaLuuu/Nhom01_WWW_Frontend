@@ -63,6 +63,14 @@ export const TicketService = {
       rejectReason
     });
     return res.data;
+  },
+
+  requestCancel: async (bookingId: number, reason: string = 'Khách yêu cầu hủy qua trang cá nhân') => {
+    const res = await api.post('/cancel-requests', {
+      bookingId,
+      reason
+    });
+    return res.data;
   }
 };
 

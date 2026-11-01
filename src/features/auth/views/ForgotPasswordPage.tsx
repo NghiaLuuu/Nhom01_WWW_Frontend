@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
-import { Bus, Mail, Lock, CheckCircle, ArrowLeft } from 'lucide-react';
+import { Bus, Mail, Lock, KeyRound, ArrowLeft, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../../../services/api';
 import toast from 'react-hot-toast';
 
 export const ForgotPasswordPage: React.FC = () => {
-  useDocumentTitle("Quên Mật Khẩu");
+  useDocumentTitle("Khôi Phục Mật Khẩu | VEXE");
   const navigate = useNavigate();
   
   const [step, setStep] = useState<1 | 2>(1);
@@ -52,44 +52,56 @@ export const ForgotPasswordPage: React.FC = () => {
   };
 
   return (
-    <div 
-      className="min-h-[calc(100vh-64px)] relative flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: `url(https://images.unsplash.com/photo-1464082354059-27db6ce50048?q=80&w=2070&auto=format&fit=crop)` }}
-    >
-      <div className="absolute inset-0 bg-black/50 sm:bg-gradient-to-tr from-black/80 via-black/40 to-transparent z-0"></div>
+    <div className="min-h-screen w-full relative flex items-center justify-center bg-slate-950 font-sans selection:bg-cyan-500/30 overflow-hidden px-4 py-12">
+      {/* Background Ambience */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div 
+          className="absolute inset-0 opacity-15"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(56, 189, 248, 0.3) 1px, transparent 0)`,
+            backgroundSize: '36px 36px'
+          }}
+        />
+        <div aria-hidden="true" className="absolute top-0 right-0 w-96 h-96 bg-cyan-600/15 rounded-full blur-[140px]" />
+        <div aria-hidden="true" className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-600/15 rounded-full blur-[140px]" />
+      </div>
 
-      <main className="z-10 w-full max-w-md px-4 sm:px-0">
-        <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-10 border border-white/50">
+      {/* Main Glass Reset Card */}
+      <main className="relative z-10 w-full max-w-md">
+        <div className="relative rounded-[2rem] bg-slate-900/80 backdrop-blur-2xl border border-white/10 p-8 sm:p-10 shadow-2xl shadow-cyan-950/40">
           
-          <div className="flex flex-col items-center mb-8">
-            <div className="flex items-center space-x-2 mb-4">
-              <Bus size={36} className="text-blue-600" />
-              <span className="text-3xl font-black text-blue-900 tracking-tight">VEXE</span>
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-3">
+              <ShieldCheck size={12} className="text-cyan-400" />
+              <span>Xác thực an toàn hai lớp</span>
             </div>
-            
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3 text-center">
+
+            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
               Khôi Phục Mật Khẩu
             </h1>
-            <p className="text-sm text-gray-500 text-center leading-relaxed px-2">
-              {step === 1 ? 'Nhập email của bạn để nhận mã OTP khôi phục mật khẩu.' : 'Nhập mã OTP và mật khẩu mới của bạn.'}
+            <p className="text-xs sm:text-sm text-slate-400 mt-2 font-light">
+              {step === 1 ? 'Nhập email tài khoản để nhận mã OTP khôi phục bảo mật.' : 'Nhập mã OTP vừa nhận và đặt lại mật khẩu mới.'}
             </p>
           </div>
 
           {step === 1 ? (
-            <form onSubmit={handleSendOtp} className="space-y-5">
+            <form onSubmit={handleSendOtp} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-gray-700">Email</label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500">
-                    <Mail size={18} />
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                  Email tài khoản VEXE
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cyan-400">
+                    <Mail size={16} />
                   </div>
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none hover:bg-white transition-all"
-                    placeholder="Nhập email của bạn"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-white/15 focus:border-cyan-400 rounded-xl text-white text-xs sm:text-sm outline-none transition-all placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/20"
+                    placeholder="khachhang@vexe.vn"
                   />
                 </div>
               </div>
@@ -97,43 +109,49 @@ export const ForgotPasswordPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white font-bold text-[15px] rounded-xl shadow-lg transition-all"
+                className="w-full mt-2 py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 disabled:opacity-50 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-950/50 cursor-pointer active:scale-95"
               >
-                {isLoading ? 'ĐANG GỬI...' : 'GỬI MÃ OTP'}
+                <span>{isLoading ? 'Đang gửi mã xác thực...' : 'GỬI MÃ OTP QUA EMAIL'}</span>
+                <ArrowRight size={16} />
               </button>
             </form>
           ) : (
-            <form onSubmit={handleResetPassword} className="space-y-5">
+            <form onSubmit={handleResetPassword} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-gray-700">Mã OTP</label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500">
-                    <CheckCircle size={18} />
+                <label className="block text-xs font-bold text-amber-300 uppercase tracking-wider">
+                  Mã OTP đã gửi về {email}
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-400">
+                    <KeyRound size={16} />
                   </div>
                   <input
                     type="text"
                     required
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
-                    placeholder="Nhập mã 6 số"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-amber-400/50 focus:border-amber-400 rounded-xl text-amber-300 font-mono text-center tracking-widest text-base outline-none transition-all placeholder:text-slate-600 focus:ring-2 focus:ring-amber-500/20"
+                    placeholder="Mã OTP 6 số"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-gray-700">Mật khẩu mới</label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500">
-                    <Lock size={18} />
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                  Mật khẩu mới
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-400">
+                    <Lock size={16} />
                   </div>
                   <input
                     type="password"
                     required
+                    minLength={6}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:bg-white"
-                    placeholder="Nhập mật khẩu mới"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-white/15 focus:border-cyan-400 rounded-xl text-white text-xs sm:text-sm outline-none transition-all placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/20"
+                    placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
                   />
                 </div>
               </div>
@@ -141,19 +159,25 @@ export const ForgotPasswordPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white font-bold text-[15px] rounded-xl shadow-lg transition-all"
+                className="w-full mt-2 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 disabled:opacity-50 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-950/50 cursor-pointer active:scale-95"
               >
-                {isLoading ? 'ĐANG XỬ LÝ...' : 'ĐỔI MẬT KHẨU'}
+                <span>{isLoading ? 'Đang đặt lại mật khẩu...' : 'XÁC NHẬN ĐỔI MẬT KHẨU'}</span>
+                <ArrowRight size={16} />
               </button>
             </form>
           )}
 
-          <div className="mt-8 text-center text-sm border-t border-gray-100 pt-6">
-            <Link to="/login" className="inline-flex items-center space-x-1 text-gray-600 hover:text-blue-600 font-medium transition-colors">
-              <ArrowLeft size={16} />
-              <span>Quay lại đăng nhập</span>
+          {/* Footer Back Link */}
+          <div className="mt-6 text-center text-xs border-t border-white/10 pt-4">
+            <Link 
+              to="/login"
+              className="text-slate-400 hover:text-cyan-400 transition-colors inline-flex items-center gap-1.5"
+            >
+              <ArrowLeft size={14} />
+              <span>Quay lại trang Đăng nhập</span>
             </Link>
           </div>
+
         </div>
       </main>
     </div>

@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local Presentation Slide Deck (Kept locally only)
+public/demo
+

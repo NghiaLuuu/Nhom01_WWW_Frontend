@@ -173,8 +173,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onToggleView }) => {
             <div className="relative bg-slate-900/40 backdrop-blur-2xl border border-white/10 p-8 sm:p-10 rounded-[2rem] shadow-2xl overflow-hidden">
               {/* Internal Reflections */}
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-              <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
-              <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
+              <div aria-hidden="true" className="absolute top-0 right-0 w-36 h-36 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+              <div aria-hidden="true" className="absolute bottom-0 left-0 w-36 h-36 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
               <div className="relative z-10">
                 <div className="mb-8 lg:hidden text-center">

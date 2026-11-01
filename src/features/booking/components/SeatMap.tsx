@@ -1,64 +1,58 @@
 import React from 'react';
-import type { SeatItem } from '../types/booking.types';
+import { type Seat } from '../api/booking.service';
 import { useBookingStore } from '../../../store/useBookingStore';
 
 interface SeatMapProps {
-  seats: SeatItem[];
+  seats: Seat[];
   maxSeats?: number;
 }
 
 export const SeatMap: React.FC<SeatMapProps> = ({ seats, maxSeats = 5 }) => {
-  const { selectedSeats, toggleSeatItem } = useBookingStore();
+  const { selectedSeats, toggleSeat } = useBookingStore();
 
-  const handleSeatClick = (seat: SeatItem) => {
+  const handleSeatClick = (seat: Seat) => {
     if (seat.isBooked) return;
-    toggleSeatItem(seat, maxSeats);
+    toggleSeat(seat.id, maxSeats);
   };
 
-  // Group seats by floor
-  const floor1Seats = seats.filter(s => s.floor === 1 || !s.floor);
-  const floor2Seats = seats.filter(s => s.floor === 2);
+  // Split seats into lower and upper decks
+  const lowerDeck = seats.slice(0, 18);
+  const upperDeck = seats.slice(18, 36);
 
-  // Fallback split if all floor values are 1 or empty but length > 20
-  let lowerDeck = floor1Seats;
-  let upperDeck = floor2Seats;
-  if (floor2Seats.length === 0 && seats.length > 18) {
-    const half = Math.ceil(seats.length / 2);
-    lowerDeck = seats.slice(0, half);
-    upperDeck = seats.slice(half);
-  }
-
-  const renderDeck = (deckSeats: SeatItem[], title: string) => (
-    <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-2xs">
-      <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-100">
-        <h3 className="font-bold text-gray-800 text-sm">{title}</h3>
-        <span className="text-xs text-gray-500 font-medium">{deckSeats.length} chỗ</span>
+  const renderDeck = (deckSeats: Seat[], title: string) => (
+    <div className="bg-slate-950/70 backdrop-blur-md p-5 sm:p-6 rounded-2xl border border-white/10 shadow-inner">
+      <div className="flex items-center justify-between mb-5 pb-3 border-b border-white/10">
+        <h4 className="font-bold text-white text-sm sm:text-base flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span>{title}</span>
+        </h4>
+        <span className="text-[11px] text-slate-400 font-mono">3 dãy x 6 hàng</span>
       </div>
       
-      {/* Bus layout simulation: 3 columns (A, B, C) */}
+      {/* Bus layout simulation: 3 columns (A, B, C) x 6 rows */}
       <div className="grid grid-cols-3 gap-3">
         {deckSeats.map((seat) => {
-          const isSelected = selectedSeats.some(s => s.id === seat.id);
+          const isSelected = selectedSeats.includes(seat.id);
           return (
             <button
               key={seat.id}
-              type="button"
               disabled={seat.isBooked}
               onClick={() => handleSeatClick(seat)}
+              type="button"
               className={`
-                relative h-12 rounded-xl flex flex-col items-center justify-center font-bold text-xs transition-all duration-150
+                relative h-12 rounded-xl flex items-center justify-center font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer
                 ${seat.isBooked 
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200' 
+                  ? 'bg-slate-900/60 text-slate-600 cursor-not-allowed border border-slate-800/60 line-through' 
                   : isSelected 
-                    ? 'bg-blue-600 text-white border-2 border-blue-700 shadow-md shadow-blue-500/30 scale-105 z-10' 
-                    : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-400 hover:text-blue-600'
+                    ? 'bg-gradient-to-tr from-cyan-500 to-blue-600 text-white border-2 border-cyan-300 shadow-lg shadow-cyan-500/40 transform scale-105' 
+                    : 'bg-slate-800/80 text-slate-200 border border-slate-700/80 hover:border-cyan-400 hover:text-white hover:bg-slate-800'
                 }
               `}
-              title={seat.isBooked ? `Ghế ${seat.seatName} đã được đặt` : `Ghế ${seat.seatName}`}
+              title={seat.isBooked ? `Ghế ${seat.id} (Đã có khách đặt)` : `Chọn ghế ${seat.id}`}
             >
-              <span>{seat.seatName}</span>
-              {seat.isBooked && (
-                <span className="text-[9px] font-normal opacity-70">Đã đặt</span>
+              <span>{seat.id}</span>
+              {isSelected && (
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-slate-950"></span>
               )}
             </button>
           );
@@ -70,32 +64,25 @@ export const SeatMap: React.FC<SeatMapProps> = ({ seats, maxSeats = 5 }) => {
   return (
     <div className="space-y-5">
       {/* Legend */}
-      <div className="flex flex-wrap justify-center gap-4 text-xs font-semibold text-gray-600 bg-white p-3 rounded-xl border border-gray-200">
+      <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs font-medium text-slate-300 py-2 px-4 rounded-xl bg-white/5 border border-white/10 w-fit mx-auto">
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 border-2 border-gray-300 rounded-md bg-white"></div>
+          <div className="w-4 h-4 rounded-md border border-slate-600 bg-slate-800"></div>
           <span>Ghế trống</span>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-blue-600 rounded-md shadow-xs"></div>
-          <span className="text-blue-700">Đang chọn (tối đa {maxSeats})</span>
+          <div className="w-4 h-4 rounded-md bg-gradient-to-tr from-cyan-500 to-blue-600 border border-cyan-300"></div>
+          <span className="text-cyan-300 font-bold">Đang chọn ({selectedSeats.length}/{maxSeats})</span>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-gray-100 border border-gray-300 rounded-md"></div>
-          <span className="text-gray-500">Đã đặt / Đang giữ chỗ</span>
+          <div className="w-4 h-4 rounded-md bg-slate-900 border border-slate-800 opacity-60"></div>
+          <span className="text-slate-500">Đã bán</span>
         </div>
       </div>
 
-      {upperDeck.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {renderDeck(lowerDeck, 'Tầng 1 (Dưới)')}
-          {renderDeck(upperDeck, 'Tầng 2 (Trên)')}
-        </div>
-      ) : (
-        <div className="max-w-md mx-auto">
-          {renderDeck(lowerDeck, 'Sơ đồ ghế xe')}
-        </div>
-      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {renderDeck(lowerDeck, 'Tầng Dưới')}
+        {renderDeck(upperDeck, 'Tầng Trên')}
+      </div>
     </div>
   );
 };
-

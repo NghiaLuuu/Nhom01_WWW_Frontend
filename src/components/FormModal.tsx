@@ -37,23 +37,23 @@ export const FormModal: React.FC<FormModalProps> = ({
   return (
     <div 
       ref={overlayRef}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-[2px]"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
       onClick={(e) => {
         if (e.target === overlayRef.current) onClose();
       }}
     >
-      <div className={`bg-white rounded-lg shadow-lg border border-gray-200 w-full ${maxWidth} flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200`}>
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200 shrink-0">
-          <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+      <div className={`bg-slate-900/95 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-cyan-950/60 border border-white/10 w-full ${maxWidth} flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200 overflow-hidden text-white`}>
+        <div className="flex justify-between items-center px-6 py-4 border-b border-white/10 shrink-0 bg-slate-950/40">
+          <h2 className="text-base font-bold text-white tracking-wide">{title}</h2>
           <button 
             onClick={onClose} 
-            className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-1.5 rounded-md transition-colors"
+            className="text-slate-400 hover:text-white hover:bg-white/10 p-1.5 rounded-xl transition-colors cursor-pointer"
             title="Đóng (Esc)"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
-        <div className="p-6 overflow-y-auto custom-scrollbar">
+        <div className="p-6 overflow-y-auto custom-scrollbar text-slate-200">
           {children}
         </div>
       </div>
