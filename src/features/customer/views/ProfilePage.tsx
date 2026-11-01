@@ -527,10 +527,10 @@ export const ProfilePage: React.FC = () => {
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5">
                           <span className="font-mono text-xs font-black tracking-wider text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-3 py-1 rounded-lg">
-                            {ticket.bookingCode}
+                            {ticket.bookingCode || `BKG-${ticket.id}`}
                           </span>
                           <span className="text-xs text-slate-400">
-                            Đặt ngày {new Date(ticket.createdAt).toLocaleDateString('vi-VN')}
+                            Đặt ngày {ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString('vi-VN') : 'Gần đây'}
                           </span>
                         </div>
                         <div>{getStatusBadge(ticket.status)}</div>
@@ -540,7 +540,7 @@ export const ProfilePage: React.FC = () => {
                       <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-2">
                         <div className="space-y-0.5">
                           <p className="text-xs uppercase font-bold text-slate-400">Điểm khởi hành</p>
-                          <h4 className="text-lg font-black text-white">{ticket.trip.route?.departureLocation}</h4>
+                          <h4 className="text-lg font-black text-white">{ticket.trip?.route?.departureLocation || 'Bến xuất phát'}</h4>
                         </div>
 
                         <div className="flex items-center gap-2 sm:px-4">
@@ -553,7 +553,7 @@ export const ProfilePage: React.FC = () => {
 
                         <div className="space-y-0.5">
                           <p className="text-xs uppercase font-bold text-slate-400">Điểm đến</p>
-                          <h4 className="text-lg font-black text-white">{ticket.trip.route?.arrivalLocation}</h4>
+                          <h4 className="text-lg font-black text-white">{ticket.trip?.route?.arrivalLocation || 'Bến đến'}</h4>
                         </div>
                       </div>
 
@@ -561,15 +561,15 @@ export const ProfilePage: React.FC = () => {
                       <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-3 border-t border-slate-800/80 text-xs text-slate-300">
                         <div className="flex items-center gap-1.5">
                           <Clock size={14} className="text-amber-400" />
-                          <span>Khởi hành: <strong>{new Date(ticket.trip.departureTime).toLocaleString('vi-VN')}</strong></span>
+                          <span>Khởi hành: <strong>{ticket.trip?.departureTime ? new Date(ticket.trip.departureTime).toLocaleString('vi-VN') : 'Dự kiến'}</strong></span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <Bus size={14} className="text-indigo-400" />
-                          <span>Biển số xe: <strong className="font-mono text-cyan-300">{ticket.trip.vehicle?.licensePlate || '51B-VIP'}</strong></span>
+                          <span>Biển số xe: <strong className="font-mono text-cyan-300">{ticket.trip?.vehicle?.licensePlate || '51B-VIP'}</strong></span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <Sparkles size={14} className="text-emerald-400" />
-                          <span>Vị trí ghế: <strong className="text-cyan-300">{ticket.seats.join(', ')}</strong></span>
+                          <span>Vị trí ghế: <strong className="text-cyan-300">{Array.isArray(ticket.seats) && ticket.seats.length > 0 ? ticket.seats.join(', ') : 'Tiêu chuẩn (1 chỗ)'}</strong></span>
                         </div>
                       </div>
                     </div>
@@ -583,7 +583,7 @@ export const ProfilePage: React.FC = () => {
                       <div className="w-full lg:text-right space-y-1">
                         <p className="text-xs text-slate-400 uppercase font-semibold">Tổng Tiền Vé</p>
                         <p className="text-2xl font-black text-emerald-400 tracking-tight">
-                          {new Intl.NumberFormat('vi-VN').format(ticket.totalPrice)}đ
+                          {new Intl.NumberFormat('vi-VN').format(Number(ticket.totalPrice) || 0)}đ
                         </p>
                         <p className="text-[11px] text-slate-500">Đã bao gồm VAT & bảo hiểm</p>
                       </div>
