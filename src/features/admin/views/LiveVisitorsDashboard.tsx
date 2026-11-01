@@ -181,8 +181,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
           <div>
             <div className="flex items-center gap-2.5 mb-2">
               <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
               </span>
               <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/70 border border-emerald-500/30 px-2 py-0.2 rounded-full whitespace-nowrap">
                 Realtime SOC Monitor
@@ -382,8 +381,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
                       <div className="flex items-center gap-2 min-w-0">
                         <div className="relative shrink-0">
                           <span className="relative flex h-2.5 w-2.5">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]"></span>
                           </span>
                         </div>
                         <div className="min-w-0 max-w-[130px]">

@@ -133,11 +133,11 @@ export const AchievementsPage: React.FC = () => {
       {/* 1. HERO HEADER: DẤU ẤN THƯƠNG HIỆU                                       */}
       {/* ========================================================================= */}
       <section className="relative pt-24 pb-16 px-6 sm:px-12 lg:px-8 max-w-7xl mx-auto">
-        <div aria-hidden="true" className="absolute top-12 left-1/2 -translate-x-1/2 w-[750px] h-80 bg-gradient-to-r from-amber-500/15 via-cyan-500/15 to-indigo-500/15 blur-[160px] pointer-events-none" />
+        <div aria-hidden="true" className="absolute top-12 left-1/2 -translate-x-1/2 w-full max-w-4xl h-72 bg-gradient-to-r from-amber-500/15 via-cyan-500/15 to-indigo-500/15 blur-3xl opacity-40 pointer-events-none" />
 
         <div className="relative z-10 text-center max-w-4xl mx-auto space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider backdrop-blur-xl shadow-lg shadow-amber-950/50">
-            <Trophy size={14} className="text-amber-400 animate-bounce" />
+            <Trophy size={14} className="text-amber-400" />
             <span>Dấu Ấn Khẳng Định Chất Lượng & Uy Tín Quốc Gia</span>
           </div>
 

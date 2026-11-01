@@ -127,8 +127,8 @@ export const AdminProfilePage: React.FC = () => {
                 <User size={36} />
               </div>
             </div>
-            <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-2 border-slate-900 rounded-full flex items-center justify-center" title="Trực tuyến">
-              <span className="w-2 h-2 bg-white rounded-full animate-ping" />
+            <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-2 border-slate-900 rounded-full flex items-center justify-center shadow-[0_0_8px_rgba(16,185,129,0.8)]" title="Trực tuyến">
+              <span className="w-2 h-2 bg-white rounded-full" />
             </span>
           </div>
 

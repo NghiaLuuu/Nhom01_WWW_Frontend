@@ -403,7 +403,7 @@ export const UserTrackingHub: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900/60 border border-white/10 rounded-2xl p-4 backdrop-blur-xl">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1.5 text-xs text-slate-300">
-                <span className={`w-2.5 h-2.5 rounded-full ${autoRefresh ? 'bg-emerald-400 animate-ping' : 'bg-slate-600'}`} />
+                <span className={`w-2.5 h-2.5 rounded-full ${autoRefresh ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]' : 'bg-slate-600'}`} />
                 <strong className="text-white font-mono">Realtime SOC:</strong>
                 <span className="text-slate-400">{autoRefresh ? 'Tự quét mỗi 5s' : 'Đã tạm dừng tự quét'}</span>
               </span>
@@ -460,7 +460,7 @@ export const UserTrackingHub: React.FC = () => {
             >
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                   Đang Online
                 </span>
                 <span className="text-[10px] text-slate-400">&lt; 2 phút</span>
@@ -678,7 +678,7 @@ export const UserTrackingHub: React.FC = () => {
                         <td className="py-3 px-3 sm:px-4 whitespace-nowrap">
                           {isOnline ? (
                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold text-[11px]">
-                              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                               <span>{v.computedLabel || 'Đang trực tuyến'}</span>
                             </span>
                           ) : isIdle ? (

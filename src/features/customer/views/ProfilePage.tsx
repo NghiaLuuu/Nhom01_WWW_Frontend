@@ -211,8 +211,8 @@ export const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 py-10 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Glow Mesh */}
-      <div aria-hidden="true" className="absolute top-10 left-1/4 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div aria-hidden="true" className="absolute top-40 right-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div aria-hidden="true" className="absolute top-10 left-1/4 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div aria-hidden="true" className="absolute top-40 right-1/4 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-5xl mx-auto relative z-10 space-y-8">
         
@@ -289,7 +289,7 @@ export const ProfilePage: React.FC = () => {
                 : 'text-cyan-300 hover:text-white hover:bg-slate-800/40'
             }`}
           >
-            <Sparkles size={17} className={activeTab === 'RECOMMENDATIONS' ? 'text-slate-950 animate-bounce' : 'text-cyan-400 animate-pulse'} />
+            <Sparkles size={17} className={activeTab === 'RECOMMENDATIONS' ? 'text-slate-950' : 'text-cyan-400'} />
             <span>Gợi Ý Dành Cho Bạn</span>
             <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black uppercase ${
               activeTab === 'RECOMMENDATIONS' ? 'bg-slate-950 text-cyan-300' : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
