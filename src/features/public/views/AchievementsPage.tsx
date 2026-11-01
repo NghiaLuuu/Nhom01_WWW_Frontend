@@ -19,6 +19,7 @@ import {
   Heart
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { PublicAiTripShelf } from '../../booking/components/PublicAiTripShelf';
 
 export const AchievementsPage: React.FC = () => {
   useDocumentTitle("Thành tích & Đối tác uy tín | VEXE AI");
@@ -407,6 +408,17 @@ export const AchievementsPage: React.FC = () => {
           ))}
         </div>
       </section>
+
+      {/* ========================================================================= */}
+      {/* 8.5. AI RECOMMENDATIONS: CHUYẾN XE ĐỐI TÁC TIÊU BIỂU VEXE AI ĐỀ XUẤT     */}
+      {/* ========================================================================= */}
+      <PublicAiTripShelf
+        title="Chuyến Xe Đối Tác Tiêu Biểu VEXE AI Đề Xuất"
+        subtitle="Trải nghiệm các tuyến xe Limousine VIP từ các đối tác vận tải hàng đầu (Phương Trang, Sao Việt, Thành Bưởi) đạt giải thưởng Sao Khuê 2025."
+        badgeLabel="✨ VEXE AI ĐỀ XUẤT ĐỐI TÁC 5 SAO"
+        pageContext="ACHIEVEMENTS"
+        className="border-t border-white/10"
+      />
 
       {/* ========================================================================= */}
       {/* 9. CALL TO ACTION                                                         */}

@@ -22,6 +22,7 @@ import {
   Wind
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { PublicAiTripShelf } from '../../booking/components/PublicAiTripShelf';
 
 export const AboutPage: React.FC = () => {
   useDocumentTitle("Giới thiệu & Sứ mệnh | VEXE AI - Nền tảng xe khách 5 sao");
@@ -409,6 +410,17 @@ export const AboutPage: React.FC = () => {
           })}
         </div>
       </section>
+
+      {/* ========================================================================= */}
+      {/* 5.5. AI RECOMMENDATIONS: CHUYẾN XE 5 SAO TIÊU BIỂU DÀNH CHO BẠN           */}
+      {/* ========================================================================= */}
+      <PublicAiTripShelf
+        title="Chuyến Xe 5 Sao VEXE AI Đề Xuất Dành Cho Bạn"
+        subtitle="Dựa trên tiêu chuẩn đội xe Limousine VIP và cam kết phụng sự 5 sao, VEXE AI gợi ý các hành trình vàng tối ưu nhất từ vị trí của bạn."
+        badgeLabel="✨ VEXE AI ĐỀ XUẤT 5 SAO"
+        pageContext="ABOUT"
+        className="border-t border-white/10"
+      />
 
       {/* ========================================================================= */}
       {/* 6. CALL TO ACTION: TRẢI NGHIỆM ĐẶT VÉ NGAY                                */}

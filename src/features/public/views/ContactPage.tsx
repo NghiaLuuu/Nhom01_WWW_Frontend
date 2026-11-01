@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { Phone, Mail, MapPin, Clock, MessageSquare, Send, CheckCircle2, AlertCircle, Building2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { PublicAiTripShelf } from '../../booking/components/PublicAiTripShelf';
 
 export const ContactPage: React.FC = () => {
   useDocumentTitle("Liên hệ & Hỗ trợ 24/7 | VEXE");
@@ -316,6 +317,15 @@ export const ContactPage: React.FC = () => {
           ))}
         </div>
       </section>
+
+      {/* AI RECOMMENDATIONS ON CONTACT PAGE */}
+      <PublicAiTripShelf
+        title="Tuyến Xe Trọng Điểm VEXE AI Đề Xuất Tại Khu Vực Bạn"
+        subtitle="Hệ thống tổng đài CSKH 24/7 và đội ngũ xe trung chuyển sẵn sàng hỗ trợ bạn trên các chuyến xe này."
+        badgeLabel="✨ VEXE AI ĐỀ XUẤT ĐÓN TẬN NƠI"
+        pageContext="CONTACT"
+        className="border-t border-white/10"
+      />
 
     </div>
   );

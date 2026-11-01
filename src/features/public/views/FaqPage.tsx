@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { HelpCircle, ChevronDown, Search, ShieldCheck, CreditCard, Luggage, RefreshCw, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { PublicAiTripShelf } from '../../booking/components/PublicAiTripShelf';
 
 interface FaqItem {
   id: string;
@@ -214,6 +215,15 @@ export const FaqPage: React.FC = () => {
           )}
         </div>
       </section>
+
+      {/* AI RECOMMENDATIONS ON FAQ PAGE */}
+      <PublicAiTripShelf
+        title="Chuyến Xe An Toàn 100% VEXE AI Đề Xuất"
+        subtitle="Áp dụng đầy đủ chính sách giữ chỗ 100%, bảo hiểm hành khách và cam kết bồi thường 150% nếu có sự cố."
+        badgeLabel="✨ VEXE AI ĐỀ XUẤT AN TOÀN"
+        pageContext="FAQ"
+        className="border-t border-white/10"
+      />
 
       {/* Still need help CTA */}
       <section className="py-16 px-6 sm:px-12 lg:px-8 max-w-4xl mx-auto">
