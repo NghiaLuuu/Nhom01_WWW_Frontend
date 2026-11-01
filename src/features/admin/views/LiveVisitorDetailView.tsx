@@ -159,8 +159,7 @@ export const LiveVisitorDetailView: React.FC = () => {
         <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
           <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-950/80 border border-emerald-500/40 rounded-xl text-xs font-bold text-emerald-300 shadow-lg shadow-emerald-500/10 whitespace-nowrap">
             <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]"></span>
             </span>
             <span>{detail.isOnline ? 'ĐANG TRỰC TUYẾN' : 'VỪA RỜI TRANG'}</span>
           </div>

@@ -72,7 +72,7 @@ export const ContactPage: React.FC = () => {
       
       {/* Hero Header */}
       <section className="relative pt-24 pb-16 px-6 sm:px-12 lg:px-8 max-w-7xl mx-auto">
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-64 bg-gradient-to-r from-cyan-500/10 via-blue-600/10 to-emerald-500/10 blur-[150px] pointer-events-none" />
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-4xl h-64 bg-gradient-to-r from-cyan-500/10 via-blue-600/10 to-emerald-500/10 blur-3xl opacity-40 pointer-events-none" />
 
         <div className="relative z-10 text-center max-w-3xl mx-auto space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-cyan-300 text-xs font-semibold uppercase tracking-wider backdrop-blur-md">

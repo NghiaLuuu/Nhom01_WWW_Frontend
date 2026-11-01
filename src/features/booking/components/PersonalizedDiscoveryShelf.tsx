@@ -185,7 +185,7 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
     <section className="relative py-12 px-6 sm:px-12 lg:px-8 max-w-7xl mx-auto w-full transition-all duration-500">
       
       {/* Background glowing ambient light */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-80 bg-gradient-to-r from-cyan-500/10 via-blue-600/10 to-purple-600/10 blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-64 bg-gradient-to-r from-cyan-500/10 via-blue-600/10 to-purple-600/10 blur-3xl pointer-events-none opacity-50" />
 
       {/* Main Container Card */}
       <div className="relative rounded-3xl bg-slate-900/80 backdrop-blur-2xl border border-cyan-500/30 p-6 sm:p-8 shadow-2xl shadow-cyan-950/40">
@@ -202,12 +202,12 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
               {/* Geolocation Pill */}
               {userLocation ? (
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold shadow-md shadow-emerald-950/30">
-                  <MapPin size={13} className="text-emerald-400 animate-pulse" />
+                  <MapPin size={13} className="text-emerald-400" />
                   <span>Vị trí IP: {userLocation.displayName}</span>
                 </div>
               ) : (
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold uppercase tracking-wider">
-                  <Sparkles size={14} className="text-cyan-400 animate-pulse" />
+                  <Sparkles size={14} className="text-cyan-400" />
                   <span>AI Đề Xuất Thông Minh Theo IP</span>
                 </div>
               )}
@@ -253,7 +253,7 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
             <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
               {isNewGuest ? (
                 <span className="flex items-center gap-2.5 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-cyan-300 to-blue-300">
-                  <Gift size={28} className="text-amber-400 animate-bounce inline-block" />
+                  <Gift size={28} className="text-amber-400 inline-block" />
                   <span>Đặc Quyền Khách Mới & Cẩm Nang Đặt Vé Chuẩn 5 Sao</span>
                 </span>
               ) : (

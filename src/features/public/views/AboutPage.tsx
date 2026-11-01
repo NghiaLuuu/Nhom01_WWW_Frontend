@@ -100,7 +100,7 @@ export const AboutPage: React.FC = () => {
       {/* 1. HERO SECTION: BRAND INTRODUCTION                                      */}
       {/* ========================================================================= */}
       <section className="relative pt-24 pb-20 px-6 sm:px-12 lg:px-8 max-w-7xl mx-auto">
-        <div aria-hidden="true" className="absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-80 bg-gradient-to-r from-cyan-500/15 via-blue-600/15 to-indigo-500/15 blur-[150px] pointer-events-none" />
+        <div aria-hidden="true" className="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-4xl h-72 bg-gradient-to-r from-cyan-500/15 via-blue-600/15 to-indigo-500/15 blur-3xl opacity-40 pointer-events-none" />
 
         <div className="relative z-10 text-center max-w-4xl mx-auto space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-bold uppercase tracking-wider backdrop-blur-xl shadow-lg shadow-cyan-950/50">
@@ -156,7 +156,7 @@ export const AboutPage: React.FC = () => {
               <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-slate-950/80 backdrop-blur-md border border-white/15">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                     <span className="text-xs font-bold text-white uppercase tracking-wider">Khoang Limousine Cung Điện VIP 2026</span>
                   </div>
                   <span className="text-xs text-cyan-400 font-mono font-bold">100% Chuẩn 5 Sao</span>
