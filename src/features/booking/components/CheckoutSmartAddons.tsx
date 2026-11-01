@@ -143,7 +143,7 @@ export const CheckoutSmartAddons: React.FC<CheckoutSmartAddonsProps> = ({
           <div className="flex items-center justify-between text-amber-300 font-bold">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-mono">
               <Sparkles size={11} className="text-amber-400" />
-              <span>✨ VEXE AI ĐỀ XUẤT ĐẶC QUYỀN TÂN THỦ</span>
+              <span>✨ VEXE AI ĐẶC QUYỀN KHÁCH MỚI</span>
             </div>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
               Mã: BANMOI25

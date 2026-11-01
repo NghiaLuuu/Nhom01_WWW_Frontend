@@ -121,7 +121,7 @@ export const AchievementsPage: React.FC = () => {
       name: "Lê Thu Hương",
       role: "Sinh viên Đại học Ngoại Thương • Hà Nội",
       rating: 5,
-      content: "Lần đầu đặt xe mình được tặng ngay voucher tân thủ BANMOI25 giảm 25%. Hướng dẫn chọn ghế khoang giữa chống say xe cực kỳ chuẩn xác, xe chạy êm ru suốt chuyến đi.",
+      content: "Lần đầu đặt xe mình được tặng ngay voucher khách mới BANMOI25 giảm 25%. Hướng dẫn chọn ghế khoang giữa chống say xe cực kỳ chuẩn xác, xe chạy êm ru suốt chuyến đi.",
       badge: "Khách Hàng Mới 5 Sao"
     }
   ];

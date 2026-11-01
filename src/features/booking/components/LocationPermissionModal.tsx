@@ -227,7 +227,7 @@ export const LocationPermissionModal: React.FC<LocationPermissionModalProps> = (
                     </span>
                   </div>
                   <p className="text-[10px] text-slate-300 leading-tight mt-0.5 font-light">
-                    Mở gói quà chào mừng tân thủ, hướng dẫn đặt vé 3 bước chuẩn 5 sao và bí kíp chọn chỗ theo IP.
+                    Mở gói quà chào mừng khách mới, hướng dẫn đặt vé 3 bước chuẩn 5 sao và bí kíp chọn chỗ theo IP.
                   </p>
                 </div>
               </label>

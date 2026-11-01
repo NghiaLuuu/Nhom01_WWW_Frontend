@@ -124,8 +124,8 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
     geolocationService.setNewGuest(newMode);
     toast.success(
       newMode 
-        ? 'Đã kích hoạt chế độ: Khách Mới Lần Đầu (Ưu đãi & Hướng dẫn tân thủ)' 
-        : 'Đã chuyển sang chế độ: Khách Quen / Hội Viên VIP',
+        ? 'Đã kích hoạt chế độ: Khách Mới (Ưu đãi & Cẩm nang chuyến đầu)' 
+        : 'Đã chuyển sang chế độ: Khách Quen / Thân Thiết',
       { icon: newMode ? '🎁' : '👑' }
     );
   };
@@ -286,7 +286,7 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
                 }`}
               >
                 <Gift size={13} />
-                <span>Khách Mới (Tân Thủ)</span>
+                <span>Khách Mới</span>
               </button>
               <button
                 onClick={() => handleToggleGuestMode(false)}
@@ -297,7 +297,7 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
                 }`}
               >
                 <Award size={13} />
-                <span>Khách Quen (VIP / Thường Lệ)</span>
+                <span>Khách Quen</span>
               </button>
             </div>
 
@@ -359,7 +359,7 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
                     <div>
                       <div className="text-[10px] text-amber-300 font-bold uppercase tracking-wider flex items-center gap-1">
                         <Tag size={11} />
-                        <span>Mã Ưu Đãi Tân Thủ</span>
+                        <span>Mã Ưu Đãi Khách Mới</span>
                       </div>
                       <div className="text-xl font-black text-white font-mono tracking-wider">
                         BANMOI25
@@ -673,7 +673,7 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
                         <span>✨ VEXE AI ĐỀ XUẤT</span>
                       </div>
                       <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 font-mono">
-                        {isNewGuest ? `⭐ 4.9/5 Tân thủ` : `Khớp ${scorePercent}%`}
+                        {isNewGuest ? `⭐ 4.9/5 Khách mới` : `Khớp ${scorePercent}%`}
                       </span>
                     </div>
 
