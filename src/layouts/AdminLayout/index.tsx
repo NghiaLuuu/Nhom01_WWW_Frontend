@@ -1,21 +1,33 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 export const AdminLayout: React.FC = () => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const location = useLocation();
+  const titles: Record<string, string> = {
+    "/admin": "Bảng điều khiển",
+    "/admin/trips": "Quản lý chuyến xe",
+    "/admin/tickets": "Quản lý đặt vé",
+    "/admin/users": "Tài khoản & quyền",
+    "/admin/profile": "Hồ sơ cá nhân",
+    "/admin/vehicles-drivers": "Quản lý xe & tài xế",
+    "/admin/routes": "Quản lý tuyến đường",
+    "/admin/reports": "Báo cáo & thống kê",
+    "/admin/audit-logs": "Nhật ký hệ thống",
+  };
+  useDocumentTitle(titles[location.pathname] || "Quản trị");
+
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
-      {/* Fixed Sidebar Skeleton */}
-      <Sidebar />
+    <div className="flex h-screen bg-slate-950 overflow-hidden font-sans">
+      <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       
-      {/* Main Content Area Wrapper */}
-      <div className="flex-1 ml-64 flex flex-col min-h-screen">
-        {/* Fixed Header Skeleton */}
-        <Header />
+      <div className={`flex-1 min-w-0 flex flex-col min-h-screen transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
+        <Header title={titles[location.pathname] || "Quản trị"} />
         
-        {/* Dynamic Page Content Skeleton */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50/50 p-6 lg:p-8">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 bg-slate-950 text-slate-100">
           <Outlet />
         </main>
       </div>
