@@ -154,3 +154,4 @@ export const CheckoutSmartAddons: React.FC<CheckoutSmartAddonsProps> = ({
     </div>
   );
 };
+

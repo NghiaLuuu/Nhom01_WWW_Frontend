@@ -8,7 +8,6 @@ export const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
   const [supportDropdownOpen, setSupportDropdownOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
@@ -34,8 +33,10 @@ export const Header: React.FC = () => {
             </div>
           </Link>
 
-          {/* Navigation Links with Glass Dropdowns */}
+          {/* Navigation Links: Trang chủ -> Giới thiệu -> Thành tích -> Tra cứu & Đặt vé -> Hỗ trợ & Liên hệ */}
           <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
+            
+            {/* 1. Trang chủ */}
             <Link 
               to="/" 
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
@@ -45,63 +46,48 @@ export const Header: React.FC = () => {
               Trang chủ
             </Link>
 
+            {/* 2. Giới thiệu */}
+            <Link 
+              to="/about" 
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                isActive('/about') ? 'text-white bg-white/10 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              Giới thiệu
+            </Link>
+
+            {/* 3. Thành tích */}
+            <Link 
+              to="/achievements" 
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                isActive('/achievements') ? 'text-white bg-white/10 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              Thành tích
+            </Link>
+
+            {/* 4. Tra cứu & Đặt vé */}
             <Link 
               to="/search" 
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 isActive('/search') ? 'text-white bg-white/10 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-white/5'
               }`}
             >
-              Tra cứu chuyến xe
+              Tra cứu & Đặt vé
             </Link>
 
-            {/* Về VEXE Dropdown */}
-            <div 
-              className="relative"
-              onMouseEnter={() => setAboutDropdownOpen(true)}
-              onMouseLeave={() => setAboutDropdownOpen(false)}
-            >
-              <button 
-                className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
-              >
-                <span>Về VEXE</span>
-                <ChevronDown size={14} className={`transition-transform duration-200 ${aboutDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {aboutDropdownOpen && (
-                <div className="absolute top-full left-0 w-56 pt-2 z-50 animate-fadeIn">
-                  <div className="bg-slate-900/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl p-2 space-y-1">
-                    <Link
-                      to="/about"
-                      onClick={() => setAboutDropdownOpen(false)}
-                      className="block px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition-colors"
-                    >
-                      <div className="text-white font-bold">Giới thiệu & Sứ mệnh</div>
-                      <div className="text-[11px] text-slate-400 font-normal">Hành trình số hóa vận tải hành khách</div>
-                    </Link>
-                    <Link
-                      to="/achievements"
-                      onClick={() => setAboutDropdownOpen(false)}
-                      className="block px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition-colors"
-                    >
-                      <div className="text-cyan-300 font-bold flex items-center gap-1">
-                        <Sparkles size={12} />
-                        <span>Thành tích & Đối tác</span>
-                      </div>
-                      <div className="text-[11px] text-slate-400 font-normal">1.500.000+ vé và 100+ nhà xe hợp tác</div>
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Hỗ trợ Dropdown */}
+            {/* 5. Hỗ trợ & Liên hệ Dropdown (Giữ nguyên) */}
             <div 
               className="relative"
               onMouseEnter={() => setSupportDropdownOpen(true)}
               onMouseLeave={() => setSupportDropdownOpen(false)}
             >
               <button 
-                className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+                className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                  isActive('/contact') || isActive('/faq')
+                    ? 'text-white bg-white/10 shadow-sm'
+                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                }`}
               >
                 <span>Hỗ trợ & Liên hệ</span>
                 <ChevronDown size={14} className={`transition-transform duration-200 ${supportDropdownOpen ? 'rotate-180' : ''}`} />
@@ -133,6 +119,7 @@ export const Header: React.FC = () => {
                 </div>
               )}
             </div>
+
           </nav>
 
           {/* Right Action Bar */}
