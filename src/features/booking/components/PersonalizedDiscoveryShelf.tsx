@@ -762,3 +762,5 @@ export const PersonalizedDiscoveryShelf: React.FC = () => {
     </section>
   );
 };
+
+export default PersonalizedDiscoveryShelf;
