@@ -25,6 +25,7 @@ export interface TripInfo {
   departureTime: string;
   price: number;
   status?: string;
+  availableSeats?: number;
 }
 
 export interface CustomerInfo {
@@ -104,4 +105,58 @@ export interface CancelBookingPayload {
   accountNumber?: string;
   bankName?: string;
   accountHolder?: string;
+}
+
+export interface CounterSalePayload {
+  tripId: number;
+  seatIds: number[];
+  customerName: string;
+  customerPhone: string;
+  customerEmail?: string;
+  paymentMethod?: string; // 'CASH' | 'VNPAY'
+  note?: string;
+}
+
+export interface CheckInPayload {
+  ticketCodeOrQr: string;
+  tripId?: number;
+  forceCheckIn?: boolean;
+}
+
+export interface CheckInResult {
+  ticketId: number;
+  ticketCode: string;
+  status: string;
+  seatName: string;
+  floor?: number;
+  customerName: string;
+  customerPhone: string;
+  bookingId: number;
+  tripId: number;
+  departureLocation: string;
+  arrivalLocation: string;
+  departureTime: string;
+  licensePlate: string;
+  vehicleType?: string;
+  price: number;
+  usedAt?: string;
+  message: string;
+}
+
+export interface PassengerManifestItem {
+  ticketId: number;
+  ticketCode: string;
+  status: string;
+  seatId: number;
+  seatName: string;
+  floor?: number;
+  customerName: string;
+  customerPhone: string;
+  bookingId: number;
+  price: number;
+  usedAt?: string;
+}
+
+export interface ChangeSeatPayload {
+  newSeatId: number;
 }

@@ -1,3 +1,4 @@
+import { useModal } from '../../../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import { type Route, type RouteRequest, RouteService } from '../api/route.service';
 import { DataTable, type Column } from '../../../components/DataTable';
@@ -7,6 +8,7 @@ import toast from 'react-hot-toast';
 import { Plus } from 'lucide-react';
 
 export const RouteManagement: React.FC = () => {
+  const { confirm } = useModal();
   const [routes, setRoutes] = useState<Route[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -79,9 +81,14 @@ export const RouteManagement: React.FC = () => {
   };
 
   const handleDelete = async (route: Route) => {
-    if (!window.confirm(`Bạn có chắc chắn muốn xóa tuyến đường ${route.departureLocation} - ${route.arrivalLocation}?`)) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Xóa tuyến đường",
+      message: `Bạn có chắc chắn muốn xóa tuyến đường ${route.departureLocation} - ${route.arrivalLocation} không? Hành động này không thể hoàn tác.`,
+      type: "danger",
+      confirmText: "Xóa tuyến đường",
+      cancelText: "Hủy"
+    });
+    if (!ok) return;
     
     try {
       await RouteService.delete(route.id);

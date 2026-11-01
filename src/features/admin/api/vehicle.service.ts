@@ -28,6 +28,14 @@ export const VehicleService = {
     const res = await api.put(`/vehicles/${id}`, data);
     return res.data;
   },
+  getSeats: async (vehicleId: number) => {
+    const res = await api.get(`/seats/vehicle/${vehicleId}`);
+    return res.data;
+  },
+  createSeats: async (vehicleId: number, totalSeats: number) => {
+    const res = await api.post(`/seats/vehicle/${vehicleId}`, { totalSeats });
+    return res.data;
+  },
   delete: async (id: number) => {
     const res = await api.delete(`/vehicles/${id}`);
     return res.data;

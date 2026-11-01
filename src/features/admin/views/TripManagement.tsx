@@ -1,3 +1,4 @@
+import { useModal } from '../../../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import { type Trip, type TripRequest, TripService } from '../api/trip.service';
 import { type Route, RouteService } from '../api/route.service';
@@ -6,15 +7,18 @@ import { DataTable, type Column } from '../../../components/DataTable';
 import { FormModal } from '../../../components/FormModal';
 import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
-import { Plus } from 'lucide-react';
+import { Plus, Users, FileText } from 'lucide-react';
+import { PassengerManifestModal } from '../components/PassengerManifestModal';
 
 export const TripManagement: React.FC = () => {
+  const { confirm } = useModal();
   const [trips, setTrips] = useState<Trip[]>([]);
   const [routes, setRoutes] = useState<Route[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
+  const [manifestTrip, setManifestTrip] = useState<Trip | null>(null);
 
   // Form State
   const [routeId, setRouteId] = useState<number | ''>('');
@@ -102,10 +106,26 @@ export const TripManagement: React.FC = () => {
     }
   };
 
-  const handleDelete = async (trip: Trip) => {
-    if (!window.confirm(`Bạn có chắc chắn muốn xóa chuyến xe ID: ${trip.id}?`)) {
-      return;
+  const handleStatusChange = async (tripId: number, newStatus: string) => {
+    try {
+      await TripService.updateStatus(tripId, newStatus);
+      toast.success(`Cập nhật trạng thái chuyến xe sang ${newStatus} thành công!`);
+      setTrips(prev => prev.map(t => t.id === tripId ? { ...t, status: newStatus } : t));
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Lỗi khi cập nhật trạng thái');
     }
+  };
+
+  const handleDelete = async (trip: Trip) => {
+    const routeName = trip.route ? `${trip.route.departureLocation} - ${trip.route.arrivalLocation}` : `ID: ${trip.id}`;
+    const ok = await confirm({
+      title: "Xóa chuyến xe",
+      message: `Bạn có chắc chắn muốn xóa chuyến xe ${routeName} (Mã: #${trip.id}) không? Hành động này không thể hoàn tác.`,
+      type: "danger",
+      confirmText: "Xóa chuyến xe",
+      cancelText: "Hủy"
+    });
+    if (!ok) return;
     
     try {
       await TripService.delete(trip.id);
@@ -146,8 +166,7 @@ export const TripManagement: React.FC = () => {
       align: 'right',
       width: '15%'
     },
-    { 
-      header: 'Trạng Thái', 
+    {      header: 'Trạng Thái', 
       accessor: (row) => (
         <span className={`px-2 py-0.5 rounded text-xs font-medium border ${
           row.status === 'PENDING' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
@@ -155,11 +174,33 @@ export const TripManagement: React.FC = () => {
           row.status === 'COMPLETED' ? 'bg-green-50 text-green-700 border-green-200' :
           'bg-red-50 text-red-700 border-red-200'
         }`}>
-          {row.status}
+          {row.status === 'PENDING' ? 'Chờ khởi hành' :
+           row.status === 'RUNNING' ? 'Đang chạy' :
+           row.status === 'COMPLETED' ? 'Đã hoàn thành' :
+           row.status === 'CANCELLED' ? 'Đã hủy' : row.status}
         </span>
       ),
       align: 'left',
-      width: '15%'
+      width: '12%'
+    },
+    {
+      header: 'Hành Khách',
+      accessor: (row) => (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setManifestTrip(row);
+          }}
+          className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-lg text-xs font-bold transition-colors inline-flex items-center space-x-1"
+          title="Xem danh sách hành khách"
+        >
+          <Users size={12} />
+          <span>Bảng kê</span>
+        </button>
+      ),
+      align: 'center',
+      width: '10%'
     }
   ];
 
@@ -282,6 +323,17 @@ export const TripManagement: React.FC = () => {
           </div>
         </form>
       </FormModal>
+      <PassengerManifestModal
+        isOpen={Boolean(manifestTrip)}
+        tripId={manifestTrip?.id || null}
+        tripSummary={manifestTrip ? {
+          departure: manifestTrip.route?.departureLocation || '',
+          arrival: manifestTrip.route?.arrivalLocation || '',
+          time: new Date(manifestTrip.departureTime).toLocaleTimeString('vi-VN'),
+          licensePlate: manifestTrip.vehicle?.licensePlate || ''
+        } : undefined}
+        onClose={() => setManifestTrip(null)}
+      />
     </AdminPageLayout>
   );
 };

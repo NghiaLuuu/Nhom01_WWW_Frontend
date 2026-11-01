@@ -6,7 +6,7 @@ import { useBookingStore } from '../../../store/useBookingStore';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { SeatMap } from './SeatMap';
 import { useNavigate } from 'react-router-dom';
-import { Clock, MapPin, Bus as BusIcon, ShieldAlert, LogIn } from 'lucide-react';
+import { Clock, MapPin, Bus as BusIcon, ShieldAlert, LogIn, Calendar } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface TripListProps {
@@ -24,7 +24,7 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   React.useEffect(() => {
-    if (trips.length === 1 && selectedTrip?.id !== trips[0].id) {
+    if (trips.length === 1 && trips[0].webBookingOpen !== false && selectedTrip?.id !== trips[0].id) {
       handleSelectTrip(trips[0]);
     }
   }, [trips]);
@@ -161,6 +161,31 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
     <div className="space-y-6">
       {trips.map((trip) => {
         const isSelected = selectedTrip?.id === trip.id;
+        const totalSeats = trip.vehicle?.capacity ?? 45;
+        const availableSeats = Math.max(0, Math.min(totalSeats, trip.availableSeats ?? totalSeats));
+        const isWebBookingOpen = trip.webBookingOpen !== false;
+        const badgeColor = availableSeats > 5
+          ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
+          : availableSeats > 0
+            ? 'text-amber-700 bg-amber-50 border-amber-200'
+            : 'text-rose-700 bg-rose-50 border-rose-200';
+
+        // Departure & estimated arrival calculations
+        const depDate = new Date(trip.departureTime);
+        const durationMin = trip.route?.durationMinutes || trip.route?.duration || 120;
+        const arrDate = new Date(depDate.getTime() + durationMin * 60 * 1000);
+
+        const depTimeStr = depDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        const depDateStr = depDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        const arrTimeStr = arrDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        const arrDateStr = arrDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        const hours = Math.floor(durationMin / 60);
+        const mins = durationMin % 60;
+        const durationText = hours > 0 
+          ? (mins > 0 ? `${hours}h${mins}m` : `${hours} giờ`) 
+          : `${mins} phút`;
+
         return (
           <div 
             key={trip.id} 
@@ -170,51 +195,87 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
           >
             <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="flex-1 space-y-4">
-                <div className="flex items-center space-x-3 text-lg font-extrabold text-gray-900">
-                  <Clock className="text-blue-600" size={24} />
-                  <span>{new Date(trip.departureTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
-                  <span className="text-gray-300 font-normal mx-2">•</span>
-                  <span className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-0.5 rounded-full text-xs font-bold">
-                    {trip.vehicle?.type || 'Xe giường nằm'} ({trip.vehicle?.capacity || 36} chỗ)
+                {/* Header row: Departure Time -> Arrival Time, Departure Date, Vehicle Type, License Plate */}
+                <div className="flex flex-wrap items-center gap-2.5 text-base font-extrabold text-gray-900">
+                  <div className="flex items-center space-x-1.5 text-blue-600 bg-blue-50/80 px-2.5 py-1 rounded-xl border border-blue-100">
+                    <Clock size={16} />
+                    <span className="text-lg font-black tracking-tight">{depTimeStr}</span>
+                    <span className="text-gray-400 font-normal text-xs">→</span>
+                    <span className="text-lg font-black tracking-tight text-gray-800">{arrTimeStr}</span>
+                  </div>
+
+                  <span className="inline-flex items-center space-x-1.5 text-xs font-bold text-gray-700 bg-gray-100 border border-gray-200 px-2.5 py-1 rounded-xl">
+                    <Calendar size={13} className="text-gray-500" />
+                    <span>Ngày xuất hành: {depDateStr}</span>
                   </span>
-                  <span className="text-gray-500 text-xs font-mono font-medium">
+
+                  <span className="text-gray-300 font-normal hidden sm:inline">•</span>
+
+                  <span className={`px-3 py-1 rounded-xl text-xs font-bold border ${badgeColor}`}>
+                    {trip.vehicle?.type || 'Ghế ngồi'} ({availableSeats}/{totalSeats} chỗ)
+                  </span>
+
+                  <span className="text-gray-400 text-xs font-mono font-medium ml-auto sm:ml-0">
                     {trip.vehicle?.licensePlate}
                   </span>
                 </div>
                 
-                <div className="flex items-start space-x-3">
-                  <div className="flex flex-col items-center pt-1">
-                    <div className="w-3 h-3 rounded-full bg-blue-600 ring-4 ring-blue-100"></div>
-                    <div className="w-0.5 h-10 bg-gray-300 my-1"></div>
-                    <div className="w-3 h-3 rounded-full border-2 border-red-500 bg-white"></div>
+                {/* Journey Timeline */}
+                <div className="flex items-start space-x-3.5 pt-1">
+                  <div className="flex flex-col items-center pt-1.5">
+                    <div className="w-3.5 h-3.5 rounded-full bg-blue-600 ring-4 ring-blue-100 shrink-0"></div>
+                    <div className="w-0.5 h-12 bg-gradient-to-b from-blue-500 via-gray-300 to-emerald-500 my-1"></div>
+                    <div className="w-3.5 h-3.5 rounded-full border-2 border-emerald-600 bg-white shrink-0"></div>
                   </div>
-                  <div className="space-y-4 text-sm font-medium text-gray-700">
+                  <div className="space-y-3.5 text-sm flex-1">
+                    {/* Departure point */}
                     <div>
-                      <span className="text-xs text-gray-400 block">Điểm đi</span>
-                      <strong className="text-gray-900 font-bold">{trip.route?.departureLocation}</strong>
+                      <div className="flex flex-wrap items-baseline gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Điểm đi</span>
+                        <span className="text-xs font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+                          Xuất hành: <strong className="font-bold">{depTimeStr}</strong> • {depDateStr}
+                        </span>
+                      </div>
+                      <strong className="text-base text-gray-900 font-extrabold block mt-0.5">
+                        {trip.route?.departureLocation}
+                      </strong>
                     </div>
+
+                    {/* Arrival point */}
                     <div>
-                      <span className="text-xs text-gray-400 block">Điểm đến</span>
-                      <strong className="text-gray-900 font-bold">{trip.route?.arrivalLocation}</strong>
+                      <div className="flex flex-wrap items-baseline gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Điểm đến</span>
+                        <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
+                          Dự kiến đến: <strong className="font-bold">{arrTimeStr}</strong> • {arrDateStr} (~{durationText})
+                        </span>
+                      </div>
+                      <strong className="text-base text-gray-900 font-extrabold block mt-0.5">
+                        {trip.route?.arrivalLocation}
+                      </strong>
                     </div>
                   </div>
                 </div>
               </div>
               
               <div className="flex flex-col items-end justify-between border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-6 min-w-[200px]">
-                <div className="text-2xl font-black text-blue-600 mb-4">
-                  {new Intl.NumberFormat('vi-VN').format(trip.price)}₫
-                  <span className="text-xs text-gray-400 font-normal block text-right">/ vé</span>
+                <div className="flex items-baseline space-x-1.5 mb-4">
+                  <span className="text-2xl font-black text-blue-600">
+                    {new Intl.NumberFormat('vi-VN').format(trip.price)}₫
+                  </span>
+                  <span className="text-xs text-gray-400 font-semibold whitespace-nowrap">/ vé</span>
                 </div>
                 <button 
                   onClick={() => handleSelectTrip(trip)}
-                  className={`w-full px-6 py-2.5 rounded-xl font-bold transition-all text-sm ${
+                  disabled={!isWebBookingOpen}
+                  className={`w-full px-6 py-2.5 rounded-xl font-bold transition-all text-sm disabled:cursor-not-allowed ${
                     isSelected 
                       ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' 
-                      : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-600/20'
+                      : isWebBookingOpen
+                        ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-600/20'
+                        : 'bg-gray-200 text-gray-500'
                   }`}
                 >
-                  {isSelected ? 'Đóng sơ đồ ghế' : 'Chọn chuyến này'}
+                  {isSelected ? 'Đóng sơ đồ ghế' : isWebBookingOpen ? 'Chọn chuyến này' : availableSeats === 0 ? 'Đã hết chỗ' : 'Đã đóng bán vé web'}
                 </button>
               </div>
             </div>

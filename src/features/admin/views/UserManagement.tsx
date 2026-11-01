@@ -1,3 +1,4 @@
+import { useModal } from '../../../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import { type User, type StaffRequest, UserService } from '../api/user.service';
 import { type Role, RoleService } from '../api/role.service';
@@ -7,13 +8,6 @@ import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
 import { Plus, Users, UserCheck, Search } from 'lucide-react';
 
-export const UserManagement: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'STAFF' | 'CUSTOMER'>('STAFF');
-  const [staffs, setStaffs] = useState<User[]>([]);
-  const [customers, setCustomers] = useState<User[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  
   const AVAILABLE_PERMISSIONS = [
     { id: 'TRIP_MANAGE', label: 'Quản lý chuyến xe' },
     { id: 'MANAGE_TICKET', label: 'Quản lý đặt vé' },
@@ -24,6 +18,16 @@ export const UserManagement: React.FC = () => {
     { id: 'ROUTE_MANAGE', label: 'Quản lý tuyến đường' },
     { id: 'VEHICLE_MANAGE', label: 'Quản lý xe & tài xế' }
   ];
+
+export const UserManagement: React.FC = () => {
+  const { confirm } = useModal();
+  const [activeTab, setActiveTab] = useState<'STAFF' | 'CUSTOMER'>('STAFF');
+  const [staffs, setStaffs] = useState<User[]>([]);
+  const [customers, setCustomers] = useState<User[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [permissionsList, setPermissionsList] = useState<{ id: string; label: string }[]>(AVAILABLE_PERMISSIONS);
+  
   
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,14 +47,21 @@ export const UserManagement: React.FC = () => {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const [staffsRes, customersRes, rolesRes] = await Promise.all([
+      const [staffsRes, customersRes, rolesRes, permsRes] = await Promise.all([
         UserService.getStaffs().catch(() => ({ success: false, data: [] })),
         UserService.getCustomers().catch(() => ({ success: false, data: [] })),
-        RoleService.getAll().catch(() => ({ success: false, data: [] }))
+        RoleService.getAll().catch(() => ({ success: false, data: [] })),
+        RoleService.getPermissions().catch(() => ({ success: false, data: [] }))
       ]);
       if (staffsRes.success) setStaffs(staffsRes.data);
       if (customersRes.success) setCustomers(customersRes.data);
       if (rolesRes.success) setRoles(rolesRes.data);
+      if (permsRes && permsRes.success && Array.isArray(permsRes.data) && permsRes.data.length > 0) {
+        setPermissionsList(permsRes.data.map((p: any) => ({
+          id: p.code || p.name,
+          label: p.description || p.code || p.name
+        })));
+      }
     } catch (error) {
       toast.error('Lỗi khi tải dữ liệu người dùng');
     } finally {
@@ -158,7 +169,14 @@ export const UserManagement: React.FC = () => {
   const handleResetPassword = async (id: string, isStaff: boolean) => {
     const defaultPass = isStaff ? "Vexe@123" : "123456";
     const message = isStaff ? "nhân viên" : "khách hàng";
-    if (window.confirm(`Bạn có chắc chắn muốn reset mật khẩu ${message} này về mặc định (${defaultPass})?`)) {
+    const ok = await confirm({
+      title: "Đặt lại mật khẩu",
+      message: `Bạn có chắc chắn muốn reset mật khẩu ${message} này về mặc định (${defaultPass}) không?`,
+      type: "warning",
+      confirmText: "Đặt lại mật khẩu",
+      cancelText: "Hủy"
+    });
+    if (ok) {
       try {
         if (isStaff) {
           await UserService.resetStaffPassword(id);
@@ -211,7 +229,7 @@ export const UserManagement: React.FC = () => {
       header: 'Trạng Thái', 
       accessor: (row) => (
         <span className={`px-2 py-0.5 rounded text-xs font-medium border ${row.status === 'ACTIVE' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
-          {row.status}
+          {row.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'}
         </span>
       ),
       align: 'left',
@@ -246,7 +264,7 @@ export const UserManagement: React.FC = () => {
       header: 'Trạng Thái', 
       accessor: (row) => (
         <span className={`px-2 py-0.5 rounded text-xs font-medium border ${row.status === 'ACTIVE' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
-          {row.status}
+          {row.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'}
         </span>
       ),
       align: 'left',
@@ -407,7 +425,7 @@ export const UserManagement: React.FC = () => {
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">Phân Quyền Chức Năng</label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 p-3 bg-gray-50/50 border border-gray-200 rounded-md">
-              {AVAILABLE_PERMISSIONS.map(perm => (
+              {permissionsList.map((perm: any) => (
                 <label key={perm.id} className="flex items-center space-x-2 cursor-pointer group">
                   <input
                     type="checkbox"

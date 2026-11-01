@@ -19,7 +19,9 @@ import { TicketDetailPage } from './features/booking/views/TicketDetailPage';
 import { ETicketPage } from './features/booking/views/ETicketPage';
 import { ProfilePage } from './features/customer/views/ProfilePage';
 import { TicketManagement } from './features/admin/views/TicketManagement';
+import { ReportManagement } from './features/admin/views/ReportManagement';
 import { Toaster } from 'react-hot-toast';
+import { ModalProvider } from './context/ModalContext';
 
 // Wrapper to handle navigation for auth pages
 const AuthWrapper = ({ isLogin }: { isLogin: boolean }) => {
@@ -34,7 +36,8 @@ const AuthWrapper = ({ isLogin }: { isLogin: boolean }) => {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
+      <ModalProvider>
+        <Routes>
         {/* Public Routes with Public Layout */}
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<LandingPage />} />
@@ -98,6 +101,7 @@ function App() {
           <Route path="routes" element={<RouteManagement />} />
           <Route path="vehicles-drivers" element={<VehicleManagement />} />
           <Route path="audit-logs" element={<AuditLogManagement />} />
+          <Route path="reports" element={<ReportManagement />} />
           <Route path="profile" element={<AdminProfilePage />} />
           
           {/* Catch all inside admin */}
@@ -109,6 +113,7 @@ function App() {
         </Route>
       </Routes>
       <Toaster position="top-right" />
+      </ModalProvider>
     </BrowserRouter>
   );
 }

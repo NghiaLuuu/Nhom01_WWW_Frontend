@@ -30,6 +30,14 @@ export const BookingSuccessPage: React.FC = () => {
   const [tickets, setTickets] = useState<TicketItem[]>([]);
   const [paymentInfo, setPaymentInfo] = useState<PaymentItem | null>(null);
 
+  const departureDate = booking?.trip?.departureTime
+    ? new Date(booking.trip.departureTime)
+    : null;
+  const durationMinutes = booking?.trip?.route?.durationMinutes;
+  const estimatedArrivalDate = departureDate && typeof durationMinutes === 'number'
+    ? new Date(departureDate.getTime() + durationMinutes * 60 * 1000)
+    : null;
+
   useEffect(() => {
     const processPaymentResult = async () => {
       setLoading(true);
@@ -102,7 +110,26 @@ export const BookingSuccessPage: React.FC = () => {
 
         const resTickets = await BookingService.getTicketsByBookingId(bookingId);
         if (resTickets.success && Array.isArray(resTickets.data)) {
-          setTickets(resTickets.data);
+          // The list endpoint can omit the QR image, so hydrate every ticket
+          // from the official QR endpoint before showing it on the success page.
+          const ticketsWithQr = await Promise.all(
+            resTickets.data.map(async (ticket) => {
+              if (ticket.qrCode?.trim()) return ticket;
+
+              try {
+                const qrRes = await BookingService.getTicketQrCode(ticket.id);
+                const qrData = qrRes.success ? qrRes.data : undefined;
+                const qrCode = typeof qrData === 'string'
+                  ? qrData
+                  : (qrData as unknown as { qrCode?: string })?.qrCode;
+
+                return qrCode ? { ...ticket, qrCode } : ticket;
+              } catch {
+                return ticket;
+              }
+            })
+          );
+          setTickets(ticketsWithQr);
         }
       } catch (err) {
         console.error('Error loading booking and tickets:', err);
@@ -232,32 +259,41 @@ export const BookingSuccessPage: React.FC = () => {
                   <span>→</span>
                   <span>{booking?.trip?.route?.arrivalLocation}</span>
                 </div>
-                <div className="flex items-center space-x-2 text-gray-500 text-[11px]">
-                  <Clock size={13} className="text-blue-600" />
-                  <span>
-                    Khởi hành: <strong>{booking?.trip?.departureTime ? new Date(booking.trip.departureTime).toLocaleString('vi-VN') : 'N/A'}</strong>
-                  </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-gray-500">
+                  <div className="flex items-center space-x-2">
+                    <Clock size={13} className="text-blue-600 shrink-0" />
+                    <span>
+                      Khởi hành: <strong>{departureDate ? departureDate.toLocaleString('vi-VN') : 'N/A'}</strong>
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Clock size={13} className="text-emerald-600 shrink-0" />
+                    <span>
+                      Dự kiến đến: <strong>{estimatedArrivalDate ? estimatedArrivalDate.toLocaleString('vi-VN') : 'Chưa có dữ liệu'}</strong>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
             
-            {/* Right: Real Backend QR Code */}
+            {/* Right: Official QR Code, styled consistently with the e-ticket */}
             <div className="flex flex-col items-center justify-center md:border-l border-gray-100 md:pl-8 space-y-3">
-              <div className="w-44 h-44 bg-white p-2 rounded-2xl border-2 border-dashed border-blue-200 shadow-sm flex items-center justify-center">
+              <div className="w-40 bg-white p-2 rounded-xl border-2 border-slate-800 flex flex-col items-center justify-center">
                 {tickets[0]?.qrCode ? (
                   <img 
-                    src={`data:image/png;base64,${tickets[0].qrCode}`} 
+                    src={tickets[0].qrCode.startsWith('data:image') ? tickets[0].qrCode : `data:image/png;base64,${tickets[0].qrCode}`} 
                     alt="Ticket QR Code" 
-                    className="w-full h-full object-contain rounded-lg"
+                    className="w-28 h-28 object-contain"
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center text-center p-2">
-                    <QrCode size={90} className="text-gray-800" />
-                    <span className="text-[10px] font-mono text-gray-500 mt-1">
-                      {tickets[0]?.ticketCode || `VX-${booking?.id}`}
-                    </span>
+                    <Loader2 size={32} className="animate-spin text-blue-600" />
+                    <span className="text-[10px] text-gray-500 mt-2">Đang tải mã QR chính thức...</span>
                   </div>
                 )}
+                <span className="text-[10px] font-mono font-bold text-slate-700 mt-1">
+                  *{tickets[0]?.ticketCode || `VX${booking?.id}`}*
+                </span>
               </div>
               <p className="text-[11px] text-gray-500 text-center leading-relaxed">
                 Mã QR soát vé chính thức<br/>

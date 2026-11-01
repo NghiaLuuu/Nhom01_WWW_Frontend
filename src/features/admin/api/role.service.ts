@@ -31,6 +31,10 @@ export const RoleService = {
     const res = await api.put(`/admin/roles/${id}`, data);
     return res.data;
   },
+  getPermissions: async () => {
+    const res = await api.get('/admin/roles/permissions');
+    return res.data;
+  },
   delete: async (id: number) => {
     const res = await api.delete(`/admin/roles/${id}`);
     return res.data;

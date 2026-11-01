@@ -63,13 +63,37 @@ export const BookingHistoryPage: React.FC = () => {
   // Cancel Modal State
   const [selectedBookingForCancel, setSelectedBookingForCancel] = useState<BookingItem | null>(null);
 
+  const getSeatNames = (booking: BookingItem) => {
+    const ticketSeats = booking.tickets
+      ?.map(ticket => ticket.seat?.seatName || ticket.seatNumber)
+      .filter((seatName): seatName is string => Boolean(seatName));
+
+    return ticketSeats?.length ? ticketSeats : (booking.seats || []);
+  };
+
   const fetchBookings = async () => {
     setLoading(true);
     setError(null);
     try {
       const res = await BookingService.getMyHistory();
       if (res.success && Array.isArray(res.data)) {
-        setBookings(res.data);
+        // History responses omit tickets to avoid serialising the booking-ticket
+        // relationship recursively. Hydrate them so the UI always shows the
+        // actual seat labels (A1, B2, ...) rather than a placeholder.
+        const bookingsWithSeats = await Promise.all(res.data.map(async (booking) => {
+          if (getSeatNames(booking).length) return booking;
+
+          try {
+            const ticketsRes = await BookingService.getTicketsByBookingId(booking.id);
+            if (ticketsRes.success && Array.isArray(ticketsRes.data)) {
+              return { ...booking, tickets: ticketsRes.data };
+            }
+          } catch (ticketError) {
+            console.warn(`Could not load seats for booking #${booking.id}`, ticketError);
+          }
+          return booking;
+        }));
+        setBookings(bookingsWithSeats);
       } else if (Array.isArray(res.data)) {
         setBookings(res.data);
       } else {
@@ -493,7 +517,7 @@ export const BookingHistoryPage: React.FC = () => {
                       <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
                         <span className="text-gray-400 block mb-0.5">Vị trí ghế</span>
                         <div className="font-bold text-blue-700">
-                          {booking.tickets?.map(t => t.seatNumber).join(', ') || booking.seats?.join(', ') || 'Ghế đặt'}
+                          {getSeatNames(booking).join(', ') || 'Chưa có thông tin ghế'}
                         </div>
                         <div className="text-gray-500 text-[11px]">
                           Tổng: {Number(booking.totalPrice).toLocaleString('vi-VN')}₫
@@ -596,7 +620,7 @@ export const BookingHistoryPage: React.FC = () => {
                         </td>
                         <td className="py-4 px-6 whitespace-nowrap">
                           <span className="font-bold text-blue-700">
-                            {booking.tickets?.map(t => t.seatNumber).join(', ') || booking.seats?.join(', ') || 'N/A'}
+                            {getSeatNames(booking).join(', ') || 'N/A'}
                           </span>
                           <div className="text-xs text-gray-400">
                             {booking.trip?.vehicle?.type} • {booking.trip?.vehicle?.licensePlate}

@@ -8,10 +8,13 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, accessToken, refreshToken, user } = useAuthStore();
   const location = useLocation();
 
-  if (!isAuthenticated) {
+  // A persisted auth flag without both tokens can happen after a previous
+  // failed refresh or when old localStorage data is restored. Do not render a
+  // protected screen in that state because every API request would be 401.
+  if (!isAuthenticated || !accessToken || !refreshToken) {
     // Redirect to login but save the attempted url
     return <Navigate to="/login" state={{ from: location }} replace />;
   }

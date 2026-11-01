@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { 
+import {
+  Ticket,
   ArrowLeft, 
   Bus, 
   Calendar, 
@@ -27,17 +28,23 @@ import {
 import type { BookingItem, BookingStatus } from '../types/booking.types';
 import { BookingService } from '../api/booking.service';
 import { CancelTicketModal } from '../components/CancelTicketModal';
+import { ChangeSeatModal } from '../components/ChangeSeatModal';
+import { ArrowLeftRight } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAuthStore } from '../../../store/useAuthStore';
 
 export const TicketDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuthStore();
+  const isStaffOrAdmin = user?.roles?.some((r: string) => ['ROLE_ADMIN', 'ROLE_STAFF', 'ADMIN', 'STAFF'].includes(r));
 
   const [booking, setBooking] = useState<BookingItem | null>(null);
   const [tickets, setTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
+  const [selectedChangeSeatTicket, setSelectedChangeSeatTicket] = useState<any>(null);
 
   const fetchBookingDetail = async () => {
     if (!id) return;
@@ -75,37 +82,119 @@ export const TicketDetailPage: React.FC = () => {
     fetchBookingDetail();
   }, [id]);
 
+  const handleCancelSingleTicket = async (ticketId: number, seatName: string) => {
+    const reason = window.prompt(`Xác nhận hủy vé ghế ${seatName}?\nNhập lý do hủy:`, 'Khách yêu cầu hủy vé');
+    if (reason === null) return;
+
+    const toastId = toast.loading('Đang xử lý hủy vé lẻ...');
+    try {
+      const res = await BookingService.cancelSingleTicket(ticketId, reason);
+      if (res.success) {
+        toast.success('Hủy vé thành công!', { id: toastId });
+        fetchBookingDetail();
+      } else {
+        toast.error(res.message || 'Hủy vé không thành công', { id: toastId });
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Lỗi khi hủy vé', { id: toastId });
+    }
+  };
+
   const depTime = booking?.trip?.departureTime ? new Date(booking.trip.departureTime) : null;
   const isPast = depTime && depTime.getTime() < Date.now();
   const isCanCancel = booking?.status === 'PAID' && !isPast;
 
-  // Timeline Steps
-  const timelineSteps = [
+  // Format Date Helper
+  const formatDateTime = (dateStr?: string) => {
+    if (!dateStr) return '';
+    try {
+      return new Date(dateStr).toLocaleString('vi-VN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  // Timeline Steps logic
+  const isPaid = booking?.status === 'PAID' || booking?.status === 'COMPLETED';
+  const isCancelled = booking?.status === 'CANCELLED';
+  const isCancelRequested = booking?.status === 'CANCEL_REQUESTED';
+  const isPending = booking?.status === 'PENDING_PAYMENT';
+  const isExpired = booking?.status === 'EXPIRED';
+
+  interface TimelineStep {
+    title: string;
+    time?: string;
+    completed: boolean;
+    current: boolean;
+    isCancelled?: boolean;
+    description?: string;
+  }
+
+  const timelineSteps: TimelineStep[] = [
     {
       title: 'Tạo đơn đặt vé',
-      time: booking?.createdAt ? new Date(booking.createdAt).toLocaleString('vi-VN') : '',
+      time: formatDateTime(booking?.createdAt),
       completed: true,
       current: false,
     },
     {
-      title: 'Thanh toán thành công',
-      time: booking?.status === 'PAID' || booking?.status === 'COMPLETED' ? (booking?.updatedAt ? new Date(booking.updatedAt).toLocaleString('vi-VN') : 'Đã xác nhận') : '',
-      completed: booking?.status === 'PAID' || booking?.status === 'COMPLETED',
-      current: booking?.status === 'PENDING_PAYMENT',
-    },
-    {
-      title: 'Xác nhận chỗ ngồi & Vé điện tử',
-      time: booking?.status === 'PAID' ? 'Sẵn sàng lên xe' : '',
-      completed: booking?.status === 'PAID' || booking?.status === 'COMPLETED',
-      current: false,
-    },
-    {
-      title: 'Hoàn thành chuyến đi',
-      time: isPast ? (depTime ? depTime.toLocaleString('vi-VN') : '') : 'Dự kiến',
-      completed: isPast && (booking?.status === 'PAID' || booking?.status === 'COMPLETED'),
-      current: !isPast && booking?.status === 'PAID',
+      title: isPaid || isCancelled || isCancelRequested ? 'Thanh toán thành công' : isExpired ? 'Hết hạn thanh toán' : 'Chờ thanh toán',
+      time: (isPaid || isCancelled || isCancelRequested)
+        ? (booking?.updatedAt ? formatDateTime(booking.updatedAt) : 'Đã xác nhận thanh toán')
+        : isExpired
+        ? (booking?.holdExpiresAt ? `Hết hạn: ${formatDateTime(booking.holdExpiresAt)}` : 'Đã quá hạn giữ chỗ')
+        : (booking?.holdExpiresAt ? `Hạn thanh toán: ${formatDateTime(booking.holdExpiresAt)}` : 'Đang giữ chỗ 5 phút'),
+      completed: isPaid || isCancelled || isCancelRequested,
+      current: isPending,
+      isCancelled: isExpired,
     },
   ];
+
+  // Nếu khách hủy vé (hoặc yêu cầu hủy) -> Thêm mốc Đã hủy ngay sau Thanh toán thành công
+  if (isCancelled) {
+    timelineSteps.push({
+      title: 'Đã hủy vé',
+      time: booking?.updatedAt ? formatDateTime(booking.updatedAt) : 'Đã hủy hoàn tất',
+      completed: true,
+      current: false,
+      isCancelled: true,
+      description: 'Đơn vé đã được hủy hoàn tất',
+    });
+  } else if (isCancelRequested) {
+    timelineSteps.push({
+      title: 'Yêu cầu hủy vé',
+      time: booking?.updatedAt ? `${formatDateTime(booking.updatedAt)} • Chờ nhân viên duyệt` : 'Đang chờ xử lý',
+      completed: false,
+      current: true,
+      isCancelled: false,
+      description: 'Đang gửi yêu cầu hủy vé đến nhân viên',
+    });
+  }
+
+  // Nếu chưa hủy vé thì mới hiển thị các mốc tiếp theo của chuyến đi
+  if (!isCancelled && !isExpired) {
+    timelineSteps.push({
+      title: 'Xác nhận chỗ ngồi & Vé điện tử',
+      time: isPaid ? 'Sẵn sàng lên xe' : 'Chờ thanh toán hoàn tất',
+      completed: isPaid,
+      current: false,
+    });
+
+    timelineSteps.push({
+      title: 'Hoàn thành chuyến đi',
+      time: isPast 
+        ? (depTime ? formatDateTime(depTime.toISOString()) : '') 
+        : (depTime ? `Dự kiến: ${formatDateTime(depTime.toISOString())}` : 'Dự kiến'),
+      completed: Boolean(isPast && isPaid),
+      current: Boolean(!isPast && isPaid),
+    });
+  }
 
   const handlePrint = () => {
     window.print();
@@ -152,7 +241,7 @@ export const TicketDetailPage: React.FC = () => {
           <p className="text-sm text-gray-500">{error || 'Vé này không tồn tại hoặc bạn không có quyền truy cập.'}</p>
           <div className="pt-2 flex justify-center space-x-3">
             <button
-              onClick={() => navigate('/bookings')}
+              onClick={() => navigate(isStaffOrAdmin ? '/admin/tickets' : '/bookings')}
               className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-sm transition-colors"
             >
               Về lịch sử vé
@@ -176,11 +265,11 @@ export const TicketDetailPage: React.FC = () => {
         {/* Back Link & Quick Actions (Hidden in Print) */}
         <div className="flex items-center justify-between print:hidden">
           <button
-            onClick={() => navigate('/bookings')}
+            onClick={() => navigate(isStaffOrAdmin ? '/admin/tickets' : '/bookings')}
             className="inline-flex items-center space-x-2 text-sm font-semibold text-gray-600 hover:text-blue-600 transition-colors bg-white px-4 py-2 rounded-xl border border-gray-200/80 shadow-2xs"
           >
             <ArrowLeft size={16} />
-            <span>Danh sách vé</span>
+            <span>{isStaffOrAdmin ? 'Quản lý vé (Admin)' : 'Danh sách vé'}</span>
           </button>
 
           <div className="flex items-center space-x-2">
@@ -240,9 +329,17 @@ export const TicketDetailPage: React.FC = () => {
                   ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                   : booking.status === 'PENDING_PAYMENT'
                   ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                  : booking.status === 'CANCEL_REQUESTED'
+                  ? 'bg-purple-50 text-purple-700 border border-purple-200'
                   : 'bg-rose-50 text-rose-700 border border-rose-200'
               }`}>
-                {booking.status === 'PAID' ? 'ĐÃ THANH TOÁN' : booking.status === 'PENDING_PAYMENT' ? 'CHỜ THANH TOÁN' : 'ĐÃ HỦY'}
+                {booking.status === 'PAID' 
+                  ? 'ĐÃ THANH TOÁN' 
+                  : booking.status === 'PENDING_PAYMENT' 
+                  ? 'CHỜ THANH TOÁN' 
+                  : booking.status === 'CANCEL_REQUESTED' 
+                  ? 'YÊU CẦU HỦY VÉ' 
+                  : 'ĐÃ HỦY'}
               </span>
               <div className="text-lg font-black text-gray-900 mt-2">
                 {Number(booking.totalPrice).toLocaleString('vi-VN')}₫
@@ -347,6 +444,64 @@ export const TicketDetailPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Individual Tickets & Change Seat List */}
+          {tickets.length > 0 && (
+            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-2xs space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center space-x-2">
+                  <Ticket size={16} className="text-blue-600" />
+                  <span>Danh sách vé trong đơn ({tickets.length} vé)</span>
+                </h3>
+                <span className="text-xs text-gray-400">
+                  Hỗ trợ đổi ghế hoặc hủy từng vé lẻ
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {tickets.map(t => (
+                  <div key={t.id} className="p-4 rounded-2xl bg-gray-50/80 border border-gray-200 flex items-center justify-between gap-3 text-xs">
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-mono font-bold text-blue-600 text-sm">{t.ticketCode}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          t.status === 'USED' ? 'bg-blue-100 text-blue-800' :
+                          t.status === 'ISSUED' ? 'bg-emerald-100 text-emerald-800' :
+                          t.status === 'CANCELLED' ? 'bg-rose-100 text-rose-800' :
+                          'bg-gray-100 text-gray-700'
+                        }`}>
+                          {t.status === 'USED' ? 'Đã lên xe' : t.status === 'ISSUED' ? 'Hợp lệ' : t.status === 'CANCELLED' ? 'Đã hủy' : t.status === 'RESERVED' ? 'Đã giữ chỗ' : t.status}
+                        </span>
+                      </div>
+                      <p className="font-extrabold text-gray-900 text-sm">
+                        Ghế: <span className="text-blue-700">{t.seat?.seatName || t.seatNumber}</span>
+                        {t.seat?.floor && <span className="text-xs font-normal text-gray-500"> (Tầng {t.seat.floor})</span>}
+                      </p>
+                    </div>
+
+                    {/* Actions */}
+                    {booking?.status === 'PAID' && !isPast && t.status === 'ISSUED' && (
+                      <div className="flex flex-col gap-1.5 shrink-0">
+                        <button
+                          onClick={() => setSelectedChangeSeatTicket(t)}
+                          className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl font-bold text-[11px] transition-colors flex items-center space-x-1"
+                        >
+                          <ArrowLeftRight size={12} />
+                          <span>Đổi ghế</span>
+                        </button>
+                        <button
+                          onClick={() => handleCancelSingleTicket(t.id, t.seat?.seatName || t.seatNumber)}
+                          className="px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl font-semibold text-[10px] transition-colors"
+                        >
+                          Hủy vé
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* QR Code & Check-in Verification Box */}
           <div className="bg-gradient-to-r from-blue-50 via-indigo-50/50 to-blue-50 p-6 rounded-3xl border border-blue-100 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="space-y-2 text-center sm:text-left">
@@ -357,9 +512,11 @@ export const TicketDetailPage: React.FC = () => {
               <p className="text-sm font-bold text-gray-900">
                 Xuất trình mã này cho tài xế hoặc phụ xe khi lên xe
               </p>
-              <p className="text-xs text-gray-500 max-w-md">
-                Vui lòng đến điểm đón trước giờ khởi hành ít nhất 30 phút để hoàn tất thủ tục xếp chỗ và hành lý.
-              </p>
+              <div className="text-xs text-gray-600 max-w-md space-y-1 bg-white/70 p-3 rounded-xl border border-blue-100">
+                <p className="font-semibold text-blue-900">⏰ Khung giờ soát vé lên xe:</p>
+                <p>• <strong>Mở cổng:</strong> Tối thiểu 30 – 60 phút trước giờ xe chạy.</p>
+                <p>• <strong>Đóng cổng:</strong> Trước giờ xuất bến 5 – 10 phút để chốt danh sách & xếp hành lý.</p>
+              </div>
             </div>
 
             {/* QR Graphic */}
@@ -367,7 +524,7 @@ export const TicketDetailPage: React.FC = () => {
               <div className="w-32 h-32 bg-white rounded-xl p-1 flex items-center justify-center">
                 {tickets[0]?.qrCode ? (
                   <img 
-                    src={`data:image/png;base64,${tickets[0].qrCode}`} 
+                    src={tickets[0].qrCode.startsWith('data:image') ? tickets[0].qrCode : `data:image/png;base64,${tickets[0].qrCode}`} 
                     alt="Ticket QR Code" 
                     className="w-full h-full object-contain rounded-lg"
                   />
@@ -393,19 +550,36 @@ export const TicketDetailPage: React.FC = () => {
               {timelineSteps.map((step, idx) => (
                 <div key={idx} className="relative flex items-start space-x-3 text-xs">
                   <div className={`absolute -left-6 top-0.5 w-5 h-5 rounded-full flex items-center justify-center ${
-                    step.completed
+                    step.isCancelled
+                      ? 'bg-rose-500 text-white ring-4 ring-rose-50'
+                      : step.completed
                       ? 'bg-emerald-500 text-white ring-4 ring-emerald-50'
                       : step.current
                       ? 'bg-blue-600 text-white ring-4 ring-blue-50 animate-pulse'
                       : 'bg-gray-200 text-gray-400'
                   }`}>
-                    {step.completed ? <CheckCircle2 size={12} /> : <div className="w-1.5 h-1.5 rounded-full bg-current" />}
+                    {step.isCancelled ? (
+                      <XCircle size={12} />
+                    ) : step.completed ? (
+                      <CheckCircle2 size={12} />
+                    ) : (
+                      <div className="w-1.5 h-1.5 rounded-full bg-current" />
+                    )}
                   </div>
                   <div>
-                    <p className={`font-bold ${step.completed ? 'text-gray-900' : 'text-gray-500'}`}>
+                    <p className={`font-bold ${step.isCancelled ? 'text-rose-600' : step.completed ? 'text-gray-900' : 'text-gray-500'}`}>
                       {step.title}
                     </p>
-                    {step.time && <p className="text-gray-400">{step.time}</p>}
+                    {step.time && (
+                      <p className={step.isCancelled ? 'text-rose-500 font-medium' : 'text-gray-400'}>
+                        {step.time}
+                      </p>
+                    )}
+                    {step.description && (
+                      <p className="text-[11px] text-gray-400 mt-0.5">
+                        {step.description}
+                      </p>
+                    )}
                   </div>
                 </div>
               ))}
@@ -443,6 +617,19 @@ export const TicketDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Change Seat Modal */}
+      <ChangeSeatModal
+        isOpen={Boolean(selectedChangeSeatTicket)}
+        ticket={selectedChangeSeatTicket}
+        tripId={booking?.trip?.id || null}
+        vehicleId={booking?.trip?.vehicle?.id || null}
+        onClose={() => setSelectedChangeSeatTicket(null)}
+        onSuccess={() => {
+          fetchBookingDetail();
+          setSelectedChangeSeatTicket(null);
+        }}
+      />
 
       {/* Cancel Modal */}
       {isCancelModalOpen && booking && (

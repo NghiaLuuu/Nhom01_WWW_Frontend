@@ -1,6 +1,18 @@
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
+const waitForImages = async (element: HTMLElement): Promise<void> => {
+  const images = Array.from(element.querySelectorAll('img'));
+  await Promise.all(images.map((image) => {
+    if (image.complete) return Promise.resolve();
+
+    return new Promise<void>((resolve) => {
+      image.addEventListener('load', () => resolve(), { once: true });
+      image.addEventListener('error', () => resolve(), { once: true });
+    });
+  }));
+};
+
 /**
  * Loại bỏ dấu tiếng Việt và chuẩn hóa chuỗi để làm tên file an toàn
  */
@@ -54,32 +66,23 @@ export function generateTicketFileName(
 }
 
 /**
- * Chuyển đổi phần tử DOM thành file PDF vừa vặn 1 trang (A4 portrait)
+ * Chuyển đổi một hoặc nhiều phần tử DOM thành PDF A4.
+ * Mỗi phần tử được đặt trọn trên một trang riêng, phù hợp cho mỗi vé/ghế.
  */
 export async function exportToPDF(
-  element: HTMLElement | null,
+  element: HTMLElement | HTMLElement[] | null,
   fileName: string
 ): Promise<boolean> {
-  if (!element) {
+  const elements = (Array.isArray(element) ? element : [element]).filter(
+    (item): item is HTMLElement => item instanceof HTMLElement
+  );
+
+  if (elements.length === 0) {
     console.error('exportToPDF: element is null');
     return false;
   }
 
   try {
-    // 1. Chụp canvas với scale 2 và scroll reset để không bị lệch vị trí
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      backgroundColor: '#ffffff',
-      scrollY: -window.scrollY,
-      scrollX: -window.scrollX,
-      windowWidth: document.documentElement.offsetWidth,
-    });
-
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
-
-    // 2. Khởi tạo tài liệu jsPDF chuẩn khổ A4 (210mm x 297mm)
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -87,24 +90,43 @@ export async function exportToPDF(
       compress: true,
     });
 
-    const pageWidth = pdf.internal.pageSize.getWidth(); // 210mm
-    const pageHeight = pdf.internal.pageSize.getHeight(); // 297mm
-    const margin = 8; // lề 8mm
+    for (const [index, ticketElement] of elements.entries()) {
+      // Do not capture the ticket until its official QR image has finished loading.
+      await waitForImages(ticketElement);
 
-    const contentWidth = pageWidth - margin * 2; // 194mm
-    // Tính chiều cao ảnh tương ứng theo tỷ lệ
-    const contentHeight = (canvas.height * contentWidth) / canvas.width;
+      const canvas = await html2canvas(ticketElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        scrollY: -window.scrollY,
+        scrollX: -window.scrollX,
+        windowWidth: document.documentElement.offsetWidth,
+      });
 
-    // Căn giữa theo chiều dọc nếu chiều cao vừa vặn trong 1 trang
-    let posY = margin;
-    if (contentHeight < pageHeight - margin * 2) {
-      posY = Math.max(margin, (pageHeight - contentHeight) / 2);
+      if (index > 0) pdf.addPage();
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 8;
+      const contentWidth = pageWidth - margin * 2;
+      const contentHeight = (canvas.height * contentWidth) / canvas.width;
+      const posY = contentHeight < pageHeight - margin * 2
+        ? Math.max(margin, (pageHeight - contentHeight) / 2)
+        : margin;
+
+      pdf.addImage(
+        canvas.toDataURL('image/jpeg', 0.95),
+        'JPEG',
+        margin,
+        posY,
+        contentWidth,
+        contentHeight,
+        undefined,
+        'FAST'
+      );
     }
 
-    // 3. Đưa ảnh vào 1 trang duy nhất
-    pdf.addImage(imgData, 'JPEG', margin, posY, contentWidth, contentHeight, undefined, 'FAST');
-
-    // 4. Lưu file với tên chuẩn
     pdf.save(fileName);
     return true;
   } catch (error) {

@@ -1,16 +1,20 @@
+import { useModal } from '../../../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import { type Vehicle, type VehicleRequest, VehicleService } from '../api/vehicle.service';
 import { DataTable, type Column } from '../../../components/DataTable';
 import { FormModal } from '../../../components/FormModal';
 import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
-import { Plus } from 'lucide-react';
+import { Plus, Grid } from 'lucide-react';
+import { VehicleSeatsModal } from '../components/VehicleSeatsModal';
 
 export const VehicleManagement: React.FC = () => {
+  const { confirm } = useModal();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
+  const [seatsVehicle, setSeatsVehicle] = useState<Vehicle | null>(null);
 
   // Form State
   const [licensePlate, setLicensePlate] = useState('');
@@ -75,9 +79,14 @@ export const VehicleManagement: React.FC = () => {
   };
 
   const handleDelete = async (vehicle: Vehicle) => {
-    if (!window.confirm(`Bạn có chắc chắn muốn xóa xe biển số ${vehicle.licensePlate}?`)) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Xóa xe",
+      message: `Bạn có chắc chắn muốn xóa xe biển số ${vehicle.licensePlate} không? Hành động này không thể hoàn tác.`,
+      type: "danger",
+      confirmText: "Xóa xe",
+      cancelText: "Hủy"
+    });
+    if (!ok) return;
     
     try {
       await VehicleService.delete(vehicle.id);

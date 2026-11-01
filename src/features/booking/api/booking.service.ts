@@ -4,8 +4,13 @@ import type {
   CancelBookingPayload, 
   SeatItem, 
   TicketItem, 
-  PaymentItem,
-  CancelRequestItem 
+  PaymentItem, 
+  CancelRequestItem,
+  CounterSalePayload,
+  CheckInPayload,
+  CheckInResult,
+  PassengerManifestItem,
+  ChangeSeatPayload
 } from '../types/booking.types';
 
 export interface CreateBookingPayload {
@@ -139,6 +144,42 @@ export const BookingService = {
       rejectReason: rejectReason || '',
     });
     return res.data;
-  }
+  },
+
+  // POS Counter Sale (Bán vé tại quầy)
+  createCounterSale: async (payload: CounterSalePayload): Promise<{ success: boolean; data: BookingItem; message?: string }> => {
+    const res = await api.post('/bookings/counter-sale', payload);
+    return res.data;
+  },
+
+  // Admin: Get all bookings
+  getAllBookingsAdmin: async (): Promise<{ success: boolean; data: BookingItem[]; message?: string }> => {
+    const res = await api.get('/admin/bookings');
+    return res.data;
+  },
+
+  // Check-In Ticket / Soát vé lên xe (Hỗ trợ mã vé & QR code)
+  checkInTicket: async (payload: CheckInPayload): Promise<{ success: boolean; data: CheckInResult; message?: string }> => {
+    const res = await api.post('/tickets/check-in', payload);
+    return res.data;
+  },
+
+  // Passenger Manifest / Danh sách hành khách theo chuyến xe
+  getPassengerManifest: async (tripId: number): Promise<{ success: boolean; data: PassengerManifestItem[]; message?: string }> => {
+    const res = await api.get(`/tickets/trip/${tripId}/manifest`);
+    return res.data;
+  },
+
+  // Đổi ghế ngồi cùng chuyến cho vé đã mua
+  changeSeat: async (ticketId: number, newSeatId: number): Promise<{ success: boolean; data: TicketItem; message?: string }> => {
+    const res = await api.post(`/tickets/${ticketId}/change-seat`, { newSeatId });
+    return res.data;
+  },
+
+  // Hủy vé lẻ cụ thể
+  cancelSingleTicket: async (ticketId: number, reason?: string): Promise<{ success: boolean; data: TicketItem; message?: string }> => {
+    const res = await api.post(`/tickets/${ticketId}/cancel`, { reason: reason || 'Khách yêu cầu hủy vé' });
+    return res.data;
+  },
 };
 

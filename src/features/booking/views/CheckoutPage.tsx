@@ -1,3 +1,4 @@
+import { useModal } from '../../../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useBookingStore } from '../../../store/useBookingStore';
@@ -21,6 +22,7 @@ import {
 } from 'lucide-react';
 
 export const CheckoutPage: React.FC = () => {
+  const { confirm } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
   const { currentBooking, selectedTrip, selectedSeats, holdExpiresAt, clearBooking, setCurrentBooking } = useBookingStore();
@@ -95,9 +97,14 @@ export const CheckoutPage: React.FC = () => {
       return;
     }
 
-    if (!window.confirm('Bạn có chắc chắn muốn hủy giữ chỗ và trả lại ghế này không?')) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Hủy giữ chỗ",
+      message: "Bạn có chắc chắn muốn hủy giữ chỗ và trả lại ghế này không?",
+      type: "danger",
+      confirmText: "Hủy giữ chỗ",
+      cancelText: "Tiếp tục thanh toán"
+    });
+    if (!ok) return;
 
     setIsCancelling(true);
     try {

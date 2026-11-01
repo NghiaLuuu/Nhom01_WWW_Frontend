@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../../store/useAuthStore';
 import { 
   ArrowLeft, 
   AlertCircle,
   Loader2,
   FileDown
 } from 'lucide-react';
-import type { BookingItem } from '../types/booking.types';
+import type { BookingItem, TicketItem } from '../types/booking.types';
 import { BookingService } from '../api/booking.service';
 import { TicketPrint } from '../components/TicketPrint';
 import { exportToPDF, generateTicketFileName } from '../../../utils/pdfExport';
@@ -15,14 +16,16 @@ import toast from 'react-hot-toast';
 export const ETicketPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuthStore();
+  const isStaffOrAdmin = user?.roles?.some((r: string) => ['ROLE_ADMIN', 'ROLE_STAFF', 'ADMIN', 'STAFF'].includes(r));
 
   const [booking, setBooking] = useState<BookingItem | null>(null);
-  const [tickets, setTickets] = useState<any[]>([]);
+  const [tickets, setTickets] = useState<TicketItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const ticketRef = useRef<HTMLDivElement>(null);
+  const ticketRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -41,7 +44,26 @@ export const ETicketPage: React.FC = () => {
         try {
           const resTickets = await BookingService.getTicketsByBookingId(Number(id));
           if (resTickets.success && Array.isArray(resTickets.data)) {
-            setTickets(resTickets.data);
+            // The ticket list does not always include the QR image. Load the
+            // official QR for each ticket before allowing it to be printed.
+            const ticketsWithQr = await Promise.all(
+              resTickets.data.map(async (ticket) => {
+                if (ticket.qrCode?.trim()) return ticket;
+
+                try {
+                  const qrRes = await BookingService.getTicketQrCode(ticket.id);
+                  const qrData = qrRes.success ? qrRes.data : undefined;
+                  const qrCode = typeof qrData === 'string'
+                    ? qrData
+                    : (qrData as unknown as { qrCode?: string })?.qrCode;
+
+                  return qrCode ? { ...ticket, qrCode } : ticket;
+                } catch {
+                  return ticket;
+                }
+              })
+            );
+            setTickets(ticketsWithQr);
           }
         } catch (e) {
           console.warn('Could not fetch tickets list:', e);
@@ -57,8 +79,18 @@ export const ETicketPage: React.FC = () => {
   }, [id]);
 
   const handleDownloadTicket = async () => {
-    if (!booking || !ticketRef.current) {
+    const renderedTickets = ticketRefs.current.filter(
+      (ticketElement): ticketElement is HTMLDivElement => ticketElement !== null
+    );
+    const ticketsToPrint = tickets.length > 0 ? tickets : (booking?.tickets || []);
+
+    if (!booking || renderedTickets.length === 0) {
       toast.error('Chưa tải xong dữ liệu vé để xuất PDF');
+      return;
+    }
+
+    if (ticketsToPrint.length > 0 && ticketsToPrint.some(ticket => !ticket.qrCode?.trim())) {
+      toast.error('Mã QR chính thức chưa tải xong. Vui lòng thử lại sau ít giây.');
       return;
     }
 
@@ -72,10 +104,10 @@ export const ETicketPage: React.FC = () => {
         booking.trip?.departureTime
       );
 
-      const success = await exportToPDF(ticketRef.current, fileName);
+      const success = await exportToPDF(renderedTickets, fileName);
 
       if (success) {
-        toast.success(`Đã tải về vé: ${fileName}`, { id: toastId });
+        toast.success(`Đã tải về ${renderedTickets.length} vé: ${fileName}`, { id: toastId });
       } else {
         toast.error('Không thể tạo file PDF. Vui lòng thử lại.', { id: toastId });
       }
@@ -86,10 +118,6 @@ export const ETicketPage: React.FC = () => {
       setIsDownloading(false);
     }
   };
-
-  const expectedFileName = booking 
-    ? generateTicketFileName(booking.id, booking.customer?.fullName, booking.trip?.departureTime)
-    : 've-xe.pdf';
 
   if (loading) {
     return (
@@ -115,7 +143,7 @@ export const ETicketPage: React.FC = () => {
           <h3 className="font-bold text-gray-900">Không tìm thấy vé</h3>
           <p className="text-xs text-gray-500">{error || 'Vé không tồn tại'}</p>
           <button
-            onClick={() => navigate('/bookings')}
+            onClick={() => navigate(isStaffOrAdmin ? '/admin/tickets' : '/bookings')}
             className="w-full py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold"
           >
             Quay lại danh sách
@@ -125,8 +153,14 @@ export const ETicketPage: React.FC = () => {
     );
   }
 
+  const ticketItems = tickets.length > 0
+    ? tickets
+    : booking.tickets && booking.tickets.length > 0
+      ? booking.tickets
+      : [undefined];
+
   return (
-    <div className="min-h-screen bg-slate-100 py-6 px-4 print:bg-white print:p-0 print:m-0">
+    <div className="min-h-screen bg-slate-100 py-3 px-3 sm:px-4 print:bg-white print:p-0 print:m-0">
       {/* Embedded Print CSS */}
       <style>{`
         @media print {
@@ -160,10 +194,10 @@ export const ETicketPage: React.FC = () => {
         }
       `}</style>
 
-      <div className="max-w-2xl mx-auto space-y-4">
+      <div className="max-w-2xl mx-auto space-y-2.5">
         
         {/* Actions bar (1 Nút Duy Nhất Để Tự Động Tải Vé) */}
-        <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-200 shadow-xs no-print">
+        <div className="flex items-center justify-between bg-white px-4 py-2.5 rounded-2xl border border-gray-200 shadow-xs no-print">
           <button
             onClick={() => navigate(`/bookings/${booking.id}`)}
             className="inline-flex items-center space-x-2 text-xs font-bold text-gray-600 hover:text-blue-600 transition-colors"
@@ -176,7 +210,7 @@ export const ETicketPage: React.FC = () => {
           <button
             onClick={handleDownloadTicket}
             disabled={isDownloading}
-            className="inline-flex items-center space-x-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-blue-600/30 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/30 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isDownloading ? (
               <>
@@ -192,16 +226,19 @@ export const ETicketPage: React.FC = () => {
           </button>
         </div>
 
-        {/* Expected File Name info hint */}
-        <div className="text-[11px] text-gray-500 text-right px-2 no-print flex items-center justify-end space-x-1">
-          <span>Tên file:</span>
-          <code className="bg-slate-200/80 px-2 py-0.5 rounded text-slate-800 font-mono font-bold">
-            {expectedFileName}
-          </code>
+        {/* Each seat is rendered as its own ticket and its own PDF page. */}
+        <div className="space-y-3">
+          {ticketItems.map((ticket, index) => (
+            <TicketPrint
+              key={ticket?.id || `ticket-${index}`}
+              ref={(element) => {
+                ticketRefs.current[index] = element;
+              }}
+              booking={booking}
+              ticket={ticket}
+            />
+          ))}
         </div>
-
-        {/* Ticket Content Template (Rendered with clean CSS to prevent text distortion) */}
-        <TicketPrint ref={ticketRef} booking={booking} tickets={tickets} />
 
       </div>
     </div>
