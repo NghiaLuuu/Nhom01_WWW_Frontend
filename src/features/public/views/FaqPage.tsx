@@ -59,7 +59,7 @@ export const FaqPage: React.FC = () => {
       id: 'payment-methods',
       category: 'PAYMENT',
       question: 'VEXE chấp nhận các hình thức thanh toán nào? Có an toàn không?',
-      answer: 'VEXE hỗ trợ đa dạng phương thức thanh toán bảo mật chuẩn PCI-DSS: Thẻ ATM nội địa qua cổng VNPAY, Thẻ quốc tế Visa/Mastercard, Ví điện tử MoMo và ZaloPay. Mọi giao dịch đều được mã hóa bằng giao thức SSL 256-bit an toàn tuyệt đối.'
+      answer: 'VEXE hỗ trợ đa dạng phương thức thanh toán bảo mật chuẩn PCI-DSS: Thẻ ATM nội địa qua cổng VNPAY, Thẻ quốc tế Visa/Mastercard, Ví điện tử MoMo và ZaloPay. Mọi giao dịch đều được mã hóa bằng giao thức SSL an toàn tuyệt đối.'
     },
     {
       id: 'vat-invoice',
@@ -96,117 +96,122 @@ export const FaqPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-slate-950 text-white font-sans selection:bg-cyan-500/30 overflow-hidden">
+    <div className="w-full bg-[#0b1120] text-slate-100 font-sans selection:bg-blue-500/30 overflow-hidden">
       
       {/* Hero Header */}
-      <section className="relative pt-24 pb-16 px-6 sm:px-12 lg:px-8 max-w-7xl mx-auto">
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-4xl h-64 bg-gradient-to-r from-blue-600/10 via-cyan-500/10 to-indigo-500/10 blur-3xl opacity-40 pointer-events-none" />
-
-        <div className="relative z-10 text-center max-w-3xl mx-auto space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-cyan-300 text-xs font-semibold uppercase tracking-wider backdrop-blur-md">
-            <HelpCircle size={14} className="text-cyan-400" />
-            <span>Trung Tâm Trợ Giúp Khách Hàng</span>
+      <section className="relative pt-20 pb-12 px-6 sm:px-12 lg:px-8 max-w-7xl mx-auto">
+        <div className="relative z-10 text-center max-w-3xl mx-auto space-y-5">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/15 border border-blue-500/25 text-blue-300 text-xs font-semibold uppercase tracking-wider">
+            <HelpCircle size={14} className="text-blue-400" />
+            <span>Trung Tâm Giải Đáp Thắc Mắc</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
-            Câu Hỏi Thường Gặp &{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400">
-              Quy Trình Dịch Vụ
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight">
+            Câu Hỏi{' '}
+            <span className="text-blue-400">
+              Thường Gặp (FAQ)
             </span>
           </h1>
 
-          <p className="text-slate-300 text-base sm:text-lg leading-relaxed font-light">
-            Tìm câu trả lời nhanh chóng cho tất cả thắc mắc về cách đặt vé, chính sách hoàn tiền 150%, mang hành lý và thủ tục lên xe.
+          <p className="text-slate-300 text-base sm:text-lg leading-relaxed font-normal">
+            Tìm câu trả lời nhanh chóng cho các thắc mắc phổ biến về quy trình đặt vé, thanh toán, chính sách hoàn tiền 150% và quy định hành lý khi lên xe.
           </p>
 
-          {/* Search Box */}
-          <div className="max-w-2xl mx-auto pt-4">
-            <div className="relative flex items-center">
-              <Search className="absolute left-4 text-slate-400" size={20} />
+          {/* Quick Search Input */}
+          <div className="pt-4 max-w-xl mx-auto">
+            <div className="relative">
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm nhanh câu hỏi (Ví dụ: hoàn tiền 150%, đổi vé, hóa đơn VAT...)"
-                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-900/80 border border-white/15 focus:border-cyan-500 text-white placeholder-slate-400 text-sm focus:outline-none shadow-2xl backdrop-blur-xl transition-all"
+                placeholder="Nhập từ khóa cần tìm: hoàn tiền, đổi vé, hành lý, thanh toán..."
+                className="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors shadow-sm"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
+                >
+                  Xóa
+                </button>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Category Pills */}
-      <section className="py-6 px-6 sm:px-12 lg:px-8 max-w-5xl mx-auto">
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-          {categories.map((cat) => {
+      {/* Main FAQ Content Section */}
+      <section className="py-10 px-6 sm:px-12 lg:px-8 max-w-5xl mx-auto">
+        
+        {/* Category Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+          {categories.map(cat => {
             const Icon = cat.icon;
             const isActive = activeCategory === cat.key;
             return (
               <button
                 key={cat.key}
                 onClick={() => setActiveCategory(cat.key)}
-                className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
                   isActive
-                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold shadow-lg shadow-cyan-500/20'
-                    : 'bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10'
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700'
                 }`}
               >
-                <Icon size={16} />
+                <Icon size={14} />
                 <span>{cat.label}</span>
               </button>
             );
           })}
         </div>
-      </section>
 
-      {/* FAQ Accordion List */}
-      <section className="py-12 px-6 sm:px-12 lg:px-8 max-w-4xl mx-auto">
+        {/* Accordion Questions List */}
         <div className="space-y-4">
           {filteredFaqs.length === 0 ? (
-            <div className="p-12 text-center rounded-3xl bg-slate-900/40 border border-white/10">
-              <p className="text-slate-400 text-sm">Không tìm thấy câu hỏi phù hợp với từ khóa của bạn.</p>
-              <button
-                onClick={() => { setSearchQuery(''); setActiveCategory('ALL'); }}
-                className="mt-4 px-4 py-2 rounded-xl bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-semibold hover:bg-cyan-500/30 transition-colors"
+            <div className="p-12 text-center rounded-2xl bg-slate-800 border border-slate-700 text-slate-400">
+              <HelpCircle size={32} className="mx-auto mb-3 text-slate-500" />
+              <h3 className="text-base font-bold text-white mb-1">Không tìm thấy câu trả lời phù hợp</h3>
+              <p className="text-xs">Thử tìm kiếm với từ khóa khác hoặc liên hệ trực tiếp tổng đài hỗ trợ 24/7 của chúng tôi.</p>
+              <Link
+                to="/contact"
+                className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold transition-colors"
               >
-                Xóa bộ lọc
-              </button>
+                <MessageSquare size={14} />
+                <span>Gửi câu hỏi hỗ trợ</span>
+              </Link>
             </div>
           ) : (
-            filteredFaqs.map((item) => {
-              const isOpen = !!openIds[item.id];
+            filteredFaqs.map((faq) => {
+              const isOpen = !!openIds[faq.id];
               return (
                 <div
-                  key={item.id}
-                  className={`rounded-2xl transition-all duration-200 border overflow-hidden ${
-                    isOpen
-                      ? 'bg-slate-900/80 border-cyan-500/40 shadow-xl shadow-cyan-500/5'
-                      : 'bg-slate-900/40 border-white/10 hover:border-white/20'
-                  }`}
+                  key={faq.id}
+                  className="rounded-2xl bg-slate-800 border border-slate-700 overflow-hidden shadow-sm transition-colors"
                 >
                   <button
-                    onClick={() => toggleAccordion(item.id)}
-                    className="w-full p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
+                    onClick={() => toggleAccordion(faq.id)}
+                    className="w-full p-5 sm:p-6 text-left flex items-start justify-between gap-4 cursor-pointer hover:bg-slate-750 transition-colors"
                   >
-                    <div className="flex items-center gap-3">
-                      {item.badge && (
-                        <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-[11px] font-bold tracking-wide shrink-0">
-                          {item.badge}
+                    <div className="space-y-1 pr-2">
+                      {faq.badge && (
+                        <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/25 uppercase mb-1">
+                          {faq.badge}
                         </span>
                       )}
-                      <span className={`text-base font-bold transition-colors ${isOpen ? 'text-cyan-300' : 'text-white'}`}>
-                        {item.question}
-                      </span>
+                      <h3 className="text-sm sm:text-base font-bold text-white leading-snug">
+                        {faq.question}
+                      </h3>
                     </div>
-                    <ChevronDown
-                      size={20}
-                      className={`text-slate-400 shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 text-cyan-400' : ''}`}
-                    />
+
+                    <div className={`w-8 h-8 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-blue-400' : ''}`}>
+                      <ChevronDown size={16} />
+                    </div>
                   </button>
 
                   {isOpen && (
-                    <div className="px-6 pb-6 pt-1 text-slate-300 text-sm leading-relaxed font-light border-t border-white/5">
-                      {item.answer}
+                    <div className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-700/80">
+                      <p>{faq.answer}</p>
                     </div>
                   )}
                 </div>
@@ -214,36 +219,39 @@ export const FaqPage: React.FC = () => {
             })
           )}
         </div>
-      </section>
 
-      {/* AI RECOMMENDATIONS ON FAQ PAGE */}
-      <PublicAiTripShelf
-        title="Chuyến Xe An Toàn 100% VEXE AI Đề Xuất"
-        subtitle="Áp dụng đầy đủ chính sách giữ chỗ 100%, bảo hiểm hành khách và cam kết bồi thường 150% nếu có sự cố."
-        badgeLabel="✨ VEXE AI ĐỀ XUẤT AN TOÀN"
-        pageContext="FAQ"
-        className="border-t border-white/10"
-      />
-
-      {/* Still need help CTA */}
-      <section className="py-16 px-6 sm:px-12 lg:px-8 max-w-4xl mx-auto">
-        <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-blue-950/40 via-slate-900/70 to-cyan-950/40 border border-cyan-500/30 backdrop-blur-xl flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl">
-          <div className="space-y-2 text-center sm:text-left">
-            <h4 className="text-xl font-bold text-white">Chưa tìm thấy giải đáp cho vấn đề của bạn?</h4>
-            <p className="text-slate-400 text-xs sm:text-sm font-light">
-              Liên hệ ngay đường dây nóng 24/7 hoặc trò chuyện trực tiếp cùng Trợ lý AI thông minh.
-            </p>
-          </div>
-          <div className="flex items-center gap-3 shrink-0">
+        {/* Still Need Help Box */}
+        <div className="mt-12 p-6 sm:p-8 rounded-2xl bg-slate-800 border border-slate-700 text-center space-y-4">
+          <h3 className="text-lg font-bold text-white">Bạn vẫn cần thêm thông tin giải đáp?</h3>
+          <p className="text-xs text-slate-300 max-w-lg mx-auto">
+            Tổng đài chăm sóc khách hàng 1900 6868 luôn sẵn sàng hỗ trợ giải đáp mọi thắc mắc và giải quyết khiếu nại của bạn 24/7.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
             <Link
               to="/contact"
-              className="px-5 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-colors shadow-lg shadow-cyan-500/20"
+              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm transition-colors shadow-sm"
             >
-              Liên hệ CSKH
+              Liên hệ CSKH 24/7
             </Link>
+            <a
+              href="tel:19006868"
+              className="px-5 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 border border-slate-600 text-slate-200 font-semibold text-xs sm:text-sm transition-colors"
+            >
+              Gọi hotline: 1900 6868
+            </a>
           </div>
         </div>
+
       </section>
+
+      {/* Recommended Trips Shelf */}
+      <PublicAiTripShelf
+        title="Các Chuyến Xe Cam Kết Giữ Chỗ & Hoàn Tiền 150%"
+        subtitle="Hệ thống tổng hợp các tuyến xe được bảo chứng dịch vụ và áp dụng chính sách bồi thường 150% minh bạch."
+        badgeLabel="AN TÂM 100%"
+        pageContext="FAQ"
+        className="border-t border-slate-800"
+      />
 
     </div>
   );
