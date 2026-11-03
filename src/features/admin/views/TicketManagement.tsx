@@ -102,7 +102,7 @@ export const TicketManagement: React.FC = () => {
       header: 'Mã & Khách Hàng', 
       accessor: (row) => (
         <div className="min-w-0">
-          <div className="font-mono font-bold text-cyan-300 text-xs whitespace-nowrap">
+          <div className="font-mono font-bold text-cyan-400 text-xs whitespace-nowrap">
             #{row.bookingCode || (row as any).ticketCode || `BKG-${row.id}`}
           </div>
           <div className="font-medium text-white text-xs whitespace-nowrap">
@@ -118,7 +118,7 @@ export const TicketManagement: React.FC = () => {
         <div className="min-w-0 text-xs">
           <div className="font-medium text-white whitespace-nowrap">
             <span>{row.trip?.route?.departureLocation || 'Bến xuất phát'}</span>
-            <span className="text-cyan-400 mx-1">➔</span>
+            <span className="text-blue-400 mx-1">➔</span>
             <span>{row.trip?.route?.arrivalLocation || 'Bến đến'}</span>
           </div>
           <div className="text-[10px] text-slate-400 font-mono">
@@ -133,7 +133,7 @@ export const TicketManagement: React.FC = () => {
     { 
       header: 'Ghế', 
       accessor: (row) => (
-        <span className="font-mono text-xs font-semibold text-cyan-300 whitespace-nowrap">
+        <span className="font-mono text-xs font-semibold text-slate-200 whitespace-nowrap">
           {Array.isArray(row.seats) && row.seats.length > 0 ? row.seats.join(', ') : 'Tiêu chuẩn'}
         </span>
       ), 
@@ -156,28 +156,28 @@ export const TicketManagement: React.FC = () => {
         switch (row.status) {
           case 'PAID':
             return (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 whitespace-nowrap">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">
                 <CheckCircle size={11} />
                 <span>Đã thu</span>
               </span>
             );
           case 'CANCEL_REQUESTED':
             return (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30 animate-pulse whitespace-nowrap">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 whitespace-nowrap">
                 <Clock size={11} />
                 <span>Chờ duyệt</span>
               </span>
             );
           case 'USED':
             return (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/30 whitespace-nowrap">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 whitespace-nowrap">
                 <ShieldCheck size={11} />
                 <span>Đã lên xe</span>
               </span>
             );
           default:
             return (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-300 border border-rose-500/30 whitespace-nowrap">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20 whitespace-nowrap">
                 <XCircle size={11} />
                 <span>Đã hủy</span>
               </span>
@@ -196,14 +196,14 @@ export const TicketManagement: React.FC = () => {
               <button 
                 onClick={() => handleAction(row.id, 'approve')} 
                 title="Duyệt hoàn tiền vé"
-                className="px-1.5 py-0.5 rounded-md text-emerald-300 hover:text-white bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-[10px] font-bold transition-colors cursor-pointer"
+                className="px-2 py-1 rounded-md text-emerald-300 hover:text-white bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-[10px] font-bold transition-colors cursor-pointer"
               >
                 Duyệt
               </button>
               <button 
                 onClick={() => handleAction(row.id, 'reject')} 
                 title="Từ chối hủy vé"
-                className="px-1.5 py-0.5 rounded-md text-rose-300 hover:text-white bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-[10px] font-bold transition-colors cursor-pointer"
+                className="px-2 py-1 rounded-md text-rose-300 hover:text-white bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-[10px] font-bold transition-colors cursor-pointer"
               >
                 Từ chối
               </button>
@@ -230,7 +230,7 @@ export const TicketManagement: React.FC = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Tìm mã đơn, tên khách hoặc tuyến..."
-          className="w-56 sm:w-72 py-1.5 pl-8 pr-3 text-xs bg-slate-950 border border-white/10 rounded-xl text-white placeholder-slate-400 focus:border-cyan-400 focus:outline-none transition-colors"
+          className="w-56 sm:w-72 py-1.5 pl-8 pr-3 text-xs bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none transition-colors"
         />
         <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
       </div>
@@ -240,7 +240,7 @@ export const TicketManagement: React.FC = () => {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="py-1.5 pl-8 pr-6 text-xs bg-slate-950 border border-white/10 rounded-xl text-white focus:border-cyan-400 focus:outline-none transition-colors appearance-none cursor-pointer"
+          className="py-1.5 pl-8 pr-6 text-xs bg-slate-900 border border-slate-700 rounded-xl text-white focus:border-blue-500 focus:outline-none transition-colors appearance-none cursor-pointer"
         >
           <option value="ALL">Tất cả trạng thái</option>
           <option value="PAID">Đã thanh toán</option>
@@ -255,10 +255,10 @@ export const TicketManagement: React.FC = () => {
 
   const actionButton = (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-slate-400 font-light hidden sm:inline">Kênh POS:</span>
+      <span className="text-xs text-slate-400 hidden sm:inline">Kênh POS:</span>
       <button 
         onClick={() => toast.success('Mở giao diện POS quét mã QR vé tại quầy bến xe!')}
-        className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+        className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer"
       >
         <QrCode size={15} />
         <span>Soát Vé Mã QR POS</span>
@@ -271,44 +271,44 @@ export const TicketManagement: React.FC = () => {
       
       {/* 4 Summary Stat Chips */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Tổng Đơn Đặt Vé</div>
-            <div className="text-2xl font-black text-white mt-1">{stats.total} Đơn</div>
+            <div className="text-2xl font-bold text-white mt-1">{stats.total} Đơn</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+          <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/25 flex items-center justify-center text-blue-400">
             <TicketIcon size={20} />
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Doanh Thu Thu Được</div>
-            <div className="text-2xl font-black text-emerald-400 mt-1">
+            <div className="text-2xl font-bold text-emerald-400 mt-1">
               {new Intl.NumberFormat('vi-VN').format(stats.paidRevenue)}đ
             </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-emerald-400">
             <TrendingUp size={20} />
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Yêu Cầu Hủy Vé</div>
-            <div className="text-2xl font-black text-amber-300 mt-1">{stats.cancelRequests} Đơn</div>
+            <div className="text-2xl font-bold text-amber-400 mt-1">{stats.cancelRequests} Đơn</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-            <AlertCircle size={20} className={stats.cancelRequests > 0 ? "animate-pulse" : ""} />
+          <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-amber-400">
+            <AlertCircle size={20} />
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Đã Lên Xe (Check-in)</div>
-            <div className="text-2xl font-black text-cyan-300 mt-1">{stats.usedCount} Khách</div>
+            <div className="text-2xl font-bold text-cyan-400 mt-1">{stats.usedCount} Khách</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+          <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/25 flex items-center justify-center text-blue-400">
             <ShieldCheck size={20} />
           </div>
         </div>

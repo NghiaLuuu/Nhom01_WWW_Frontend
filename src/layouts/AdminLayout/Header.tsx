@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
   };
 
   return (
-    <header className="h-14 min-h-[3.5rem] bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 flex items-center justify-between px-6 sticky top-0 z-10">
+    <header className="h-14 min-h-[3.5rem] bg-slate-900 border-b border-slate-800 flex items-center justify-between px-6 sticky top-0 z-10">
       <h1 className="text-base sm:text-lg font-bold text-white tracking-tight">
         {title || ''}
       </h1>
@@ -53,13 +53,13 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
         <button
           onClick={handleSyncVectors}
           disabled={isSyncing}
-          className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg shadow-sm hover:shadow transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           title="Đồng bộ các tuyến đường, chuyến xe mới vào PostgreSQL pgvector để AI Chatbot tra cứu"
         >
           {isSyncing ? (
             <RefreshCw className="w-3.5 h-3.5 animate-spin" />
           ) : (
-            <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+            <Sparkles className="w-3.5 h-3.5 text-blue-200" />
           )}
           <span>{isSyncing ? 'Đang đồng bộ...' : 'Đồng bộ AI Vector (pgvector)'}</span>
         </button>

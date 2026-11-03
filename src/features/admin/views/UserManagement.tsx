@@ -186,7 +186,7 @@ export const UserManagement: React.FC = () => {
       accessor: (row) => (
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className="font-mono font-bold text-cyan-300 text-xs whitespace-nowrap">#{row.staffCode || 'NV-001'}</span>
+            <span className="font-mono font-medium text-blue-400 text-xs whitespace-nowrap">#{row.staffCode || 'NV-001'}</span>
             <span className="font-semibold text-white text-xs truncate">{row.fullName}</span>
           </div>
           <div className="text-[10px] text-slate-400 font-mono truncate">{row.email}</div>
@@ -197,7 +197,7 @@ export const UserManagement: React.FC = () => {
     {
       header: 'Vai Trò',
       accessor: (row) => (
-        <span className="font-semibold text-cyan-300 text-xs whitespace-nowrap">
+        <span className="font-semibold text-blue-400 text-xs whitespace-nowrap">
           {row.role?.name === 'ROLE_ADMIN' ? 'Quản Trị Viên' : 'Nhân Viên'}
         </span>
       ),
@@ -213,11 +213,11 @@ export const UserManagement: React.FC = () => {
           <div className="flex items-center gap-1 max-w-[170px]">
             {displayPerms.length > 0 ? (
               <>
-                <span className="px-1.5 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-[10px] font-mono text-cyan-300 whitespace-nowrap">
+                <span className="px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-[10px] font-mono text-blue-300 whitespace-nowrap">
                   {AVAILABLE_PERMISSIONS.find(ap => ap.id === displayPerms[0])?.label || displayPerms[0]}
                 </span>
                 {displayPerms.length > 1 && (
-                  <span className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px] text-slate-300 font-mono whitespace-nowrap">
+                  <span className="px-1.5 py-0.5 rounded bg-slate-700 border border-slate-600 text-[10px] text-slate-300 font-mono whitespace-nowrap">
                     +{displayPerms.length - 1}
                   </span>
                 )}
@@ -233,9 +233,9 @@ export const UserManagement: React.FC = () => {
     {
       header: 'Trạng Thái',
       accessor: (row) => (
-        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold whitespace-nowrap ${row.status === 'ACTIVE'
-          ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30'
-          : 'bg-rose-500/10 text-rose-300 border border-rose-500/30'
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium whitespace-nowrap ${row.status === 'ACTIVE'
+          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+          : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
           }`}>
           {row.status === 'ACTIVE' ? <CheckCircle2 size={11} /> : <AlertCircle size={11} />}
           <span>{row.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'}</span>
@@ -250,9 +250,9 @@ export const UserManagement: React.FC = () => {
         <div className="flex items-center justify-end gap-1.5 whitespace-nowrap">
           <button
             onClick={() => handleToggleStatus(row, true)}
-            className={`p-1 rounded-md text-[10px] font-bold border transition-colors cursor-pointer ${row.status === 'ACTIVE'
-              ? 'text-rose-400 border-rose-500/30 hover:bg-rose-500/20'
-              : 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
+            className={`p-1.5 rounded-md text-[10px] font-bold border transition-colors cursor-pointer ${row.status === 'ACTIVE'
+              ? 'text-rose-400 border-rose-500/20 hover:bg-rose-500/10'
+              : 'text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/10'
               }`}
             title={row.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}
           >
@@ -260,7 +260,7 @@ export const UserManagement: React.FC = () => {
           </button>
           <button
             onClick={() => handleResetPassword(row.id, true)}
-            className="p-1 rounded-md text-[10px] font-bold text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/20 transition-colors cursor-pointer"
+            className="p-1.5 rounded-md text-[10px] font-bold text-blue-400 border border-blue-500/20 hover:bg-blue-500/10 transition-colors cursor-pointer"
             title="Reset mật khẩu về mặc định"
           >
             <KeyRound size={13} />
@@ -278,7 +278,7 @@ export const UserManagement: React.FC = () => {
       accessor: (row) => (
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className="font-mono font-bold text-cyan-300 text-xs whitespace-nowrap">#{row.id.slice(0, 6)}</span>
+            <span className="font-mono font-medium text-blue-400 text-xs whitespace-nowrap">#{row.id.slice(0, 6)}</span>
             <span className="font-semibold text-white text-xs truncate">{row.fullName}</span>
           </div>
           <div className="text-[10px] text-slate-400 font-mono truncate">{row.email}</div>
@@ -299,9 +299,9 @@ export const UserManagement: React.FC = () => {
     {
       header: 'Trạng Thái',
       accessor: (row) => (
-        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold whitespace-nowrap ${row.status === 'ACTIVE'
-          ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30'
-          : 'bg-rose-500/10 text-rose-300 border border-rose-500/30'
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium whitespace-nowrap ${row.status === 'ACTIVE'
+          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+          : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
           }`}>
           {row.status === 'ACTIVE' ? <CheckCircle2 size={11} /> : <AlertCircle size={11} />}
           <span>{row.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'}</span>
@@ -316,9 +316,9 @@ export const UserManagement: React.FC = () => {
         <div className="flex items-center justify-end gap-1.5 whitespace-nowrap">
           <button
             onClick={() => handleToggleStatus(row, false)}
-            className={`p-1 rounded-md text-[10px] font-bold border transition-colors cursor-pointer ${row.status === 'ACTIVE'
-              ? 'text-rose-400 border-rose-500/30 hover:bg-rose-500/20'
-              : 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
+            className={`p-1.5 rounded-md text-[10px] font-bold border transition-colors cursor-pointer ${row.status === 'ACTIVE'
+              ? 'text-rose-400 border-rose-500/20 hover:bg-rose-500/10'
+              : 'text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/10'
               }`}
             title={row.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}
           >
@@ -326,7 +326,7 @@ export const UserManagement: React.FC = () => {
           </button>
           <button
             onClick={() => handleResetPassword(row.id, false)}
-            className="p-1 rounded-md text-[10px] font-bold text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/20 transition-colors cursor-pointer"
+            className="p-1.5 rounded-md text-[10px] font-bold text-blue-400 border border-blue-500/20 hover:bg-blue-500/10 transition-colors cursor-pointer"
             title="Reset mật khẩu"
           >
             <KeyRound size={13} />
@@ -365,7 +365,7 @@ export const UserManagement: React.FC = () => {
           placeholder="Tìm theo tên, email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-56 sm:w-72 py-1.5 pl-8 pr-3 text-xs bg-slate-950 border border-white/10 rounded-xl text-white placeholder-slate-400 focus:border-cyan-400 focus:outline-none transition-colors"
+          className="w-56 sm:w-72 py-1.5 pl-8 pr-3 text-xs bg-slate-900 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
         />
         <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
       </div>
@@ -375,7 +375,7 @@ export const UserManagement: React.FC = () => {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="py-1.5 px-3 text-xs bg-slate-950 border border-white/10 rounded-xl text-white focus:border-cyan-400 focus:outline-none transition-colors appearance-none cursor-pointer"
+          className="py-1.5 px-3 text-xs bg-slate-900 border border-slate-700 rounded-xl text-slate-100 focus:border-blue-500 focus:outline-none transition-colors appearance-none cursor-pointer"
         >
           <option value="ALL">Tất cả trạng thái</option>
           <option value="ACTIVE">Đang hoạt động</option>
@@ -388,7 +388,7 @@ export const UserManagement: React.FC = () => {
   const actionButton = activeTab === 'STAFF' ? (
     <button
       onClick={handleOpenAdd}
-      className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+      className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer"
     >
       <Plus size={16} />
       <span>Thêm Nhân Viên</span>
@@ -397,45 +397,44 @@ export const UserManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-
-      {/* 4 Summary Stat Chips: 2 cols on laptop 1024, 4 cols on desktop xl */}
+      {/* 4 Summary Stat Chips */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Tổng Tài Khoản</div>
-            <div className="text-2xl font-black text-white mt-1">{stats.totalAll} User</div>
+            <div className="text-2xl font-bold text-white mt-1">{stats.totalAll} User</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+          <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
             <Users size={20} />
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Nhân Viên Vận Hành</div>
-            <div className="text-2xl font-black text-cyan-300 mt-1">{stats.totalStaff} Cán bộ</div>
+            <div className="text-2xl font-bold text-blue-400 mt-1">{stats.totalStaff} Cán bộ</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+          <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
             <UserCheck size={20} />
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Khách Hàng Thành Viên</div>
-            <div className="text-2xl font-black text-emerald-300 mt-1">{stats.totalCust} Khách</div>
+            <div className="text-2xl font-bold text-emerald-400 mt-1">{stats.totalCust} Khách</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
             <Sparkles size={20} />
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Tỷ Lệ Hoạt Động</div>
-            <div className="text-2xl font-black text-amber-300 mt-1">96.8%</div>
+            <div className="text-2xl font-bold text-amber-400 mt-1">96.8%</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
             <Shield size={20} />
           </div>
         </div>
@@ -443,13 +442,13 @@ export const UserManagement: React.FC = () => {
 
       {/* Main Table Layout */}
       <AdminPageLayout filters={filterContent} actionButton={actionButton}>
-        {/* Custom Cyber Tabs */}
-        <div className="flex items-center border-b border-white/10 px-4 bg-slate-950/40">
+        {/* Custom Clean Tabs */}
+        <div className="flex items-center border-b border-slate-700 px-4 bg-slate-900/40">
           <button
             onClick={() => setActiveTab('STAFF')}
-            className={`flex items-center space-x-2 px-5 py-3 border-b-2 text-xs font-bold transition-colors cursor-pointer ${activeTab === 'STAFF'
-              ? 'border-cyan-400 text-cyan-300'
-              : 'border-transparent text-slate-400 hover:text-white'
+            className={`flex items-center space-x-2 px-5 py-3 border-b-2 text-xs font-semibold transition-colors cursor-pointer ${activeTab === 'STAFF'
+              ? 'border-blue-500 text-blue-400 bg-slate-800/40'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
           >
             <UserCheck size={15} />
@@ -457,9 +456,9 @@ export const UserManagement: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('CUSTOMER')}
-            className={`flex items-center space-x-2 px-5 py-3 border-b-2 text-xs font-bold transition-colors cursor-pointer ${activeTab === 'CUSTOMER'
-              ? 'border-cyan-400 text-cyan-300'
-              : 'border-transparent text-slate-400 hover:text-white'
+            className={`flex items-center space-x-2 px-5 py-3 border-b-2 text-xs font-semibold transition-colors cursor-pointer ${activeTab === 'CUSTOMER'
+              ? 'border-blue-500 text-blue-400 bg-slate-800/40'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
           >
             <Users size={15} />
@@ -489,7 +488,7 @@ export const UserManagement: React.FC = () => {
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm bg-slate-950 border border-white/10 rounded-xl focus:border-cyan-400 focus:outline-none text-white transition-colors"
+                className="w-full px-3.5 py-2.5 text-sm bg-slate-900 border border-slate-700 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none text-white transition-colors"
                 placeholder="VD: Nguyễn Văn A"
               />
             </div>
@@ -502,7 +501,7 @@ export const UserManagement: React.FC = () => {
                 value={email}
                 disabled={!!editingStaff}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm bg-slate-950 border border-white/10 rounded-xl focus:border-cyan-400 focus:outline-none text-white transition-colors disabled:opacity-50"
+                className="w-full px-3.5 py-2.5 text-sm bg-slate-900 border border-slate-700 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none text-white transition-colors disabled:opacity-50"
                 placeholder="VD: nva@vexe.vn"
               />
             </div>
@@ -512,10 +511,10 @@ export const UserManagement: React.FC = () => {
               <select
                 value={selectedRoleId}
                 onChange={(e) => setSelectedRoleId(Number(e.target.value))}
-                className="w-full px-3.5 py-2.5 text-sm bg-slate-950 border border-white/10 rounded-xl focus:border-cyan-400 focus:outline-none text-white transition-colors cursor-pointer"
+                className="w-full px-3.5 py-2.5 text-sm bg-slate-900 border border-slate-700 rounded-xl focus:border-blue-500 focus:outline-none text-white transition-colors cursor-pointer"
               >
                 {roles.map(r => (
-                  <option key={r.id} value={r.id} className="bg-slate-950 text-white">
+                  <option key={r.id} value={r.id} className="bg-slate-900 text-white">
                     {r.name === 'ROLE_ADMIN' ? 'Quản Trị Viên (ROLE_ADMIN)' : 'Nhân Viên Điều Phối (ROLE_STAFF)'}
                   </option>
                 ))}
@@ -526,14 +525,14 @@ export const UserManagement: React.FC = () => {
               <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
                 Phân Quyền Chức Năng Cụ Thể
               </label>
-              <div className="grid grid-cols-2 gap-2 bg-slate-950/60 p-3 rounded-2xl border border-white/10">
+              <div className="grid grid-cols-2 gap-2 bg-slate-900/60 p-3 rounded-xl border border-slate-700">
                 {AVAILABLE_PERMISSIONS.map(p => (
-                  <label key={p.id} className="flex items-center space-x-2 text-xs text-slate-200 cursor-pointer hover:text-cyan-300 transition-colors">
+                  <label key={p.id} className="flex items-center space-x-2 text-xs text-slate-200 cursor-pointer hover:text-blue-400 transition-colors">
                     <input
                       type="checkbox"
                       checked={selectedPermissions.includes(p.id)}
                       onChange={() => handleTogglePermission(p.id)}
-                      className="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-400"
+                      className="rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-blue-500"
                     />
                     <span>{p.label}</span>
                   </label>
@@ -541,18 +540,18 @@ export const UserManagement: React.FC = () => {
               </div>
             </div>
 
-            <div className="pt-5 mt-4 flex justify-end space-x-3 border-t border-white/10">
+            <div className="pt-5 mt-4 flex justify-end space-x-3 border-t border-slate-700">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 text-xs font-semibold text-slate-300 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors cursor-pointer"
+                className="px-4 py-2 text-xs font-semibold text-slate-300 bg-slate-700 border border-slate-600 rounded-xl hover:bg-slate-600 transition-colors cursor-pointer"
               >
                 Hủy
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-5 py-2 text-xs font-bold text-slate-950 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl hover:from-cyan-400 hover:to-blue-500 transition-colors disabled:opacity-50 cursor-pointer shadow-lg shadow-cyan-500/20"
+                className="px-5 py-2 text-xs font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-500 transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
               >
                 {isSubmitting ? 'Đang lưu...' : (editingStaff ? 'Lưu Thay Đổi' : 'Thêm Nhân Viên')}
               </button>

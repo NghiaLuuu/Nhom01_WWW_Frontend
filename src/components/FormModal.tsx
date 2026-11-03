@@ -37,17 +37,17 @@ export const FormModal: React.FC<FormModalProps> = ({
   return (
     <div 
       ref={overlayRef}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm"
       onClick={(e) => {
         if (e.target === overlayRef.current) onClose();
       }}
     >
-      <div className={`bg-slate-900/95 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-cyan-950/60 border border-white/10 w-full ${maxWidth} flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200 overflow-hidden text-white`}>
-        <div className="flex justify-between items-center px-6 py-4 border-b border-white/10 shrink-0 bg-slate-950/40">
+      <div className={`bg-slate-800 rounded-2xl shadow-xl border border-slate-700 w-full ${maxWidth} flex flex-col max-h-[90vh] overflow-hidden text-slate-100`}>
+        <div className="flex justify-between items-center px-6 py-4 border-b border-slate-700 shrink-0 bg-slate-850/60">
           <h2 className="text-base font-bold text-white tracking-wide">{title}</h2>
           <button 
             onClick={onClose} 
-            className="text-slate-400 hover:text-white hover:bg-white/10 p-1.5 rounded-xl transition-colors cursor-pointer"
+            className="text-slate-400 hover:text-white hover:bg-slate-700 p-1.5 rounded-lg transition-colors cursor-pointer"
             title="Đóng (Esc)"
           >
             <X size={18} />

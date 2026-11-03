@@ -88,13 +88,13 @@ export const AdminProfilePage: React.FC = () => {
       {/* Top Header / Breadcrumb */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold text-cyan-400 uppercase tracking-widest mb-1.5">
-            <ShieldCheck size={14} className="text-cyan-400" />
+          <div className="flex items-center gap-2 text-xs font-semibold text-blue-400 uppercase tracking-widest mb-1.5">
+            <ShieldCheck size={14} className="text-blue-400" />
             <span>Trung Tâm Định Danh & Tác Nghiệp</span>
           </div>
-          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
             Hồ Sơ Quản Trị Viên
-            <span className="text-xs font-mono font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 px-2.5 py-0.5 rounded-full">
+            <span className="text-xs font-mono font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2.5 py-0.5 rounded-full">
               SOC Verified
             </span>
           </h1>
@@ -104,58 +104,48 @@ export const AdminProfilePage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-            <Radio size={14} className="animate-pulse" />
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+            <Radio size={14} />
             <span>Phiên Làm Việc An Toàn</span>
           </div>
         </div>
       </div>
 
       {/* Hero Profile Overview Card */}
-      <div className="relative bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl shadow-black/40">
-        {/* Glow backdrop decoration safely bounded inside container */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-2xl">
-          <div className="absolute right-0 top-0 w-56 h-56 bg-cyan-500/10 rounded-full blur-3xl" />
-          <div className="absolute right-32 bottom-0 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl" />
-        </div>
-
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
-          {/* Avatar with Glow & Badges */}
+      <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+          {/* Avatar */}
           <div className="relative shrink-0">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-600/30 border-2 border-cyan-400/50 p-1 shadow-lg shadow-cyan-500/20 flex items-center justify-center">
-              <div className="w-full h-full rounded-xl bg-slate-950 flex items-center justify-center text-cyan-300">
-                <User size={36} />
-              </div>
+            <div className="w-20 h-20 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+              <User size={36} />
             </div>
-            <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-2 border-slate-900 rounded-full flex items-center justify-center shadow-[0_0_8px_rgba(16,185,129,0.8)]" title="Trực tuyến">
-              <span className="w-2 h-2 bg-white rounded-full" />
-            </span>
+            <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-slate-800 rounded-full" title="Trực tuyến" />
           </div>
 
           {/* User Essential Info */}
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="text-xl font-bold text-white tracking-wide">{displayName}</h2>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-blue-500/10 border border-blue-500/20 text-blue-400 uppercase tracking-wider">
                 {displayRole}
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-slate-800 border border-white/10 text-slate-300">
+              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-mono font-medium bg-slate-900 border border-slate-700 text-slate-300">
                 {displayStaffCode}
               </span>
             </div>
 
             {/* Quick Metadata Grid - 3 items */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
-              <div className="flex items-center gap-2.5 text-xs text-slate-300 bg-slate-950/40 border border-white/5 px-3 py-2 rounded-xl">
-                <Mail size={15} className="text-cyan-400 shrink-0" />
+              <div className="flex items-center gap-2.5 text-xs text-slate-300 bg-slate-900/60 border border-slate-700/60 px-3 py-2 rounded-xl">
+                <Mail size={15} className="text-blue-400 shrink-0" />
                 <span className="font-mono">{displayEmail}</span>
               </div>
-              <div className="flex items-center gap-2.5 text-xs text-slate-300 bg-slate-950/40 border border-white/5 px-3 py-2 rounded-xl">
-                <MapPin size={15} className="text-cyan-400 shrink-0" />
+              <div className="flex items-center gap-2.5 text-xs text-slate-300 bg-slate-900/60 border border-slate-700/60 px-3 py-2 rounded-xl">
+                <MapPin size={15} className="text-blue-400 shrink-0" />
                 <span>{displayStation}</span>
               </div>
-              <div className="flex items-center gap-2.5 text-xs text-slate-300 bg-slate-950/40 border border-white/5 px-3 py-2 rounded-xl sm:col-span-2 lg:col-span-1">
-                <Briefcase size={15} className="text-cyan-400 shrink-0" />
+              <div className="flex items-center gap-2.5 text-xs text-slate-300 bg-slate-900/60 border border-slate-700/60 px-3 py-2 rounded-xl sm:col-span-2 lg:col-span-1">
+                <Briefcase size={15} className="text-blue-400 shrink-0" />
                 <span>Quyền: <strong className="text-white">Toàn Quyền Quản Trị</strong></span>
               </div>
             </div>
@@ -163,41 +153,41 @@ export const AdminProfilePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Cyber Glass Tabs */}
-      <div className="flex items-center gap-2 border-b border-white/10 pb-2">
+      {/* Clean Slate Tabs */}
+      <div className="flex items-center gap-2 border-b border-slate-700 pb-2">
         <button
           onClick={() => setActiveTab('PROFILE')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-xs transition-colors cursor-pointer ${
             activeTab === 'PROFILE'
-              ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-md shadow-cyan-500/10'
-              : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
+              ? 'bg-blue-600/10 text-blue-400 border border-blue-500/30'
+              : 'text-slate-400 hover:text-white hover:bg-slate-800 border border-transparent'
           }`}
         >
-          <UserCircle size={18} />
+          <UserCircle size={16} />
           <span>Thông Tin Cá Nhân</span>
         </button>
 
         <button
           onClick={() => setActiveTab('PASSWORD')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-xs transition-colors cursor-pointer ${
             activeTab === 'PASSWORD'
-              ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-md shadow-cyan-500/10'
-              : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
+              ? 'bg-blue-600/10 text-blue-400 border border-blue-500/30'
+              : 'text-slate-400 hover:text-white hover:bg-slate-800 border border-transparent'
           }`}
         >
-          <KeyRound size={18} />
+          <KeyRound size={16} />
           <span>Bảo Mật & Mật Khẩu</span>
         </button>
 
         <button
           onClick={() => setActiveTab('SESSIONS')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-xs transition-colors cursor-pointer ${
             activeTab === 'SESSIONS'
-              ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-md shadow-cyan-500/10'
-              : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
+              ? 'bg-blue-600/10 text-blue-400 border border-blue-500/30'
+              : 'text-slate-400 hover:text-white hover:bg-slate-800 border border-transparent'
           }`}
         >
-          <Laptop size={18} />
+          <Laptop size={16} />
           <span>Phiên & Thiết Bị Tác Nghiệp</span>
         </button>
       </div>
@@ -205,18 +195,18 @@ export const AdminProfilePage: React.FC = () => {
       {/* Tab 1: Profile Information */}
       {activeTab === 'PROFILE' && (
         <div className="flex flex-col lg:flex-row gap-6">
-          <div className="w-full lg:w-2/3 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl shadow-black/40">
-            <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
+          <div className="w-full lg:w-2/3 bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-700 mb-6">
               <div>
                 <h3 className="text-base font-bold text-white">Chỉnh Sửa Thông Tin Cá Nhân</h3>
                 <p className="text-xs text-slate-400 mt-0.5">Cập nhật hồ sơ tài khoản nhân sự được định danh trên toàn bộ hệ sinh thái</p>
               </div>
-              <Sparkles size={18} className="text-cyan-400" />
+              <Sparkles size={18} className="text-blue-400" />
             </div>
 
             <form onSubmit={handleUpdateProfile} className="space-y-5">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                   Họ và Tên Nhân Viên
                 </label>
                 <input
@@ -224,14 +214,14 @@ export const AdminProfilePage: React.FC = () => {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-medium"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-medium"
                   placeholder="Nhập họ và tên đầy đủ"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                     Số Điện Thoại Liên Hệ
                   </label>
                   <div className="relative">
@@ -240,48 +230,48 @@ export const AdminProfilePage: React.FC = () => {
                       type="tel"
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-mono"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
                       placeholder="09xx xxx xxx"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                     Ngày Tháng Năm Sinh
                   </label>
                   <input
                     type="date"
                     value={dateOfBirth}
                     onChange={(e) => setDateOfBirth(e.target.value)}
-                    className="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-mono"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
                     Địa Chỉ Email Đăng Nhập
                   </label>
                   <input
                     type="text"
                     disabled
                     value={displayEmail}
-                    className="w-full bg-slate-950/40 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-slate-400 cursor-not-allowed font-mono"
+                    className="w-full bg-slate-900/40 border border-slate-700/60 rounded-xl px-4 py-2.5 text-sm text-slate-400 cursor-not-allowed font-mono"
                   />
                   <p className="text-[11px] text-slate-500 mt-1">Email gắn liền với SSO tổ chức, không thể tự chỉnh sửa</p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
                     Trạm / Khu Vực Tác Nghiệp
                   </label>
                   <input
                     type="text"
                     disabled
                     value={displayStation}
-                    className="w-full bg-slate-950/40 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-slate-400 cursor-not-allowed"
+                    className="w-full bg-slate-900/40 border border-slate-700/60 rounded-xl px-4 py-2.5 text-sm text-slate-400 cursor-not-allowed"
                   />
                   <p className="text-[11px] text-slate-500 mt-1">Phân bổ bởi Phòng Tổ Chức Nhân Sự</p>
                 </div>
@@ -291,7 +281,7 @@ export const AdminProfilePage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isUpdatingProfile}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-sm rounded-xl shadow-lg shadow-cyan-500/20 active:scale-95 disabled:opacity-50 transition-all cursor-pointer"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm disabled:opacity-50 transition-colors cursor-pointer"
                 >
                   <Save size={16} />
                   <span>{isUpdatingProfile ? 'Đang Lưu...' : 'Lưu Thay Đổi'}</span>
@@ -302,29 +292,29 @@ export const AdminProfilePage: React.FC = () => {
 
           {/* Side Info Cards */}
           <div className="w-full lg:w-1/3 space-y-5">
-            <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-xl shadow-black/40">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-2 mb-3">
+            <div className="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-sm">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-blue-400 flex items-center gap-2 mb-3">
                 <ShieldCheck size={16} />
                 <span>Thẩm Quyền Tác Nghiệp</span>
               </h4>
               <div className="space-y-2 text-xs">
-                <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/60 border border-white/5">
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-900/60 border border-slate-700/60">
                   <span className="text-slate-400">Cấp an ninh</span>
-                  <span className="text-cyan-300 font-bold font-mono">SOC Level-3</span>
+                  <span className="text-blue-400 font-semibold font-mono">SOC Level-3</span>
                 </div>
-                <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/60 border border-white/5">
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-900/60 border border-slate-700/60">
                   <span className="text-slate-400">AI Prompt & Vector</span>
-                  <span className="text-emerald-400 font-bold">Toàn Quyền</span>
+                  <span className="text-emerald-400 font-semibold">Toàn Quyền</span>
                 </div>
-                <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/60 border border-white/5">
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-900/60 border border-slate-700/60">
                   <span className="text-slate-400">Giám sát phiên</span>
-                  <span className="text-cyan-400 font-bold">Live Inspector</span>
+                  <span className="text-blue-400 font-semibold">Live Inspector</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-xl shadow-black/40">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2 mb-3">
+            <div className="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-sm">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2 mb-3">
                 <CheckCircle2 size={16} className="text-emerald-400" />
                 <span>Trạng Thái Tài Khoản</span>
               </h4>
@@ -338,7 +328,7 @@ export const AdminProfilePage: React.FC = () => {
                   <span>Xác thực 2 lớp: <strong>Kích hoạt</strong></span>
                 </p>
                 <p className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                   <span>Khóa mã hóa: <strong>AES-256 GCM</strong></span>
                 </p>
               </div>
@@ -349,18 +339,18 @@ export const AdminProfilePage: React.FC = () => {
 
       {/* Tab 2: Password & Security */}
       {activeTab === 'PASSWORD' && (
-        <div className="max-w-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl shadow-black/40">
-          <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
+        <div className="max-w-2xl bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-700 mb-6">
             <div>
               <h3 className="text-base font-bold text-white">Đổi Mật Khẩu Đăng Nhập</h3>
               <p className="text-xs text-slate-400 mt-0.5">Bảo vệ tài khoản quản trị bằng việc đổi mật khẩu định kỳ 90 ngày</p>
             </div>
-            <Lock size={18} className="text-cyan-400" />
+            <Lock size={18} className="text-blue-400" />
           </div>
 
           <form onSubmit={handleChangePassword} className="space-y-5">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                 Mật Khẩu Hiện Tại
               </label>
               <input
@@ -368,14 +358,14 @@ export const AdminProfilePage: React.FC = () => {
                 required
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
-                className="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-mono"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
                 placeholder="Nhập mật khẩu đang sử dụng"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                   Mật Khẩu Mới
                 </label>
                 <input
@@ -383,13 +373,13 @@ export const AdminProfilePage: React.FC = () => {
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-mono"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
                   placeholder="Tối thiểu 6 ký tự"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                   Xác Nhận Mật Khẩu Mới
                 </label>
                 <input
@@ -397,14 +387,14 @@ export const AdminProfilePage: React.FC = () => {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-mono"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
                   placeholder="Nhập lại mật khẩu mới"
                 />
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-950/60 border border-white/5 space-y-2 text-xs text-slate-400">
-              <p className="font-bold text-slate-300">Tiêu chuẩn mật khẩu an toàn:</p>
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-700/60 space-y-2 text-xs text-slate-400">
+              <p className="font-semibold text-slate-300">Tiêu chuẩn mật khẩu an toàn:</p>
               <ul className="list-disc list-inside space-y-1 text-slate-400">
                 <li>Bao gồm ít nhất 6 ký tự (khuyến nghị 12 ký tự trở lên).</li>
                 <li>Kết hợp chữ hoa, chữ thường, chữ số và ký tự đặc biệt (@, #, $, %).</li>
@@ -416,7 +406,7 @@ export const AdminProfilePage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isUpdatingPassword}
-                className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-sm rounded-xl shadow-lg shadow-cyan-500/20 active:scale-95 disabled:opacity-50 transition-all cursor-pointer"
+                className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm disabled:opacity-50 transition-colors cursor-pointer"
               >
                 <KeyRound size={16} />
                 <span>{isUpdatingPassword ? 'Đang Xử Lý...' : 'Cập Nhật Mật Khẩu'}</span>
@@ -429,20 +419,20 @@ export const AdminProfilePage: React.FC = () => {
       {/* Tab 3: Sessions & Workstations */}
       {activeTab === 'SESSIONS' && (
         <div className="space-y-6">
-          <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl shadow-black/40">
+          <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
             <h3 className="text-base font-bold text-white mb-2">Thiết Bị Đang Đăng Nhập</h3>
             <p className="text-xs text-slate-400 mb-6">Danh sách các phiên làm việc đang có quyền truy cập vào bảng điều khiển</p>
 
             <div className="space-y-3">
-              <div className="p-4 rounded-xl bg-slate-950/60 border border-cyan-500/30 flex items-center justify-between">
+              <div className="p-4 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
                     <Laptop size={20} />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h4 className="text-sm font-bold text-white">Edge / Chrome on Windows Workstation</h4>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                      <h4 className="text-sm font-semibold text-white">Edge / Chrome on Windows Workstation</h4>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                         Phiên Hiện Tại
                       </span>
                     </div>
@@ -451,12 +441,12 @@ export const AdminProfilePage: React.FC = () => {
                       <span>•</span>
                       <span>Khu vực: TP. Hồ Chí Minh, VN</span>
                       <span>•</span>
-                      <span className="text-emerald-400 font-bold">Hoạt động vừa xong</span>
+                      <span className="text-emerald-400 font-semibold">Hoạt động vừa xong</span>
                     </div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-500/20">
+                  <span className="text-xs font-mono font-medium text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md border border-blue-500/20">
                     TLS 1.3 Verified
                   </span>
                 </div>
