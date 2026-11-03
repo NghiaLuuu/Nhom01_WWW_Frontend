@@ -197,7 +197,7 @@ export const LiveVisitorDetailView: React.FC = () => {
           <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 backdrop-blur-xl shadow-xl space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <span className="text-xs uppercase font-bold text-slate-400 tracking-wider flex items-center gap-2 whitespace-nowrap">
-                <Globe size={14} className="text-cyan-400 shrink-0" />
+                <Globe size={14} className="text-blue-400 shrink-0" />
                 Định Danh & Mạng
               </span>
               {v.isRegisteredCustomer ? (
@@ -212,10 +212,10 @@ export const LiveVisitorDetailView: React.FC = () => {
             </div>
 
             {/* IP Address Hero */}
-            <div className="bg-slate-950/80 border border-cyan-500/30 rounded-xl p-3.5 flex items-center justify-between">
+            <div className="bg-slate-900 border border-blue-500/20 rounded-xl p-3.5 flex items-center justify-between">
               <div>
                 <p className="text-[10px] uppercase font-bold text-slate-400">Địa chỉ IP Khách</p>
-                <p className="font-mono text-base font-black text-cyan-300 mt-0.5">{v.ipAddress}</p>
+                <p className="font-mono text-base font-black text-blue-400 mt-0.5">{v.ipAddress}</p>
               </div>
               <button
                 onClick={() => handleCopyIp(v.ipAddress)}
@@ -242,7 +242,7 @@ export const LiveVisitorDetailView: React.FC = () => {
               ) : (
                 <div className="space-y-1">
                   <p className="text-xs text-slate-400">Anonymous ID:</p>
-                  <p className="font-mono text-xs text-indigo-300 bg-slate-950/60 p-2 rounded-lg break-all">
+                  <p className="font-mono text-xs text-indigo-300 bg-slate-900 p-2 rounded-lg break-all">
                     {v.anonymousId}
                   </p>
                 </div>
@@ -268,7 +268,7 @@ export const LiveVisitorDetailView: React.FC = () => {
               {/* User Agent Raw */}
               <div className="pt-2 border-t border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase font-semibold">User-Agent</span>
-                <p className="font-mono text-[10px] text-slate-400 break-all mt-1 bg-slate-950/60 p-2 rounded-lg">
+                <p className="font-mono text-[10px] text-slate-400 break-all mt-1 bg-slate-900 p-2 rounded-lg">
                   {v.userAgent}
                 </p>
               </div>
@@ -300,14 +300,14 @@ export const LiveVisitorDetailView: React.FC = () => {
             </span>
 
             {/* Current Page info */}
-            <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1 min-w-0">
+            <div className="bg-slate-900 border border-slate-800 p-3.5 rounded-xl space-y-1 min-w-0">
               <span className="text-[10px] uppercase font-bold text-slate-400">Trang web đang duyệt</span>
               <p className="text-xs font-bold text-white">{v.currentPageTitle || 'Trang đặt vé'}</p>
               <p className="font-mono text-[11px] text-indigo-300 break-all">{v.currentPageUrl || '/'}</p>
             </div>
 
             {/* Dwell Time Breakdown Bar */}
-            <div className="space-y-2 bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl">
+            <div className="space-y-2 bg-slate-900 border border-slate-800 p-3.5 rounded-xl">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-slate-400 flex items-center gap-1.5 font-semibold">
                   <Clock size={13} className="text-amber-400" /> Thời gian dừng (Dwell):
@@ -340,7 +340,7 @@ export const LiveVisitorDetailView: React.FC = () => {
             </div>
 
             {/* Last Action */}
-            <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1.5">
+            <div className="bg-slate-900 border border-slate-800 p-3.5 rounded-xl space-y-1.5">
               <span className="text-[10px] uppercase font-bold text-slate-400">Hành động vừa thực hiện</span>
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-950/80 border border-purple-500/40 text-purple-300 rounded text-xs font-bold">
@@ -364,11 +364,11 @@ export const LiveVisitorDetailView: React.FC = () => {
           {/* Card 3: AI Realtime Recommendations Hub */}
           <div className="bg-slate-900/80 border border-indigo-500/30 rounded-2xl p-5 backdrop-blur-xl shadow-xl space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <span className="text-xs uppercase font-bold text-cyan-400 tracking-wider flex items-center gap-2 whitespace-nowrap">
-                <Sparkles size={14} className="text-cyan-400 shrink-0" />
+              <span className="text-xs uppercase font-bold text-blue-400 tracking-wider flex items-center gap-2 whitespace-nowrap">
+                <Sparkles size={14} className="text-blue-400 shrink-0" />
                 Đang Đề Xuất Gì (AI Engine)
               </span>
-              <span className="text-xs bg-cyan-950/90 text-cyan-300 border border-cyan-500/40 px-2.5 py-0.5 rounded-full font-bold whitespace-nowrap">
+              <span className="text-xs bg-cyan-950/90 text-blue-400 border border-blue-500/30 px-2.5 py-0.5 rounded-full font-bold whitespace-nowrap">
                 {getPersonaLabel(v.matchedPersona)}
               </span>
             </div>
@@ -378,7 +378,7 @@ export const LiveVisitorDetailView: React.FC = () => {
                 {v.recommendedTrips.map((trip, idx) => (
                   <div 
                     key={idx}
-                    className="bg-slate-950/80 border border-white/5 hover:border-cyan-500/40 rounded-xl p-3.5 transition-all space-y-2 group min-w-0"
+                    className="bg-slate-900 border border-slate-700/60 hover:border-blue-500/30 rounded-xl p-3.5 transition-all space-y-2 group min-w-0"
                   >
                     <div className="flex items-center justify-between gap-1.5">
                       <div className="flex items-center gap-1.5 text-xs font-bold text-white min-w-0">

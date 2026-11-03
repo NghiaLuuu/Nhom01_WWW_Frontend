@@ -163,8 +163,8 @@ export const LiveVisitorsDashboard: React.FC = () => {
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-cyan-300 bg-cyan-950/70 border border-cyan-500/40 px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap">
-            <Sparkles size={10} className="text-cyan-400" /> Phổ Biến
+          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-400 bg-cyan-950/70 border border-blue-500/30 px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap">
+            <Sparkles size={10} className="text-blue-400" /> Phổ Biến
           </span>
         );
     }
@@ -181,7 +181,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
           <div>
             <div className="flex items-center gap-2.5 mb-2">
               <span className="relative flex h-3 w-3">
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400"></span>
               </span>
               <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/70 border border-emerald-500/30 px-2 py-0.2 rounded-full whitespace-nowrap">
                 Realtime SOC Monitor
@@ -240,7 +240,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
 
         {/* Realtime KPI Badges */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 mt-5">
-          <div className="bg-slate-900/80 border border-white/10 rounded-xl p-3.5 flex items-center justify-between backdrop-blur-md">
+          <div className="bg-slate-800 border border-slate-700 rounded-xl p-3.5 flex items-center justify-between backdrop-blur-md">
             <div>
               <p className="text-[11px] text-slate-400 uppercase font-semibold whitespace-nowrap">Tổng Khách Online</p>
               <h3 className="text-2xl font-extrabold text-white mt-0.5">
@@ -252,7 +252,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-slate-900/80 border border-white/10 rounded-xl p-3.5 flex items-center justify-between backdrop-blur-md">
+          <div className="bg-slate-800 border border-slate-700 rounded-xl p-3.5 flex items-center justify-between backdrop-blur-md">
             <div>
               <p className="text-[11px] text-emerald-400 uppercase font-semibold whitespace-nowrap">Khách Đã Đăng Nhập</p>
               <h3 className="text-2xl font-extrabold text-emerald-400 mt-0.5">
@@ -264,7 +264,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-slate-900/80 border border-white/10 rounded-xl p-3.5 flex items-center justify-between backdrop-blur-md">
+          <div className="bg-slate-800 border border-slate-700 rounded-xl p-3.5 flex items-center justify-between backdrop-blur-md">
             <div>
               <p className="text-[11px] text-amber-400 uppercase font-semibold whitespace-nowrap">Khách Vãng Lai (Guest)</p>
               <h3 className="text-2xl font-extrabold text-amber-400 mt-0.5">
@@ -288,7 +288,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Tìm IP, Tên, Email, Trang..."
-            className="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+            className="w-full bg-slate-900 border border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
           />
           {searchQuery && (
             <button 
@@ -339,7 +339,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
       <div className="bg-slate-900/70 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs text-slate-300">
-            <thead className="text-[11px] uppercase bg-slate-950/80 text-slate-400 border-b border-slate-800 font-semibold tracking-wider">
+            <thead className="text-[11px] uppercase bg-slate-900 text-slate-400 border-b border-slate-800 font-semibold tracking-wider">
               <tr>
                 <th className="px-2.5 sm:px-3 py-2.5 whitespace-nowrap w-[26%]">Khách Hàng & IP</th>
                 <th className="px-2 sm:px-3 py-2.5 whitespace-nowrap w-[26%]">Trang & Thao Tác</th>
@@ -398,7 +398,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
                             </span>
                           </div>
                           <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono mt-0.5 truncate">
-                            <span className="text-cyan-300">IP: {visitor.ipAddress || '127.0.0.1'}</span>
+                            <span className="text-blue-400">IP: {visitor.ipAddress || '127.0.0.1'}</span>
                             <span>•</span>
                             <span className="flex items-center gap-1">
                               {visitor.deviceType === 'Mobile' ? <Smartphone size={10} className="text-rose-400" /> : <Laptop size={10} className="text-indigo-400" />}
@@ -453,7 +453,7 @@ export const LiveVisitorsDashboard: React.FC = () => {
                           e.stopPropagation();
                           navigate(`/admin/live-visitors/${visitor.sessionId}`);
                         }}
-                        className="p-1.5 rounded-lg border border-cyan-500/30 bg-cyan-950/60 hover:bg-cyan-500/20 text-cyan-300 hover:text-white transition-all cursor-pointer inline-flex items-center gap-1 text-xs font-bold"
+                        className="p-1.5 rounded-lg border border-blue-500/20 bg-cyan-950/60 hover:bg-blue-500/15 text-blue-400 hover:text-white transition-all cursor-pointer inline-flex items-center gap-1 text-xs font-bold"
                         title="Mở phòng giám sát Realtime"
                       >
                         <Eye size={12} />
