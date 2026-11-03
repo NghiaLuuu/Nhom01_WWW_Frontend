@@ -175,16 +175,16 @@ export const ChatbotWidget: React.FC = () => {
           {bubbleText && (
             <div 
               onClick={() => setIsOpen(true)}
-              className="cursor-pointer relative mb-1.5 hidden sm:flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-cyan-500/40 text-white shadow-2xl shadow-cyan-950/50 animate-in fade-in slide-in-from-right-4 duration-300 max-w-xs group hover:border-cyan-400"
+              className="cursor-pointer relative mb-1.5 hidden sm:flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 shadow-lg max-w-xs group hover:border-blue-500 transition-colors"
             >
-              <Sparkles size={16} className="text-cyan-400 shrink-0 animate-pulse group-hover:scale-110 transition-transform" />
+              <Sparkles size={16} className="text-blue-600 shrink-0" />
               <span className="text-xs font-medium leading-snug">{bubbleText}</span>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setBubbleText(null);
                 }}
-                className="text-slate-400 hover:text-white p-0.5 rounded-full shrink-0 transition-colors"
+                className="text-slate-400 hover:text-slate-700 p-0.5 rounded-full shrink-0 transition-colors"
                 title="Đóng thông báo"
               >
                 <X size={12} />
@@ -194,12 +194,12 @@ export const ChatbotWidget: React.FC = () => {
 
           <button
             onClick={() => setIsOpen(true)}
-            className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 active:scale-95 group relative shadow-blue-500/30"
-            title="Mở trợ lý AI"
+            className="w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-colors group relative cursor-pointer"
+            title="Mở trợ lý tư vấn vé xe"
           >
-            <MessageSquare size={22} className="group-hover:rotate-6 transition-transform text-white" />
+            <MessageSquare size={22} className="text-white" />
             <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-white shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-white"></span>
             </span>
           </button>
         </div>
@@ -207,32 +207,33 @@ export const ChatbotWidget: React.FC = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-[360px] sm:w-[420px] h-[550px] max-h-[85vh] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col z-50 overflow-hidden animate-in slide-in-from-bottom-6">
+        <div className="fixed bottom-6 right-6 w-[360px] sm:w-[420px] h-[540px] max-h-[85vh] bg-white rounded-2xl shadow-xl border border-slate-200 flex flex-col z-50 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3.5 flex items-center justify-between text-white shadow-md">
+          <div className="bg-blue-600 px-4 py-3.5 flex items-center justify-between text-white shadow-xs">
             <div className="flex items-center space-x-2.5">
-              <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                <Sparkles size={20} className="text-yellow-300" />
+              <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white">
+                <Bot size={20} />
               </div>
               <div>
-                <h3 className="font-bold text-sm tracking-wide flex items-center gap-1.5">
-                  Trợ Lý AI VEXE
-                  <span className="text-[10px] bg-emerald-500 text-white px-1.5 py-0.5 rounded-full font-medium">pgvector</span>
+                <h3 className="font-bold text-sm tracking-tight flex items-center gap-1.5">
+                  Trợ Lý Tư Vấn VEXE
+                  <span className="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-medium">Trực tuyến</span>
                 </h3>
-                <p className="text-xs text-blue-100">Tư vấn lịch trình & đặt vé thông minh</p>
+                <p className="text-xs text-blue-100">Tìm kiếm chuyến xe & giải đáp thắc mắc</p>
               </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white transition-colors"
+              className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center text-white transition-colors cursor-pointer"
+              title="Thu nhỏ cửa sổ chat"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
           </div>
 
           {/* Quick Suggestions */}
-          <div className="bg-blue-50/60 px-3 py-2 flex items-center gap-1.5 overflow-x-auto border-b border-blue-100 no-scrollbar">
-            <span className="text-[11px] text-blue-600 font-semibold flex items-center gap-1 flex-shrink-0">
+          <div className="bg-slate-50 px-3 py-2 flex items-center gap-1.5 overflow-x-auto border-b border-slate-200">
+            <span className="text-[11px] text-blue-700 font-semibold flex items-center gap-1 shrink-0">
               <Sparkles size={12} /> Gợi ý:
             </span>
             {QUICK_SUGGESTIONS.map((sug, i) => (
@@ -240,7 +241,7 @@ export const ChatbotWidget: React.FC = () => {
                 key={i}
                 onClick={() => sendMessage(sug)}
                 disabled={isTyping}
-                className="text-[11px] whitespace-nowrap bg-white hover:bg-blue-600 hover:text-white text-blue-700 px-2.5 py-1 rounded-full border border-blue-200 transition-all shadow-2xs font-medium"
+                className="text-[11px] whitespace-nowrap bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 px-2.5 py-1 rounded-md border border-slate-200 transition-colors shadow-2xs font-medium cursor-pointer"
               >
                 {sug}
               </button>
@@ -248,29 +249,29 @@ export const ChatbotWidget: React.FC = () => {
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 p-4 overflow-y-auto bg-slate-50/60 space-y-3.5 custom-scrollbar">
+          <div className="flex-1 p-4 overflow-y-auto bg-slate-50/70 space-y-3.5">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`flex max-w-[85%] ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                   <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                      msg.sender === 'user' ? 'bg-blue-600 text-white ml-2' : 'bg-indigo-100 text-indigo-700 mr-2'
+                    className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
+                      msg.sender === 'user' ? 'bg-blue-600 text-white ml-2' : 'bg-slate-200 text-slate-700 mr-2'
                     }`}
                   >
                     {msg.sender === 'user' ? <User size={14} /> : <Bot size={14} />}
                   </div>
                   <div
-                    className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
+                    className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm leading-relaxed ${
                       msg.sender === 'user'
-                        ? 'bg-blue-600 text-white rounded-tr-none shadow-md'
-                        : 'bg-white border border-gray-200/80 text-gray-800 rounded-tl-none shadow-sm'
+                        ? 'bg-blue-600 text-white rounded-tr-none'
+                        : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-2xs'
                     }`}
                   >
                     <div>{renderFormattedText(msg.text)}</div>
 
                     {/* Action buttons if trip IDs found */}
                     {msg.actionTripIds && msg.actionTripIds.length > 0 && (
-                      <div className="mt-3 pt-2.5 border-t border-gray-100 space-y-1.5">
+                      <div className="mt-3 pt-2.5 border-t border-slate-100 space-y-1.5">
                         {msg.actionTripIds.map((tripId) => (
                           <button
                             key={tripId}
@@ -278,9 +279,9 @@ export const ChatbotWidget: React.FC = () => {
                               setIsOpen(false);
                               window.location.href = `/search?tripId=${tripId}`;
                             }}
-                            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-1.5 px-3 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-1.5 px-3 rounded-lg font-semibold text-xs flex items-center justify-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
                           >
-                            <span>👉 Đặt vé chuyến xe #{tripId}</span>
+                            <span>👉 Xem chi tiết chuyến #{tripId}</span>
                             <ArrowRight size={13} />
                           </button>
                         ))}
@@ -294,13 +295,11 @@ export const ChatbotWidget: React.FC = () => {
             {isTyping && (
               <div className="flex justify-start">
                 <div className="flex flex-row max-w-[80%] items-center">
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-indigo-100 text-indigo-700 mr-2">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 bg-slate-200 text-slate-700 mr-2">
                     <Bot size={14} />
                   </div>
-                  <div className="px-4 py-2.5 bg-white border border-gray-200/80 rounded-2xl rounded-tl-none shadow-sm flex items-center space-x-1.5">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                  <div className="px-3.5 py-2 bg-white border border-slate-200 rounded-xl rounded-tl-none shadow-2xs flex items-center space-x-1.5">
+                    <span className="text-xs text-slate-500 font-medium">Đang soạn câu trả lời...</span>
                   </div>
                 </div>
               </div>
@@ -309,7 +308,7 @@ export const ChatbotWidget: React.FC = () => {
           </div>
 
           {/* Input Area */}
-          <div className="p-3 bg-white border-t border-gray-100">
+          <div className="p-3 bg-white border-t border-slate-200">
             <form onSubmit={handleSend} className="flex items-center space-x-2">
               <input
                 type="text"
@@ -317,14 +316,15 @@ export const ChatbotWidget: React.FC = () => {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Nhập câu hỏi tìm xe, giá vé..."
                 disabled={isTyping}
-                className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 rounded-xl outline-none transition-all text-xs sm:text-sm"
+                className="flex-1 px-3.5 py-2 bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg outline-none transition-colors text-xs sm:text-sm text-slate-800"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isTyping}
-                className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl flex items-center justify-center hover:opacity-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md"
+                className="w-9 h-9 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                title="Gửi câu hỏi"
               >
-                <Send size={16} />
+                <Send size={15} />
               </button>
             </form>
           </div>
