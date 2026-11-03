@@ -1,3 +1,4 @@
+import React from 'react';
 import type { LoginFormProps } from '../types/auth.dto';
 
 export const LoginForm: React.FC<LoginFormProps> = ({ content, onSubmit, isLoading = false }) => {
@@ -7,39 +8,39 @@ export const LoginForm: React.FC<LoginFormProps> = ({ content, onSubmit, isLoadi
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-8 bg-white/60 backdrop-blur-md rounded-2xl shadow-xl border border-gray-100">
-      <div className="mb-8 text-center">
-        <h2 className="text-3xl font-extrabold text-gray-900 mb-2">{content.title}</h2>
-        <p className="text-gray-500">{content.subtitle}</p>
+    <div className="w-full max-w-md mx-auto p-8 bg-slate-800 rounded-2xl shadow-xl border border-slate-700 text-slate-100">
+      <div className="mb-6 text-center">
+        <h2 className="text-2xl font-bold text-white mb-2">{content.title}</h2>
+        <p className="text-xs text-slate-400">{content.subtitle}</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-1.5">
+          <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
             {content.emailLabel}
           </label>
           <input
             type="email"
             required
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none bg-white/50"
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-700 focus:border-blue-500 transition-colors outline-none bg-slate-900 text-white text-sm placeholder:text-slate-500 focus:ring-1 focus:ring-blue-500"
             placeholder={content.emailPlaceholder}
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+        <div className="space-y-1.5">
+          <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
             {content.passwordLabel}
           </label>
           <input
             type="password"
             required
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none bg-white/50"
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-700 focus:border-blue-500 transition-colors outline-none bg-slate-900 text-white text-sm placeholder:text-slate-500 focus:ring-1 focus:ring-blue-500"
             placeholder={content.passwordPlaceholder}
           />
         </div>
 
         <div className="flex items-center justify-end">
-          <a href="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+          <a href="/forgot-password" className="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors">
             {content.forgotPasswordText}
           </a>
         </div>
@@ -47,7 +48,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ content, onSubmit, isLoadi
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/50 transition-all disabled:opacity-70 disabled:cursor-not-allowed transform hover:-translate-y-0.5"
+          className="w-full flex justify-center py-2.5 px-4 rounded-xl shadow-sm text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 focus:outline-none transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
         >
           {isLoading ? '...' : content.submitButtonText}
         </button>

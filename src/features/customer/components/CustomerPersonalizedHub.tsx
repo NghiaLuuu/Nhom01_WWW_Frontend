@@ -18,7 +18,6 @@ import { useNavigate } from 'react-router-dom';
 import { recommendationService, type RecommendedTrip, type PersonaInfo } from '../../../services/recommendation.service';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { dispatchTrackAction } from '../../../hooks/useUserTracker';
-import toast from 'react-hot-toast';
 
 export const CustomerPersonalizedHub: React.FC = () => {
   const navigate = useNavigate();
@@ -73,99 +72,91 @@ export const CustomerPersonalizedHub: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
+    <div className="space-y-8">
       
       {/* 1. Persona Identity Banner */}
-      <div className="rounded-3xl bg-gradient-to-r from-purple-950/80 via-slate-900/90 to-cyan-950/80 border border-purple-500/40 p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-        
-        {/* Glow */}
-        <div aria-hidden="true" className="absolute -top-12 -right-12 w-48 h-48 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
-          
+      <div className="rounded-2xl bg-slate-800 border border-slate-700 p-6 sm:p-8 shadow-sm">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3 max-w-2xl">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-300 text-xs font-bold font-mono">
-                <Sparkles size={13} className="text-purple-400" />
-                <span>PHÂN KHÚC HÀNH VI AI CỦA BẠN</span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-500/15 border border-blue-500/25 text-blue-300 text-xs font-semibold font-mono">
+                <Sparkles size={12} className="text-blue-400" />
+                <span>PHÂN KHÚC HÀNH VI CỦA BẠN</span>
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[11px] font-bold border border-cyan-500/30">
-                ⭐ Độ tin cậy cao
+              <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[11px] font-medium border border-emerald-500/20">
+                Độ tin cậy cao
               </span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
               {persona?.displayName || 'Hội viên Du Lịch & Thường Lệ'}
             </h2>
 
             {/* AI Reasoning on Persona Classification */}
-            <div className="rounded-2xl bg-black/40 border border-purple-500/30 p-3.5 text-xs text-slate-200">
-              <div className="flex items-center gap-1.5 font-bold text-purple-300 mb-1 text-xs">
-                <Sparkles size={13} className="text-purple-400 shrink-0" />
-                <span>💡 Lý do AI phân tích & xếp loại phân khúc:</span>
+            <div className="rounded-xl bg-slate-900 border border-slate-700 p-3.5 text-xs text-slate-300">
+              <div className="flex items-center gap-1.5 font-semibold text-cyan-400 mb-1 text-xs">
+                <Sparkles size={13} className="text-cyan-400 shrink-0" />
+                <span>Lý do phân loại phân khúc:</span>
               </div>
-              <p className="text-slate-300 leading-relaxed font-light pl-4">
+              <p className="text-slate-300 leading-relaxed pl-4">
                 {persona?.description || 'Dựa trên việc phân tích lịch sử các giao dịch đặt vé đã hoàn tất, thói quen tuyến đường yêu thích và tần suất di chuyển của bạn trong hệ thống.'}
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-slate-300">
-              <span className="flex items-center gap-1 px-3 py-1 rounded-xl bg-white/5 border border-white/10">
-                <Bus size={13} className="text-cyan-400" />
+            <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-slate-300">
+              <span className="flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-900 border border-slate-700">
+                <Bus size={13} className="text-blue-400" />
                 <span>Ưu tiên Limousine VIP</span>
               </span>
-              <span className="flex items-center gap-1 px-3 py-1 rounded-xl bg-white/5 border border-white/10">
+              <span className="flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-900 border border-slate-700">
                 <ShieldCheck size={13} className="text-emerald-400" />
                 <span>Giữ chỗ 100% tự động</span>
               </span>
-              <span className="flex items-center gap-1 px-3 py-1 rounded-xl bg-white/5 border border-white/10">
+              <span className="flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-900 border border-slate-700">
                 <Tag size={13} className="text-amber-400" />
-                <span>Mã giảm giá hội viên sẵn sàng</span>
+                <span>Ưu đãi hội viên sẵn sàng</span>
               </span>
             </div>
           </div>
 
-          <div className="shrink-0 flex flex-col items-start lg:items-end gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-white/10">
+          <div className="shrink-0 flex flex-col items-start lg:items-end gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-700">
             <button
               onClick={fetchAIInsights}
               disabled={loading}
-              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border border-white/10"
+              className="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-medium transition-colors flex items-center gap-2 cursor-pointer border border-slate-600"
             >
               <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-              <span>Cập nhật phân tích AI</span>
+              <span>Cập nhật phân tích</span>
             </button>
           </div>
-
         </div>
-
       </div>
 
       {/* 2. Top Recommended Trips for Persona */}
       <div className="space-y-4">
-        
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
-              <Zap size={18} className="text-cyan-400" />
+            <h3 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+              <Zap size={18} className="text-blue-400" />
               <span>Chuyến Xe Quen Thuộc & Đề Xuất Dành Riêng Cho Bạn</span>
             </h3>
-            <p className="text-xs text-slate-400 font-light mt-0.5">
+            <p className="text-xs text-slate-400 mt-0.5">
               1-chạm đặt vé nhanh các chuyến xe phù hợp nhất với thói quen di chuyển của bạn
             </p>
           </div>
 
-          <span className="text-xs text-cyan-400 font-mono font-bold">
+          <span className="text-xs text-cyan-400 font-mono font-medium">
             {recommendations.length} chuyến khớp
           </span>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-slate-500">
-            <RefreshCw size={24} className="animate-spin mx-auto mb-2 text-cyan-400" />
-            <p className="text-xs">Đang đồng bộ dữ liệu AI cá nhân hóa...</p>
+          <div className="p-12 text-center text-slate-400">
+            <RefreshCw size={24} className="animate-spin mx-auto mb-2 text-blue-400" />
+            <p className="text-xs">Đang đồng bộ dữ liệu đề xuất...</p>
           </div>
         ) : recommendations.length === 0 ? (
-          <div className="p-8 rounded-3xl bg-slate-900/60 border border-white/10 text-center text-slate-400">
+          <div className="p-8 rounded-2xl bg-slate-800 border border-slate-700 text-center text-slate-400">
             Chưa có đủ dữ liệu lịch sử để xuất đề xuất riêng. Hãy thực hiện thêm chuyến đi để kích hoạt đề xuất!
           </div>
         ) : (
@@ -173,16 +164,16 @@ export const CustomerPersonalizedHub: React.FC = () => {
             {recommendations.map(trip => (
               <div
                 key={trip.tripId}
-                className="rounded-3xl bg-slate-900/80 border border-white/10 hover:border-cyan-400/50 p-5 shadow-xl hover:shadow-cyan-950/40 transition-all flex flex-col justify-between space-y-4 group"
+                className="rounded-2xl bg-slate-800 border border-slate-700 hover:border-slate-600 p-5 shadow-sm transition-colors flex flex-col justify-between space-y-4"
               >
                 <div>
                   <div className="flex items-center justify-between text-xs mb-3">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-cyan-400/40 text-[10px] font-bold text-cyan-300">
-                      <Sparkles size={11} className="text-cyan-400" />
-                      <span>✨ VEXE AI ĐỀ XUẤT</span>
+                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-blue-500/15 border border-blue-500/25 text-[10px] font-semibold text-blue-300">
+                      <Sparkles size={11} className="text-blue-400" />
+                      <span>ĐỀ XUẤT</span>
                     </div>
-                    <span className="px-2 py-0.5 rounded-md bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 font-mono font-bold text-[10px]">
-                      ⭐ Khớp {(trip.matchScore * 100).toFixed(0)}%
+                    <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-cyan-400 font-mono font-semibold text-[10px]">
+                      Khớp {(trip.matchScore * 100).toFixed(0)}%
                     </span>
                   </div>
 
@@ -190,10 +181,10 @@ export const CustomerPersonalizedHub: React.FC = () => {
                     Còn {trip.availableSeats} chỗ
                   </div>
 
-                  <div className="text-base font-bold text-white flex items-center gap-2 mb-1.5">
-                    <span className="text-cyan-300">{trip.departureLocation}</span>
-                    <ArrowRight size={15} className="text-slate-400 shrink-0" />
-                    <span className="text-white">{trip.arrivalLocation}</span>
+                  <div className="text-sm font-bold text-white flex items-center gap-2 mb-1.5">
+                    <span className="text-cyan-400">{trip.departureLocation}</span>
+                    <ArrowRight size={14} className="text-slate-500 shrink-0" />
+                    <span>{trip.arrivalLocation}</span>
                   </div>
 
                   <div className="text-xs text-slate-400 flex items-center gap-1.5 mb-2.5">
@@ -201,38 +192,38 @@ export const CustomerPersonalizedHub: React.FC = () => {
                     <span>{formatTime(trip.departureTime)}</span>
                   </div>
 
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 font-medium mb-3">
-                    <Bus size={13} className="text-indigo-400" />
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-xs text-slate-300 font-medium mb-3">
+                    <Bus size={13} className="text-blue-400" />
                     <span className="truncate">{trip.vehicleType}</span>
                   </div>
 
                   {/* AI Rationale Box */}
-                  <div className="rounded-xl bg-cyan-950/40 border border-cyan-500/30 p-2.5 text-xs text-slate-200 mb-2">
-                    <div className="flex items-center gap-1 text-[11px] font-bold text-cyan-300 mb-0.5">
+                  <div className="rounded-xl bg-slate-900 border border-slate-700 p-2.5 text-xs text-slate-300 mb-2">
+                    <div className="flex items-center gap-1 text-[11px] font-semibold text-cyan-400 mb-0.5">
                       <Sparkles size={11} className="text-cyan-400 shrink-0" />
-                      <span>Lý do AI đề xuất:</span>
+                      <span>Lý do gợi ý:</span>
                     </div>
-                    <p className="text-[11px] text-slate-300 font-light leading-relaxed">
+                    <p className="text-[11px] text-slate-300 leading-relaxed">
                       {trip.reason || trip.badgeText || 'Chuyến xe khớp với sở thích tuyến đường và lịch trình quen thuộc của bạn.'}
                     </p>
                   </div>
 
-                  <p className="text-[11px] text-amber-300/90 font-medium leading-relaxed">
+                  <p className="text-[11px] text-amber-300 font-medium leading-relaxed">
                     {trip.badgeText}
                   </p>
                 </div>
 
-                <div className="pt-3.5 border-t border-white/10 flex items-center justify-between gap-2">
+                <div className="pt-3.5 border-t border-slate-700 flex items-center justify-between gap-2">
                   <div>
                     <div className="text-[10px] text-slate-400 uppercase font-semibold">Giá vé từ</div>
-                    <div className="text-lg font-black text-cyan-400 font-mono">
+                    <div className="text-lg font-bold text-white font-mono">
                       {formatPrice(trip.price)}
                     </div>
                   </div>
 
                   <button
                     onClick={() => handleBookTrip(trip)}
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 text-xs font-bold transition-all shadow-md shadow-cyan-500/25 flex items-center gap-1.5 cursor-pointer active:scale-95"
+                    className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
                   >
                     <span>Đặt lại ngay</span>
                     <ArrowRight size={13} />
@@ -242,10 +233,8 @@ export const CustomerPersonalizedHub: React.FC = () => {
             ))}
           </div>
         )}
-
       </div>
 
     </div>
   );
 };
-
