@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { type Trip } from '../../admin/api/trip.service';
 import { BookingService } from '../api/booking.service';
 import { TripList } from '../components/TripList';
@@ -15,14 +15,12 @@ import {
   RotateCcw,
   Clock,
   Bus,
-  Tag,
   Check
 } from 'lucide-react';
 import { dispatchTrackAction } from '../../../hooks/useUserTracker';
 
 export const SearchPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
 
   const departureParam = searchParams.get('departure') || '';
   const arrivalParam = searchParams.get('arrival') || '';
@@ -41,7 +39,7 @@ export const SearchPage: React.FC = () => {
   const [maxPrice, setMaxPrice] = useState<number>(800000);
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
   const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState<'RECOMMENDED' | 'PRICE_ASC' | 'TIME_ASC' | 'RATING'>('RECOMMENDED');
+  const [sortBy, setSortBy] = useState<'RECOMMENDED' | 'PRICE_ASC' | 'TIME_ASC'>('RECOMMENDED');
 
   // Sync state if query params change
   useEffect(() => {
@@ -191,16 +189,16 @@ export const SearchPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-32">
+    <div className="min-h-screen bg-[#0b1120] text-slate-100 font-sans pb-32">
       
       {/* Top Search Refinement Sticky Bar */}
-      <section className="sticky top-16 z-40 bg-slate-950/90 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-cyan-950/30 py-4 px-4 sm:px-6 lg:px-8">
+      <section className="sticky top-16 z-30 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 shadow-xl py-3.5 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <form onSubmit={handleRefineSearch} className="flex flex-col lg:flex-row items-center gap-3">
+          <form onSubmit={handleRefineSearch} className="flex flex-col lg:flex-row items-center gap-2.5">
             
             {/* Input: Departure */}
             <div className="relative flex-1 w-full">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cyan-400">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <MapPin size={16} />
               </div>
               <input 
@@ -208,7 +206,7 @@ export const SearchPage: React.FC = () => {
                 value={departure}
                 onChange={(e) => setDeparture(e.target.value)}
                 placeholder="Điểm đi (Ví dụ: TP.HCM)"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-white/15 focus:border-cyan-400 rounded-xl text-white text-xs sm:text-sm font-medium outline-none transition-all placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/20"
+                className="w-full pl-10 pr-3.5 py-2 bg-slate-800 border border-slate-700 focus:border-cyan-400 rounded-lg text-white text-xs sm:text-sm font-medium outline-none transition-colors"
               />
             </div>
 
@@ -216,15 +214,15 @@ export const SearchPage: React.FC = () => {
             <button
               type="button"
               onClick={handleSwapLocations}
-              className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-white border border-white/10 flex items-center justify-center transition-all duration-200 shrink-0 cursor-pointer active:scale-90"
+              className="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 flex items-center justify-center transition-colors shrink-0 cursor-pointer"
               title="Đổi chiều điểm đi / điểm đến"
             >
-              <ArrowLeftRight size={15} />
+              <ArrowLeftRight size={14} />
             </button>
 
             {/* Input: Arrival */}
             <div className="relative flex-1 w-full">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-indigo-400">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <MapPin size={16} />
               </div>
               <input 
@@ -232,55 +230,55 @@ export const SearchPage: React.FC = () => {
                 value={arrival}
                 onChange={(e) => setArrival(e.target.value)}
                 placeholder="Điểm đến (Ví dụ: Nha Trang)"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-white/15 focus:border-cyan-400 rounded-xl text-white text-xs sm:text-sm font-medium outline-none transition-all placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/20"
+                className="w-full pl-10 pr-3.5 py-2 bg-slate-800 border border-slate-700 focus:border-cyan-400 rounded-lg text-white text-xs sm:text-sm font-medium outline-none transition-colors"
               />
             </div>
 
             {/* Input: Date */}
             <div className="relative flex-1 w-full">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-400">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <Calendar size={16} />
               </div>
               <input 
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-white/15 focus:border-cyan-400 rounded-xl text-white text-xs sm:text-sm font-medium outline-none transition-all placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/20"
+                className="w-full pl-10 pr-3.5 py-2 bg-slate-800 border border-slate-700 focus:border-cyan-400 rounded-lg text-white text-xs sm:text-sm font-medium outline-none transition-colors"
               />
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full lg:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-cyan-500/25 shrink-0 cursor-pointer whitespace-nowrap active:scale-95"
+              className="w-full lg:w-auto px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-sm shrink-0 cursor-pointer whitespace-nowrap"
             >
-              <Search size={16} />
+              <Search size={15} />
               <span>Tìm chuyến</span>
             </button>
 
           </form>
 
           {/* Quick Date Pills */}
-          <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-white/5 text-xs text-slate-400">
-            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Ngày nhanh:</span>
+          <div className="flex flex-wrap items-center gap-1.5 mt-2.5 pt-2 border-t border-slate-800 text-xs text-slate-400">
+            <span className="text-[11px] font-semibold text-slate-400 uppercase">Ngày nhanh:</span>
             <button
               type="button"
               onClick={() => setQuickDate(0)}
-              className="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white border border-white/10 transition-colors cursor-pointer"
+              className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white transition-colors cursor-pointer border border-slate-700"
             >
               Hôm nay
             </button>
             <button
               type="button"
               onClick={() => setQuickDate(1)}
-              className="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white border border-white/10 transition-colors cursor-pointer"
+              className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white transition-colors cursor-pointer border border-slate-700"
             >
               Ngày mai
             </button>
             <button
               type="button"
               onClick={() => setQuickDate(2)}
-              className="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white border border-white/10 transition-colors cursor-pointer"
+              className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white transition-colors cursor-pointer border border-slate-700"
             >
               Ngày mốt
             </button>
@@ -289,78 +287,78 @@ export const SearchPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Main Content Area: Flex layout for sidebar + list */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      {/* Main Content Area */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         
         {/* Results Header Title */}
-        <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-white/10">
+        <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-2">
-              <Sparkles size={13} className="text-cyan-400" />
-              <span>Kết quả tìm kiếm xe khách chất lượng cao</span>
+            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-blue-500/20 text-cyan-300 text-xs font-semibold mb-1.5 border border-blue-500/30">
+              <Sparkles size={12} className="text-cyan-400" />
+              <span>Kết quả tìm kiếm vé xe</span>
             </div>
             
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-3">
               <span>{departureParam && arrivalParam ? `${departureParam} → ${arrivalParam}` : 'Tất cả chuyến xe hiện có'}</span>
             </h1>
             
-            <p className="text-slate-400 text-xs sm:text-sm font-light mt-1">
+            <p className="text-slate-400 text-xs sm:text-sm mt-1">
               {formatDateDisplay(dateParam)} • Tìm thấy <strong className="text-cyan-400 font-bold">{filteredAndSortedTrips.length}</strong> chuyến phù hợp
             </p>
           </div>
 
           {/* Quick Sort Tabs */}
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-white/10 overflow-x-auto shrink-0">
+          <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-800 border border-slate-700 overflow-x-auto shrink-0">
             <button
               onClick={() => setSortBy('RECOMMENDED')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                 sortBy === 'RECOMMENDED' 
-                  ? 'bg-cyan-500 text-slate-950 shadow-md font-bold' 
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-blue-600 text-white shadow-sm' 
+                  : 'text-slate-300 hover:text-white'
               }`}
             >
-              ✨ Gợi ý AI
+              Gợi ý phù hợp
             </button>
             <button
               onClick={() => setSortBy('PRICE_ASC')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                 sortBy === 'PRICE_ASC' 
-                  ? 'bg-cyan-500 text-slate-950 shadow-md font-bold' 
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-blue-600 text-white shadow-sm' 
+                  : 'text-slate-300 hover:text-white'
               }`}
             >
-              💰 Giá rẻ nhất
+              Giá thấp nhất
             </button>
             <button
               onClick={() => setSortBy('TIME_ASC')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                 sortBy === 'TIME_ASC' 
-                  ? 'bg-cyan-500 text-slate-950 shadow-md font-bold' 
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-blue-600 text-white shadow-sm' 
+                  : 'text-slate-300 hover:text-white'
               }`}
             >
-              ⏰ Giờ sớm nhất
+              Giờ sớm nhất
             </button>
           </div>
         </div>
 
-        {/* 2 Columns: Flex sidebar + main trip list */}
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* 2 Columns: Sidebar + Trip list */}
+        <div className="flex flex-col lg:flex-row gap-6 items-start">
           
-          {/* Left Column: Multi-faceted Filter Sidebar */}
-          <aside className="w-full lg:w-[320px] xl:w-[340px] shrink-0 rounded-3xl bg-slate-900/70 backdrop-blur-2xl border border-white/10 p-6 space-y-6 shadow-2xl">
+          {/* Left Column: Filter Sidebar */}
+          <aside className="w-full lg:w-[300px] shrink-0 rounded-2xl bg-slate-800 border border-slate-700 p-5 space-y-5 shadow-sm text-slate-100">
             
             {/* Sidebar Title & Reset Button */}
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
-              <h3 className="font-bold text-white text-base flex items-center gap-2">
-                <SlidersHorizontal size={16} className="text-cyan-400" />
-                <span>Bộ lọc nâng cao</span>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-700">
+              <h3 className="font-bold text-white text-sm flex items-center gap-1.5">
+                <SlidersHorizontal size={15} className="text-cyan-400" />
+                <span>Bộ lọc tìm kiếm</span>
               </h3>
               
               <button
                 onClick={handleResetFilters}
-                className="text-xs text-slate-400 hover:text-cyan-400 flex items-center gap-1 transition-colors cursor-pointer"
-                title="Đặt lại các tiêu chí lọc về mặc định"
+                className="text-xs text-slate-400 hover:text-cyan-300 flex items-center gap-1 transition-colors cursor-pointer"
+                title="Đặt lại bộ lọc"
               >
                 <RotateCcw size={12} />
                 <span>Đặt lại</span>
@@ -368,12 +366,12 @@ export const SearchPage: React.FC = () => {
             </div>
 
             {/* Filter: Max Price Slider */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-300 uppercase">
                   Giá vé tối đa:
                 </span>
-                <span className="text-sm font-black text-cyan-400 font-mono">
+                <span className="text-sm font-black text-cyan-400 font-mono tabular-nums">
                   {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(maxPrice)}
                 </span>
               </div>
@@ -385,23 +383,23 @@ export const SearchPage: React.FC = () => {
                 step="20000"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
-                className="w-full accent-cyan-400 cursor-pointer"
+                className="w-full accent-blue-500 cursor-pointer"
               />
 
-              <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+              <div className="flex justify-between text-[10px] text-slate-400 font-mono">
                 <span>100.000đ</span>
                 <span>800.000đ</span>
               </div>
             </div>
 
             {/* Filter: Departure Time Slots */}
-            <div className="space-y-3 pt-4 border-t border-white/10">
-              <div className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                <Clock size={13} className="text-indigo-400" />
-                <span>Khung giờ xuất bến</span>
+            <div className="space-y-2.5 pt-3 border-t border-slate-700">
+              <div className="text-xs font-bold text-slate-300 uppercase flex items-center gap-1.5">
+                <Clock size={13} className="text-cyan-400" />
+                <span>Giờ xuất bến</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="grid grid-cols-2 gap-1.5 text-xs">
                 {[
                   { key: 'EARLY', label: 'Sáng sớm', desc: '00:00 - 06:00' },
                   { key: 'MORNING', label: 'Buổi sáng', desc: '06:00 - 12:00' },
@@ -414,13 +412,13 @@ export const SearchPage: React.FC = () => {
                       key={slot.key}
                       type="button"
                       onClick={() => toggleTimeSlot(slot.key)}
-                      className={`h-[60px] p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                      className={`h-[56px] p-2 rounded-lg border text-left transition-colors cursor-pointer flex flex-col justify-between ${
                         isActive 
-                          ? 'bg-cyan-500/20 border-cyan-400 text-white font-bold' 
-                          : 'bg-white/5 border-white/10 text-slate-300 hover:border-white/20'
+                          ? 'bg-blue-600/30 border-cyan-400 text-white font-semibold' 
+                          : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-750'
                       }`}
                     >
-                      <div className="h-4 font-semibold text-xs flex items-center justify-between">
+                      <div className="font-semibold text-xs flex items-center justify-between">
                         <span>{slot.label}</span>
                         {isActive && <Check size={12} className="text-cyan-400 shrink-0" />}
                       </div>
@@ -432,35 +430,35 @@ export const SearchPage: React.FC = () => {
             </div>
 
             {/* Filter: Vehicle Type */}
-            <div className="space-y-3 pt-4 border-t border-white/10">
-              <div className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <div className="space-y-2.5 pt-3 border-t border-slate-700">
+              <div className="text-xs font-bold text-slate-300 uppercase flex items-center gap-1.5">
                 <Bus size={13} className="text-cyan-400" />
-                <span>Loại xe & Dịch vụ</span>
+                <span>Loại xe</span>
               </div>
 
-              <div className="space-y-2 text-xs">
+              <div className="space-y-1.5 text-xs">
                 {[
                   { key: 'LIMO_VIP', label: 'Limousine VIP 24 phòng', desc: 'Phòng riêng, ghế massage' },
-                  { key: 'LIMO_ROOM', label: 'Limousine 34 phòng VIP', desc: 'Rèm che riêng tư, cổng sạc' },
-                  { key: 'BED_45', label: 'Xe Giường nằm 45 chỗ', desc: 'Tiết kiệm, thoải mái' }
+                  { key: 'LIMO_ROOM', label: 'Limousine 34 phòng', desc: 'Rèm riêng, cổng sạc' },
+                  { key: 'BED_45', label: 'Xe Giường nằm 45 chỗ', desc: 'Tiết kiệm, thoáng đãng' }
                 ].map(vt => {
                   const isActive = selectedVehicleTypes.includes(vt.key);
                   return (
                     <div 
                       key={vt.key}
                       onClick={() => toggleVehicleType(vt.key)}
-                      className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${
+                      className={`flex items-center justify-between p-2.5 rounded-lg border cursor-pointer transition-colors ${
                         isActive 
-                          ? 'bg-cyan-500/20 border-cyan-400 text-white font-semibold' 
-                          : 'bg-white/5 border-white/10 text-slate-300 hover:border-white/20'
+                          ? 'bg-blue-600/30 border-cyan-400 text-white font-semibold' 
+                          : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-750'
                       }`}
                     >
                       <div>
                         <div className="text-xs font-semibold">{vt.label}</div>
-                        <div className="text-[10px] text-slate-400 font-light">{vt.desc}</div>
+                        <div className="text-[10px] text-slate-400">{vt.desc}</div>
                       </div>
-                      <div className={`w-4 h-4 rounded-md border flex items-center justify-center ${
-                        isActive ? 'bg-cyan-500 border-cyan-400 text-slate-950' : 'border-slate-600'
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center ${
+                        isActive ? 'bg-cyan-400 border-cyan-400 text-slate-950' : 'border-slate-600 bg-slate-800'
                       }`}>
                         {isActive && <Check size={12} className="font-bold" />}
                       </div>
@@ -471,15 +469,15 @@ export const SearchPage: React.FC = () => {
             </div>
 
             {/* Trust Guarantee Box */}
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 space-y-2 text-xs text-slate-300">
-              <div className="font-bold text-emerald-400 flex items-center gap-1.5">
-                <ShieldCheck size={15} />
-                <span>Cam Kết Dịch Vụ VEXE</span>
+            <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-700 space-y-1.5 text-xs text-slate-300">
+              <div className="font-bold text-white flex items-center gap-1.5">
+                <ShieldCheck size={15} className="text-emerald-400" />
+                <span>Cam Kết VEXE</span>
               </div>
-              <ul className="space-y-1 text-[11px] text-slate-400 font-light list-disc list-inside">
-                <li>100% giữ đúng số ghế đã chọn</li>
-                <li>Hoàn tiền 150% nếu nhà xe tự ý hủy</li>
-                <li>Đổi vé trực tuyến không mất phí trước 24h</li>
+              <ul className="space-y-1 text-[11px] text-slate-400 list-disc list-inside">
+                <li>Giữ đúng 100% số ghế đã chọn</li>
+                <li>Hoàn 150% nếu nhà xe tự ý hủy</li>
+                <li>Hỗ trợ đổi vé online 24/7</li>
               </ul>
             </div>
 
@@ -504,3 +502,5 @@ export const SearchPage: React.FC = () => {
     </div>
   );
 };
+
+export default SearchPage;

@@ -23,7 +23,7 @@ export const PublicLayout: React.FC = () => {
   useUserTracker();
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen flex flex-col bg-[#0b1120] text-slate-100 font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-200">
       <Header />
       <main className="flex-grow">
         <Outlet />

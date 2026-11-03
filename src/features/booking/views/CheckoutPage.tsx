@@ -151,49 +151,47 @@ export const CheckoutPage: React.FC = () => {
   const finalTotal = Math.max(0, originalTotal - discountTotal);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-28 pt-8">
+    <div className="min-h-screen bg-[#0b1120] text-slate-100 font-sans pb-28 pt-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Breadcrumb & Step Indicator */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
           <div className="flex items-center space-x-2 text-xs text-slate-400">
             <span className="hover:text-cyan-400 cursor-pointer" onClick={() => navigate('/')}>Trang chủ</span>
             <ChevronRight size={14} className="text-slate-600" />
             <span className="hover:text-cyan-400 cursor-pointer" onClick={() => navigate('/search')}>Tìm chuyến</span>
             <ChevronRight size={14} className="text-slate-600" />
-            <span className="text-cyan-400 font-bold">Thanh toán & Giữ vé</span>
+            <span className="text-cyan-400 font-semibold">Thanh toán & Giữ vé</span>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+            <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
               <Lock size={12} />
               <span>Bảo mật PCI-DSS 256-bit</span>
             </div>
           </div>
         </div>
 
-        {/* Pulsating Hold Timer Banner */}
-        <div className="relative rounded-2xl bg-gradient-to-r from-amber-500/15 via-slate-900 to-cyan-500/15 border border-amber-500/40 p-4 sm:p-5 mb-8 shadow-2xl overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="absolute top-0 right-0 w-64 h-full bg-amber-500/5 blur-3xl pointer-events-none" />
-          
+        {/* Hold Timer Banner */}
+        <div className="rounded-2xl bg-slate-800 border border-amber-500/30 p-4 sm:p-5 mb-8 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3.5 text-slate-200">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0 animate-pulse">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
               <Clock size={20} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-sm sm:text-base text-white">Thời gian bảo lưu ghế có hạn</h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-semibold">Tự động giữ chỗ</span>
+                <h3 className="font-semibold text-sm sm:text-base text-white">Thời gian bảo lưu ghế có hạn</h3>
+                <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 font-medium border border-amber-500/20">Tự động giữ chỗ</span>
               </div>
-              <p className="text-xs text-slate-400 mt-0.5 font-light">
-                Các vị trí ghế <strong className="text-cyan-300">{activeSeats.join(', ')}</strong> đang được khóa riêng cho bạn. Vui lòng hoàn tất trong thời gian đếm ngược.
+              <p className="text-xs text-slate-300 mt-0.5">
+                Các vị trí ghế <strong className="text-cyan-400">{activeSeats.join(', ')}</strong> đang được khóa riêng cho bạn. Vui lòng hoàn tất trong thời gian đếm ngược.
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
-            <div className="px-4 py-2 rounded-xl bg-slate-950/80 border border-amber-400/50 shadow-inner">
-              <span className="text-2xl sm:text-3xl font-black text-amber-400 font-mono tracking-wider">
+            <div className="px-4 py-2 rounded-xl bg-slate-900 border border-amber-500/30">
+              <span className="text-2xl sm:text-3xl font-bold text-amber-400 font-mono tracking-wider">
                 {formatTime(timeLeft)}
               </span>
             </div>
@@ -206,15 +204,15 @@ export const CheckoutPage: React.FC = () => {
           {/* Left Column: Passenger & Payment Forms */}
           <div className="flex-1 min-w-0 w-full space-y-6">
             <div className="pb-1">
-              <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">Bước 1 trên 2</span>
-              <h2 className="text-xl font-black text-white tracking-tight">Thông tin hành khách & Thanh toán</h2>
+              <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider block mb-1">Bước 1 trên 2</span>
+              <h2 className="text-xl font-bold text-white tracking-tight">Thông tin hành khách & Thanh toán</h2>
             </div>
             
             {/* Card 1: Passenger Info */}
-            <div className="rounded-3xl bg-slate-900/80 backdrop-blur-2xl border border-white/10 p-6 sm:p-8 shadow-2xl space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+            <div className="rounded-2xl bg-slate-800 border border-slate-700 p-6 sm:p-8 shadow-sm space-y-6">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-700">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/25 flex items-center justify-center text-blue-400 shrink-0">
                     <UserIcon size={16} />
                   </div>
                   <div>
@@ -228,11 +226,11 @@ export const CheckoutPage: React.FC = () => {
                 
                 {/* Full name input */}
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                  <label className="block text-xs font-medium text-slate-300 uppercase tracking-wider">
                     Họ và tên hành khách <span className="text-rose-400">*</span>
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cyan-400">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                       <UserIcon size={16} />
                     </div>
                     <input 
@@ -240,7 +238,7 @@ export const CheckoutPage: React.FC = () => {
                       type="text"
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-white/15 focus:border-cyan-400 rounded-xl text-white text-xs sm:text-sm font-medium outline-none transition-all placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/20"
+                      className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-xl text-white text-xs sm:text-sm font-medium outline-none transition-colors placeholder:text-slate-500 focus:ring-1 focus:ring-blue-500"
                       placeholder="Nguyễn Văn An"
                     />
                   </div>
@@ -249,11 +247,11 @@ export const CheckoutPage: React.FC = () => {
                 {/* Email & Phone 2 cols */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                    <label className="block text-xs font-medium text-slate-300 uppercase tracking-wider">
                       Email nhận vé điện tử <span className="text-rose-400">*</span>
                     </label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-indigo-400">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                         <Mail size={16} />
                       </div>
                       <input 
@@ -261,18 +259,18 @@ export const CheckoutPage: React.FC = () => {
                         type="email"
                         value={customerEmail}
                         onChange={(e) => setCustomerEmail(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-white/15 focus:border-cyan-400 rounded-xl text-white text-xs sm:text-sm font-medium outline-none transition-all placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/20"
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-xl text-white text-xs sm:text-sm font-medium outline-none transition-colors placeholder:text-slate-500 focus:ring-1 focus:ring-blue-500"
                         placeholder="khachhang@vexe.vn"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                    <label className="block text-xs font-medium text-slate-300 uppercase tracking-wider">
                       Số điện thoại liên hệ <span className="text-rose-400">*</span>
                     </label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-400">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                         <Phone size={16} />
                       </div>
                       <input 
@@ -280,7 +278,7 @@ export const CheckoutPage: React.FC = () => {
                         type="tel"
                         value={customerPhone}
                         onChange={(e) => setCustomerPhone(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-white/15 focus:border-cyan-400 rounded-xl text-white text-xs sm:text-sm font-medium outline-none transition-all placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/20"
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-xl text-white text-xs sm:text-sm font-medium outline-none transition-colors placeholder:text-slate-500 focus:ring-1 focus:ring-blue-500"
                         placeholder="0909123456"
                       />
                     </div>
@@ -289,17 +287,17 @@ export const CheckoutPage: React.FC = () => {
 
                 {/* Pickup Point Selection */}
                 <div className="space-y-1.5 pt-2">
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                  <label className="block text-xs font-medium text-slate-300 uppercase tracking-wider">
                     Điểm đón khách mong muốn
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-400">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                       <MapPin size={16} />
                     </div>
                     <select
                       value={pickupPoint}
                       onChange={(e) => setPickupPoint(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-white/15 focus:border-cyan-400 rounded-xl text-white text-xs sm:text-sm font-medium outline-none transition-all cursor-pointer focus:ring-2 focus:ring-cyan-500/20"
+                      className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-xl text-white text-xs sm:text-sm font-medium outline-none transition-colors cursor-pointer focus:ring-1 focus:ring-blue-500"
                     >
                       <option value="Bến xe Miền Đông mới (Quầy vé 12)">Bến xe Miền Đông mới (Quầy vé 12) - Xuất phát</option>
                       <option value="Cây xăng ngã tư Hàng Xanh">Cây xăng ngã tư Hàng Xanh (Xe trung chuyển đón)</option>
@@ -311,14 +309,14 @@ export const CheckoutPage: React.FC = () => {
 
                 {/* Optional Note */}
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                  <label className="block text-xs font-medium text-slate-300 uppercase tracking-wider">
                     Ghi chú cho nhà xe (Tùy chọn)
                   </label>
                   <input 
                     type="text"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
-                    className="w-full px-4 py-2 bg-slate-950/80 border border-white/15 focus:border-cyan-400 rounded-xl text-white text-xs sm:text-sm outline-none transition-all placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/20"
+                    className="w-full px-4 py-2 bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-xl text-white text-xs sm:text-sm outline-none transition-colors placeholder:text-slate-500 focus:ring-1 focus:ring-blue-500"
                     placeholder="Ví dụ: Có người già đi kèm, gửi kèm 1 xe máy..."
                   />
                 </div>
@@ -327,10 +325,10 @@ export const CheckoutPage: React.FC = () => {
             </div>
 
             {/* Card 2: Payment Method Selector */}
-            <div className="rounded-3xl bg-slate-900/80 backdrop-blur-2xl border border-white/10 p-6 sm:p-8 shadow-2xl space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+            <div className="rounded-2xl bg-slate-800 border border-slate-700 p-6 sm:p-8 shadow-sm space-y-6">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-700">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400 shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/25 flex items-center justify-center text-blue-400 shrink-0">
                     <CreditCard size={16} />
                   </div>
                   <div>
@@ -345,22 +343,22 @@ export const CheckoutPage: React.FC = () => {
                 {/* Method 1: VietQR */}
                 <div 
                   onClick={() => setPaymentMethod('VIETQR')}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-start gap-3 ${
+                  className={`p-4 rounded-xl border cursor-pointer transition-colors flex items-start gap-3 ${
                     paymentMethod === 'VIETQR' 
-                      ? 'bg-cyan-500/15 border-cyan-400 shadow-md shadow-cyan-950/50' 
-                      : 'bg-white/5 border-white/10 hover:border-white/20'
+                      ? 'bg-blue-600/15 border-blue-500 text-white' 
+                      : 'bg-slate-900/70 border-slate-700 hover:border-slate-600 text-slate-300'
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0">
                     <QrCode size={20} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-white flex items-center justify-between">
+                    <div className="font-semibold text-white flex items-center justify-between">
                       <span>Chuyển khoản VietQR 24/7</span>
                       {paymentMethod === 'VIETQR' && <CheckCircle2 size={15} className="text-cyan-400" />}
                     </div>
                     <p className="text-[11px] text-slate-400 mt-0.5">Quét mã QR tự động xác nhận sau 3 giây</p>
-                    <span className="inline-block mt-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">
+                    <span className="inline-block mt-1 text-[10px] font-medium text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
                       Miễn phí giao dịch
                     </span>
                   </div>
@@ -369,17 +367,17 @@ export const CheckoutPage: React.FC = () => {
                 {/* Method 2: VNPAY */}
                 <div 
                   onClick={() => setPaymentMethod('VNPAY')}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-start gap-3 ${
+                  className={`p-4 rounded-xl border cursor-pointer transition-colors flex items-start gap-3 ${
                     paymentMethod === 'VNPAY' 
-                      ? 'bg-cyan-500/15 border-cyan-400 shadow-md shadow-cyan-950/50' 
-                      : 'bg-white/5 border-white/10 hover:border-white/20'
+                      ? 'bg-blue-600/15 border-blue-500 text-white' 
+                      : 'bg-slate-900/70 border-slate-700 hover:border-slate-600 text-slate-300'
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0">
                     <Wallet size={20} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-white flex items-center justify-between">
+                    <div className="font-semibold text-white flex items-center justify-between">
                       <span>Cổng VNPAY-QR</span>
                       {paymentMethod === 'VNPAY' && <CheckCircle2 size={15} className="text-cyan-400" />}
                     </div>
@@ -390,17 +388,17 @@ export const CheckoutPage: React.FC = () => {
                 {/* Method 3: MoMo */}
                 <div 
                   onClick={() => setPaymentMethod('MOMO')}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-start gap-3 ${
+                  className={`p-4 rounded-xl border cursor-pointer transition-colors flex items-start gap-3 ${
                     paymentMethod === 'MOMO' 
-                      ? 'bg-cyan-500/15 border-cyan-400 shadow-md shadow-cyan-950/50' 
-                      : 'bg-white/5 border-white/10 hover:border-white/20'
+                      ? 'bg-blue-600/15 border-blue-500 text-white' 
+                      : 'bg-slate-900/70 border-slate-700 hover:border-slate-600 text-slate-300'
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-pink-500/20 border border-pink-500/40 flex items-center justify-center text-pink-400 shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-pink-500/15 border border-pink-500/30 flex items-center justify-center text-pink-400 shrink-0">
                     <Wallet size={20} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-white flex items-center justify-between">
+                    <div className="font-semibold text-white flex items-center justify-between">
                       <span>Ví MoMo</span>
                       {paymentMethod === 'MOMO' && <CheckCircle2 size={15} className="text-cyan-400" />}
                     </div>
@@ -411,17 +409,17 @@ export const CheckoutPage: React.FC = () => {
                 {/* Method 4: International Cards */}
                 <div 
                   onClick={() => setPaymentMethod('CARD')}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-start gap-3 ${
+                  className={`p-4 rounded-xl border cursor-pointer transition-colors flex items-start gap-3 ${
                     paymentMethod === 'CARD' 
-                      ? 'bg-cyan-500/15 border-cyan-400 shadow-md shadow-cyan-950/50' 
-                      : 'bg-white/5 border-white/10 hover:border-white/20'
+                      ? 'bg-blue-600/15 border-blue-500 text-white' 
+                      : 'bg-slate-900/70 border-slate-700 hover:border-slate-600 text-slate-300'
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
                     <CreditCard size={20} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-white flex items-center justify-between">
+                    <div className="font-semibold text-white flex items-center justify-between">
                       <span>Thẻ Quốc Tế (Visa/Master)</span>
                       {paymentMethod === 'CARD' && <CheckCircle2 size={15} className="text-cyan-400" />}
                     </div>
@@ -432,7 +430,7 @@ export const CheckoutPage: React.FC = () => {
               </div>
 
               {/* Security Trust Note */}
-              <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 flex items-center gap-3 text-xs text-slate-400">
+              <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-700 flex items-center gap-3 text-xs text-slate-300">
                 <ShieldCheck size={18} className="text-emerald-400 shrink-0" />
                 <span>
                   Hệ thống không lưu trữ thông tin thẻ ngân hàng của bạn. Mọi giao dịch được mã hóa đầu cuối bởi cổng thanh toán đạt chuẩn quốc tế.
@@ -442,11 +440,11 @@ export const CheckoutPage: React.FC = () => {
 
           </div>
 
-          {/* Right Column: Luxury Boarding Pass Ticket Summary */}
+          {/* Right Column: Boarding Pass Ticket Summary */}
           <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-6">
             <div className="pb-1">
-              <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">Tóm tắt đơn hàng</span>
-              <h2 className="text-xl font-black text-white tracking-tight">Chi tiết vé & Lộ trình</h2>
+              <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider block mb-1">Tóm tắt đơn hàng</span>
+              <h2 className="text-xl font-bold text-white tracking-tight">Chi tiết vé & Lộ trình</h2>
             </div>
 
             {/* AI Return Trip & Onboarding Suggestion */}
@@ -456,21 +454,18 @@ export const CheckoutPage: React.FC = () => {
               departureTime={activeTrip.departureTime}
             />
 
-            <div className="relative rounded-3xl bg-slate-900/90 backdrop-blur-2xl border border-cyan-500/30 p-6 shadow-2xl shadow-cyan-950/40 sticky top-24 space-y-6 overflow-hidden">
+            <div className="rounded-2xl bg-slate-800 border border-slate-700 p-6 shadow-sm sticky top-24 space-y-6">
               
-              {/* Subtle ambient glow inside card */}
-              <div aria-hidden="true" className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
-
               {/* Boarding Pass Header */}
-              <div className="flex items-center justify-between pb-4 border-b border-white/10 relative">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-700">
                 <div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-[10px] font-bold tracking-wider uppercase mb-1">
-                    <Sparkles size={11} className="text-cyan-400" />
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-500/15 border border-blue-500/25 text-blue-300 text-[10px] font-semibold tracking-wider uppercase mb-1">
+                    <Sparkles size={11} className="text-blue-400" />
                     <span>Thẻ lên xe VEXE VIP</span>
                   </div>
-                  <h3 className="text-lg font-black text-white tracking-tight">Tóm Tắt Lịch Trình</h3>
+                  <h3 className="text-lg font-bold text-white tracking-tight">Tóm Tắt Lịch Trình</h3>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-cyan-400 shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-cyan-400 shrink-0">
                   <Bus size={20} />
                 </div>
               </div>
@@ -480,29 +475,29 @@ export const CheckoutPage: React.FC = () => {
                 
                 {/* Departure Station */}
                 <div className="flex items-start gap-3">
-                  <div className="w-3 h-3 rounded-full bg-cyan-400 ring-4 ring-cyan-500/20 shrink-0 mt-1" />
+                  <div className="w-3 h-3 rounded-full bg-cyan-400 ring-2 ring-cyan-500/20 shrink-0 mt-1" />
                   <div className="min-w-0 flex-1">
-                    <div className="text-[11px] text-slate-400 font-light">Điểm xuất phát</div>
-                    <div className="font-bold text-white text-sm truncate">
+                    <div className="text-[11px] text-slate-400">Điểm xuất phát</div>
+                    <div className="font-semibold text-white text-sm truncate">
                       {activeTrip.route?.departureLocation || 'TP. Hồ Chí Minh'}
                     </div>
-                    <div className="text-[11px] text-cyan-300 font-mono mt-0.5">
+                    <div className="text-[11px] text-cyan-400 font-mono mt-0.5">
                       Khởi hành: {new Date(activeTrip.departureTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} - {new Date(activeTrip.departureTime).toLocaleDateString('vi-VN')}
                     </div>
                   </div>
                 </div>
 
                 {/* Trajectory line */}
-                <div className="ml-1.5 pl-4 border-l-2 border-dashed border-white/20 py-1 text-[11px] text-slate-500">
+                <div className="ml-1.5 pl-4 border-l-2 border-dashed border-slate-700 py-1 text-[11px] text-slate-400">
                   Khoảng cách ~430km • Thời gian chạy ~6h 30m
                 </div>
 
                 {/* Arrival Station */}
                 <div className="flex items-start gap-3">
-                  <div className="w-3 h-3 rounded-full bg-indigo-400 ring-4 ring-indigo-500/20 shrink-0 mt-1" />
+                  <div className="w-3 h-3 rounded-full bg-indigo-400 ring-2 ring-indigo-500/20 shrink-0 mt-1" />
                   <div className="min-w-0 flex-1">
-                    <div className="text-[11px] text-slate-400 font-light">Điểm đến</div>
-                    <div className="font-bold text-white text-sm truncate">
+                    <div className="text-[11px] text-slate-400">Điểm đến</div>
+                    <div className="font-semibold text-white text-sm truncate">
                       {activeTrip.route?.arrivalLocation || 'Nha Trang'}
                     </div>
                     <div className="text-[11px] text-indigo-300 font-mono mt-0.5">
@@ -514,7 +509,7 @@ export const CheckoutPage: React.FC = () => {
               </div>
 
               {/* Seat Details Pill Row */}
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+              <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-700 space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-400">Phương tiện:</span>
                   <span className="font-semibold text-white">
@@ -525,7 +520,7 @@ export const CheckoutPage: React.FC = () => {
                   <span className="text-slate-400">Vị trí ghế đã chọn:</span>
                   <div className="flex flex-wrap gap-1">
                     {activeSeats.map(seatId => (
-                      <span key={seatId} className="px-2 py-0.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-mono font-bold">
+                      <span key={seatId} className="px-2 py-0.5 rounded bg-blue-500/15 text-blue-300 border border-blue-500/30 text-xs font-mono font-semibold">
                         {seatId}
                       </span>
                     ))}
@@ -534,26 +529,26 @@ export const CheckoutPage: React.FC = () => {
               </div>
 
               {/* Price Breakdown */}
-              <div className="border-t border-white/10 pt-4 space-y-2 text-xs">
-                <div className="flex justify-between text-slate-400">
+              <div className="border-t border-slate-700 pt-4 space-y-2 text-xs">
+                <div className="flex justify-between text-slate-300">
                   <span>Giá vé ({activeSeats.length} chỗ):</span>
-                  <span className="font-mono text-slate-200">{formatCurrency(originalTotal)}</span>
+                  <span className="font-mono text-white">{formatCurrency(originalTotal)}</span>
                 </div>
-                <div className="flex justify-between text-slate-400">
-                  <span>Ưu đãi hành khách AI:</span>
+                <div className="flex justify-between text-slate-300">
+                  <span>Ưu đãi thành viên:</span>
                   <span className="font-mono text-emerald-400">-{formatCurrency(discountTotal)}</span>
                 </div>
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-slate-300">
                   <span>Phí dịch vụ & Bảo hiểm:</span>
                   <span className="font-mono text-emerald-400">Miễn phí (0đ)</span>
                 </div>
 
-                <div className="border-t border-white/10 pt-3 flex justify-between items-baseline">
+                <div className="border-t border-slate-700 pt-3 flex justify-between items-baseline">
                   <div>
                     <span className="text-xs font-bold text-white uppercase tracking-wider block">Tổng thanh toán:</span>
                     <span className="text-[10px] text-slate-400">(Đã bao gồm VAT)</span>
                   </div>
-                  <div className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 font-mono tracking-tight">
+                  <div className="text-xl sm:text-2xl font-bold text-cyan-400 font-mono tracking-tight">
                     {formatCurrency(finalTotal)}
                   </div>
                 </div>
@@ -564,14 +559,14 @@ export const CheckoutPage: React.FC = () => {
                 form="checkout-form"
                 type="submit"
                 disabled={isProcessing}
-                className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 disabled:opacity-50 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-xl shadow-cyan-950/60 cursor-pointer active:scale-95"
+                className="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
               >
                 <span>{isProcessing ? 'Đang xác nhận giao dịch...' : 'Xác nhận đặt vé & Thanh toán'}</span>
                 <ArrowRight size={16} />
               </button>
 
               {/* Guarantee 100% */}
-              <div className="text-center text-[11px] text-slate-400 flex items-center justify-center gap-1.5 font-light">
+              <div className="text-center text-[11px] text-slate-400 flex items-center justify-center gap-1.5">
                 <CheckCircle2 size={13} className="text-emerald-400" />
                 <span>Cam kết hoàn 150% nếu nhà xe hủy vé</span>
               </div>
@@ -585,15 +580,15 @@ export const CheckoutPage: React.FC = () => {
 
       {/* Auth Modal Enforcer */}
       {showAuthModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-slate-900 border border-cyan-500/30 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-sm w-full text-center space-y-4">
-            <div className="w-14 h-14 rounded-2xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 flex items-center justify-center mx-auto">
-              <Lock size={28} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-6 sm:p-8 max-w-sm w-full text-center space-y-4">
+            <div className="w-12 h-12 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center mx-auto">
+              <Lock size={24} />
             </div>
             <div>
               <h3 className="text-lg font-bold text-white">Đăng nhập để giữ vé an toàn</h3>
-              <p className="text-xs text-slate-400 mt-1">
-                Tài khoản thành viên giúp bạn theo dõi lộ trình thời gian thực và tích lũy điểm thưởng AI.
+              <p className="text-xs text-slate-300 mt-1">
+                Tài khoản thành viên giúp bạn theo dõi lộ trình thời gian thực và tích lũy điểm thưởng.
               </p>
             </div>
             <div className="space-y-2.5 pt-2">
@@ -601,13 +596,13 @@ export const CheckoutPage: React.FC = () => {
                 onClick={() => {
                   navigate('/login', { state: { from: '/checkout' } });
                 }}
-                className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/25 text-xs sm:text-sm cursor-pointer"
+                className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-colors shadow-sm text-xs sm:text-sm cursor-pointer"
               >
                 Đăng nhập / Đăng ký ngay
               </button>
               <button 
                 onClick={() => setShowAuthModal(false)}
-                className="w-full py-2.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white font-medium rounded-xl transition-colors text-xs cursor-pointer"
+                className="w-full py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white font-medium rounded-xl transition-colors text-xs cursor-pointer"
               >
                 Đóng
               </button>

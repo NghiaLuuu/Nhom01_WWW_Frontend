@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ========================================================================= */
-/* VEXE DESIGN SYSTEM: CLEAN, FAST & ACCESSIBLE STYLES                       */
+/* VEXE DESIGN SYSTEM: REFINED PRECISION DARK / SLATE AESTHETIC              */
 /* ========================================================================= */
 
 html {
@@ -13,8 +13,8 @@ html {
 }
 
 body {
-  color: #1e293b;
-  background-color: #f8fafc;
+  color: #f1f5f9;
+  background-color: #0b1120;
 }
 
 /* Tabular numbers for clean numeric/currency alignment */
@@ -25,11 +25,10 @@ body {
 /* Clean, standard transitions */
 .transition-standard {
   transition-property: color, background-color, border-color, opacity, box-shadow, transform;
-  transition-duration: 200ms;
+  transition-duration: 180ms;
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
-/* Subtle, natural hover for buttons without aggressive lift */
 button, a {
   -webkit-tap-highlight-color: transparent;
 }
