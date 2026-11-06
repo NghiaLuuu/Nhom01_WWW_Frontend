@@ -140,10 +140,10 @@ export const UserBehaviorAnalytics: React.FC = () => {
     <div className="space-y-6">
       
       {/* Top Cyber Command Header */}
-      <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-5 sm:p-6 backdrop-blur-xl shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 sm:p-6 backdrop-blur-xl shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-[11px] font-bold mb-2">
-            <Activity size={12} className="text-cyan-400 animate-pulse" />
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[11px] font-bold mb-2">
+            <Activity size={12} className="text-blue-400 animate-pulse" />
             <span>AI Realtime Behavior & Journey Analytics</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
@@ -182,7 +182,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
           <button
             onClick={() => { setRefreshing(true); fetchAnalytics(); }}
             disabled={refreshing}
-            className="p-2 rounded-xl bg-slate-950 border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-cyan-300 transition-colors cursor-pointer"
+            className="p-2 rounded-xl bg-slate-900 border border-slate-700 hover:border-blue-500/30 text-slate-300 hover:text-blue-400 transition-colors cursor-pointer"
             title="Làm mới dữ liệu"
           >
             <RefreshCw size={15} className={refreshing ? 'animate-spin' : ''} />
@@ -194,20 +194,20 @@ export const UserBehaviorAnalytics: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         
         {/* Card 1 */}
-        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between h-[88px]">
+        <div className="p-4 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between h-[88px]">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider whitespace-nowrap">Tổng Số Phiên</div>
             <div className="text-2xl font-black text-white mt-1 font-mono">
               {safeData.totalSessions} Phiên
             </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
             <Globe size={20} />
           </div>
         </div>
 
         {/* Card 2 */}
-        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between h-[88px]">
+        <div className="p-4 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between h-[88px]">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider whitespace-nowrap">Khách Định Danh</div>
             <div className="text-2xl font-black text-emerald-300 mt-1 font-mono">
@@ -220,7 +220,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
         </div>
 
         {/* Card 3 */}
-        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between h-[88px]">
+        <div className="p-4 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between h-[88px]">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider whitespace-nowrap">Thời Gian Dừng TB</div>
             <div className="text-2xl font-black text-amber-300 mt-1 font-mono">
@@ -233,7 +233,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
         </div>
 
         {/* Card 4 */}
-        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between h-[88px]">
+        <div className="p-4 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between h-[88px]">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider whitespace-nowrap">Tương Tác Realtime</div>
             <div className="text-2xl font-black text-purple-300 mt-1 font-mono">
@@ -255,9 +255,9 @@ export const UserBehaviorAnalytics: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             {/* Traffic Sources */}
-            <div className="p-5 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl space-y-4">
+            <div className="p-5 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm space-y-4">
               <h3 className="font-bold text-white text-sm flex items-center gap-2 h-6 whitespace-nowrap">
-                <Globe size={16} className="text-cyan-400 shrink-0" />
+                <Globe size={16} className="text-blue-400 shrink-0" />
                 <span>Nguồn Lưu Lượng (Traffic)</span>
               </h3>
               
@@ -269,7 +269,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                     <div key={source} className="space-y-1">
                       <div className="flex justify-between text-xs font-semibold text-slate-300">
                         <span className="capitalize">{source}</span>
-                        <span className="font-mono text-cyan-300">{count} lượt ({percent}%)</span>
+                        <span className="font-mono text-blue-400">{count} lượt ({percent}%)</span>
                       </div>
                       <div className="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-white/5">
                         <div 
@@ -284,7 +284,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
             </div>
 
             {/* Actions Breakdown */}
-            <div className="p-5 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl space-y-4">
+            <div className="p-5 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm space-y-4">
               <h3 className="font-bold text-white text-sm flex items-center gap-2 h-6 whitespace-nowrap">
                 <MousePointerClick size={16} className="text-purple-400 shrink-0" />
                 <span>Phân Bổ Tương Tác (Actions)</span>
@@ -292,7 +292,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3 pt-1">
                 {Object.entries(safeData.actionBreakdown || {}).map(([action, count]) => (
-                  <div key={action} className="p-3 rounded-xl bg-slate-950/80 border border-white/5">
+                  <div key={action} className="p-3 rounded-xl bg-slate-900 border border-slate-700/60">
                     <div className="text-[11px] font-mono text-slate-400 h-4 leading-4 truncate" title={action}>
                       {action}
                     </div>
@@ -307,9 +307,9 @@ export const UserBehaviorAnalytics: React.FC = () => {
           </div>
 
           {/* Top Pages with Active vs Idle Dwell Time */}
-          <div className="rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl overflow-hidden">
-            <div className="p-4 sm:p-5 border-b border-white/10 flex items-center gap-2">
-              <Eye size={16} className="text-cyan-400" />
+          <div className="rounded-2xl bg-slate-800 border border-slate-700 shadow-sm overflow-hidden">
+            <div className="p-4 sm:p-5 border-b border-slate-700 flex items-center gap-2">
+              <Eye size={16} className="text-blue-400" />
               <h3 className="font-bold text-white text-sm">
                 Thời Gian Xem & Treo Tab Theo Trang (Active vs Idle Dwell Time)
               </h3>
@@ -317,7 +317,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-300">
-                <thead className="bg-slate-950/60 text-slate-400 uppercase text-[10px] tracking-wider font-semibold border-b border-white/10">
+                <thead className="bg-slate-900 text-slate-400 uppercase text-[10px] tracking-wider font-semibold border-b border-slate-700">
                   <tr>
                     <th className="py-2 px-2.5 sm:px-3 whitespace-nowrap">Đường dẫn trang</th>
                     <th className="py-2 px-2.5 sm:px-3 whitespace-nowrap">Lượt xem (Views)</th>
@@ -326,15 +326,15 @@ export const UserBehaviorAnalytics: React.FC = () => {
                     <th className="py-2 px-2.5 sm:px-3 whitespace-nowrap">Tỷ lệ tương tác</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5 font-medium">
+                <tbody className="divide-y divide-slate-700/60 font-medium">
                   {safeData.topPages.map((page, idx) => {
                     const totalDwell = page.avgActiveSeconds + page.avgIdleSeconds;
                     const activeRatio = totalDwell > 0 ? Math.round((page.avgActiveSeconds / totalDwell) * 100) : 100;
 
                     return (
-                      <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
+                      <tr key={idx} className="hover:bg-slate-700/30 transition-colors">
                         <td className="py-2 px-2.5 sm:px-3">
-                          <span className="font-mono font-bold text-cyan-300 truncate max-w-[170px] block" title={page.pageUrl}>
+                          <span className="font-mono font-bold text-blue-400 truncate max-w-[170px] block" title={page.pageUrl}>
                             {page.pageUrl}
                           </span>
                         </td>
@@ -357,8 +357,8 @@ export const UserBehaviorAnalytics: React.FC = () => {
           </div>
 
           {/* Recent Visitors Table (4 High-Density Columns) */}
-          <div className="rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl overflow-hidden">
-            <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between">
+          <div className="rounded-2xl bg-slate-800 border border-slate-700 shadow-sm overflow-hidden">
+            <div className="p-4 sm:p-5 border-b border-slate-700 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Users size={16} className="text-purple-400" />
                 <h3 className="font-bold text-white text-sm">
@@ -369,7 +369,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-300">
-                <thead className="bg-slate-950/60 text-slate-400 uppercase text-[10px] tracking-wider font-semibold border-b border-white/10">
+                <thead className="bg-slate-900 text-slate-400 uppercase text-[10px] tracking-wider font-semibold border-b border-slate-700">
                   <tr>
                     <th className="py-2 px-2.5 sm:px-3 whitespace-nowrap w-[32%]">Khách Hàng & IP</th>
                     <th className="py-2 px-2.5 sm:px-3 whitespace-nowrap w-[28%]">Nguồn & Thời Gian</th>
@@ -377,19 +377,19 @@ export const UserBehaviorAnalytics: React.FC = () => {
                     <th className="py-2 px-2.5 sm:px-3 whitespace-nowrap text-right w-[16%]">Chi Tiết</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-slate-700/60">
                   {safeData.recentSessions.map((s) => (
-                    <tr key={s.sessionId} className="hover:bg-white/[0.02] transition-colors">
+                    <tr key={s.sessionId} className="hover:bg-slate-700/30 transition-colors">
                       <td className="py-2 px-2.5 sm:px-3">
                         <div className="min-w-0">
                           <div className="font-mono font-semibold text-white truncate">
                             {s.customerId ? (
-                              <span className="text-cyan-300 font-bold">Khách #{s.customerId.substring(0, 8)}</span>
+                              <span className="text-blue-400 font-bold">Khách #{s.customerId.substring(0, 8)}</span>
                             ) : (
                               <span className="text-slate-300">{s.anonymousId}</span>
                             )}
                           </div>
-                          <div className="font-mono text-[10px] text-cyan-400 mt-0.5 truncate">
+                          <div className="font-mono text-[10px] text-blue-400 mt-0.5 truncate">
                             IP: {s.ipAddress}
                           </div>
                         </div>
@@ -413,7 +413,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                             setActiveTab('JOURNEY');
                             loadJourney(s.anonymousId || s.ipAddress);
                           }}
-                          className="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 font-bold text-[11px] transition-colors whitespace-nowrap cursor-pointer"
+                          className="px-2.5 py-1 rounded-lg bg-blue-500/15 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 font-bold text-[11px] transition-colors whitespace-nowrap cursor-pointer"
                         >
                           Xem A-Z
                         </button>
@@ -441,13 +441,13 @@ export const UserBehaviorAnalytics: React.FC = () => {
                 value={searchIdentifier}
                 onChange={(e) => setSearchIdentifier(e.target.value)}
                 placeholder="Nhập IP, Anonymous ID, hoặc Email..."
-                className="w-full pl-9 pr-4 py-2 bg-slate-950 border border-white/10 rounded-xl text-xs text-white placeholder-slate-400 focus:border-cyan-400 focus:outline-none transition-colors"
+                className="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
               />
             </div>
             <button
               type="submit"
               disabled={loadingJourney}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-cyan-500/20 whitespace-nowrap cursor-pointer shrink-0"
+              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs flex items-center gap-1.5 transition-all shadow-sm whitespace-nowrap cursor-pointer shrink-0"
             >
               <Search size={13} />
               <span>Tra cứu hành trình</span>
@@ -455,14 +455,14 @@ export const UserBehaviorAnalytics: React.FC = () => {
           </form>
 
           {loadingJourney && (
-            <div className="p-12 text-center rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl">
-              <Activity size={32} className="animate-spin text-cyan-400 mx-auto mb-3" />
+            <div className="p-12 text-center rounded-2xl bg-slate-800 border border-slate-700 backdrop-blur-xl">
+              <Activity size={32} className="animate-spin text-blue-400 mx-auto mb-3" />
               <p className="text-xs text-slate-300">Đang truy vấn và xâu chuỗi hành trình khách hàng từ máy chủ...</p>
             </div>
           )}
 
           {!selectedJourney && !loadingJourney && (
-            <div className="p-12 text-center rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl">
+            <div className="p-12 text-center rounded-2xl bg-slate-800 border border-slate-700 backdrop-blur-xl">
               <Users size={36} className="text-slate-500 mx-auto mb-3" />
               <h3 className="text-white font-bold text-sm">Chưa có hành trình nào được chọn</h3>
               <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
@@ -481,7 +481,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
               : activeCluster.events;
 
             return (
-              <div className="p-5 sm:p-6 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-2xl space-y-5">
+              <div className="p-5 sm:p-6 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm space-y-5">
                 
                 {/* 1. Customer Identity Stitching Banner */}
                 {isRegistered ? (
@@ -498,7 +498,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                           </span>
                         </div>
                         <p className="text-xs text-slate-300 mt-0.5 truncate">
-                          Họ tên: <strong className="text-white">{selectedJourney.customerName}</strong> • Email: <strong className="text-cyan-300">{selectedJourney.customerEmail}</strong>
+                          Họ tên: <strong className="text-white">{selectedJourney.customerName}</strong> • Email: <strong className="text-blue-400">{selectedJourney.customerEmail}</strong>
                           {selectedJourney.linkedAnonymousIds && selectedJourney.linkedAnonymousIds.length > 0 && (
                             <span className="text-slate-400 ml-2">
                               (Đã xâu chuỗi {selectedJourney.linkedAnonymousIds.length} phiên thiết bị vãng lai trước khi đăng nhập)
@@ -531,7 +531,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                 )}
 
                 {/* 2. Overview Stats & Persona */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-700">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 text-slate-950 flex items-center justify-center font-bold text-base shrink-0">
                       <User size={18} />
@@ -547,7 +547,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                       <Sparkles size={12} className="text-purple-400" />
                       <span>Gu AI gán: <strong>{formatPersonaLabel(selectedJourney.matchedPersona)}</strong></span>
                     </div>
-                    <div className="px-3 py-1 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-semibold whitespace-nowrap">
+                    <div className="px-3 py-1 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold whitespace-nowrap">
                       {selectedJourney.totalSessions} phiên • {selectedJourney.totalPageViews} trang • {selectedJourney.totalActions} tương tác
                     </div>
                   </div>
@@ -558,7 +558,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                   <div className="space-y-3 pt-1">
                     <div className="flex items-center justify-between">
                       <h3 className="font-bold text-white text-xs sm:text-sm flex items-center gap-1.5">
-                        <Route size={15} className="text-cyan-400" />
+                        <Route size={15} className="text-blue-400" />
                         <span>Các Hành Trình Đã Phân Đoạn (Dynamic Journeys):</span>
                       </h3>
                       <span className="text-xs text-slate-400">
@@ -572,8 +572,8 @@ export const UserBehaviorAnalytics: React.FC = () => {
                         onClick={() => setSelectedClusterId('ALL')}
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                           selectedClusterId === 'ALL'
-                            ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-                            : 'bg-slate-950 border border-white/10 text-slate-300 hover:text-white'
+                            ? 'bg-blue-600 text-slate-950 shadow-md shadow-cyan-500/20'
+                            : 'bg-slate-900 border border-slate-700 text-slate-300 hover:text-white'
                         }`}
                       >
                         Tất cả sự kiện ({selectedJourney.events.length})
@@ -590,8 +590,8 @@ export const UserBehaviorAnalytics: React.FC = () => {
                             onClick={() => setSelectedClusterId(j.journeyId)}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
                               isSelected
-                                ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-                                : 'bg-slate-950 border border-white/10 text-slate-300 hover:text-white'
+                                ? 'bg-blue-600 text-slate-950 shadow-md shadow-cyan-500/20'
+                                : 'bg-slate-900 border border-slate-700 text-slate-300 hover:text-white'
                             }`}
                           >
                             {isConv ? (
@@ -599,7 +599,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                             ) : isAban ? (
                               <AlertTriangle size={13} className={isSelected ? 'text-slate-950' : 'text-amber-400'} />
                             ) : (
-                              <Clock size={13} className={isSelected ? 'text-slate-950' : 'text-cyan-400'} />
+                              <Clock size={13} className={isSelected ? 'text-slate-950' : 'text-blue-400'} />
                             )}
                             <span className="truncate max-w-[200px]">{j.title}</span>
                             <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${
@@ -609,7 +609,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                                   ? 'bg-emerald-500/20 text-emerald-300' 
                                   : isAban 
                                     ? 'bg-amber-500/20 text-amber-300' 
-                                    : 'bg-cyan-500/20 text-cyan-300'
+                                    : 'bg-blue-500/15 text-blue-400'
                             }`}>
                               {isConv ? 'Chốt vé' : isAban ? 'Bỏ rơi' : 'Đang tìm'}
                             </span>
@@ -620,7 +620,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
 
                     {/* Selected Journey Cluster Info Box */}
                     {activeCluster && (
-                      <div className="p-3.5 rounded-xl bg-slate-950 border border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                      <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-700 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                         <div>
                           <span className="text-slate-400 block text-[10px] uppercase font-semibold">Chặng xe mục tiêu:</span>
                           <span className="font-bold text-white text-xs flex items-center gap-1 mt-0.5">
@@ -635,7 +635,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                               ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                               : activeCluster.status === 'ABANDONED'
                               ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                              : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                              : 'bg-blue-500/15 text-blue-400 border border-blue-500/20'
                           }`}>
                             {activeCluster.status === 'CONVERTED' ? '✅ Chốt vé thành công' : activeCluster.status === 'ABANDONED' ? '⚠️ Bỏ rơi giỏ hàng' : '⏳ Đang tương tác'}
                           </span>
@@ -648,7 +648,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                         </div>
                         <div>
                           <span className="text-slate-400 block text-[10px] uppercase font-semibold">Thời lượng & Dwell:</span>
-                          <span className="font-mono text-cyan-300 block mt-0.5 whitespace-nowrap">
+                          <span className="font-mono text-blue-400 block mt-0.5 whitespace-nowrap">
                             <strong>{activeCluster.durationMinutes}m</strong> ({activeCluster.activeSeconds}s Active)
                           </span>
                         </div>
@@ -683,10 +683,10 @@ export const UserBehaviorAnalytics: React.FC = () => {
                           }`} />
 
                           {/* Event Card */}
-                          <div className="p-3.5 rounded-xl bg-slate-950/80 border border-white/5 hover:border-cyan-500/30 transition-colors space-y-1">
+                          <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-700/60 hover:border-blue-500/20 transition-colors space-y-1">
                             <div className="flex items-center justify-between text-xs">
                               <span className={`font-bold uppercase tracking-wider text-[10px] px-1.5 py-0.2 rounded whitespace-nowrap ${
-                                isSession ? 'bg-cyan-500/20 text-cyan-300' : isPageView ? 'bg-emerald-500/20 text-emerald-300' : 'bg-purple-500/20 text-purple-300'
+                                isSession ? 'bg-blue-500/15 text-blue-400' : isPageView ? 'bg-emerald-500/20 text-emerald-300' : 'bg-purple-500/20 text-purple-300'
                               }`}>
                                 {evt.type}
                               </span>
@@ -702,7 +702,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                             </div>
 
                             {(((evt.activeSeconds || 0) > 0) || ((evt.idleSeconds || 0) > 0)) && (
-                              <div className="flex items-center gap-3 text-[10px] text-slate-400 pt-1 border-t border-white/5 mt-1">
+                              <div className="flex items-center gap-3 text-[10px] text-slate-400 pt-1 border-t border-slate-700/60 mt-1">
                                 <span className="text-emerald-400 font-semibold whitespace-nowrap">Tương tác: {evt.activeSeconds || 0}s</span>
                                 {(evt.idleSeconds || 0) > 0 && <span className="text-slate-400 whitespace-nowrap">Treo tab: {evt.idleSeconds}s</span>}
                               </div>

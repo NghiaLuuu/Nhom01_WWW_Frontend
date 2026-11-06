@@ -334,10 +334,10 @@ export const UserTrackingHub: React.FC = () => {
     <div className="space-y-6">
 
       {/* TOP UNIFIED COMMAND HEADER */}
-      <div className="bg-slate-900/70 border border-white/10 rounded-2xl p-5 sm:p-6 backdrop-blur-xl shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-5">
+      <div className="bg-slate-800 border border-slate-700 rounded-xl p-5 sm:p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-bold mb-2">
-            <Radio size={13} className="text-cyan-400 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold mb-2">
+            <Radio size={13} className="text-blue-400 animate-pulse" />
             <span>Trung Tâm Giám Sát & Phân Tích Khách Hàng (Unified SOC Hub)</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
@@ -354,14 +354,14 @@ export const UserTrackingHub: React.FC = () => {
             onClick={() => setActiveTab('live')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'live'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 shadow-lg shadow-emerald-500/20'
+                ? 'bg-blue-600 text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
             <Radio size={14} className={activeTab === 'live' ? 'animate-pulse' : ''} />
             <span>Khách Trực Tuyến</span>
             <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
-              activeTab === 'live' ? 'bg-slate-950/40 text-slate-950' : 'bg-emerald-500/20 text-emerald-300'
+              activeTab === 'live' ? 'bg-slate-900 text-slate-950' : 'bg-emerald-500/20 text-emerald-300'
             }`}>
               {presenceCounts.online}
             </span>
@@ -371,7 +371,7 @@ export const UserTrackingHub: React.FC = () => {
             onClick={() => setActiveTab('overview')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'overview'
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow-lg shadow-cyan-500/20'
+                ? 'bg-blue-600 text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -383,7 +383,7 @@ export const UserTrackingHub: React.FC = () => {
             onClick={() => setActiveTab('journey')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'journey'
-                ? 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-lg shadow-purple-500/20'
+                ? 'bg-indigo-600 text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -400,10 +400,10 @@ export const UserTrackingHub: React.FC = () => {
         <div className="space-y-6">
           
           {/* Top Realtime Control Toolbar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900/60 border border-white/10 rounded-2xl p-4 backdrop-blur-xl">
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-800 border border-slate-700 rounded-xl p-4 shadow-sm">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1.5 text-xs text-slate-300">
-                <span className={`w-2.5 h-2.5 rounded-full ${autoRefresh ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]' : 'bg-slate-600'}`} />
+                <span className={`w-2.5 h-2.5 rounded-full ${autoRefresh ? 'bg-emerald-400' : 'bg-slate-600'}`} />
                 <strong className="text-white font-mono">Realtime SOC:</strong>
                 <span className="text-slate-400">{autoRefresh ? 'Tự quét mỗi 5s' : 'Đã tạm dừng tự quét'}</span>
               </span>
@@ -426,7 +426,7 @@ export const UserTrackingHub: React.FC = () => {
               <select
                 value={timeWindow}
                 onChange={(e) => setTimeWindow(Number(e.target.value))}
-                className="bg-slate-950 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400"
+                className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               >
                 <option value={5}>5 phút gần nhất</option>
                 <option value={15}>15 phút gần nhất</option>
@@ -440,7 +440,7 @@ export const UserTrackingHub: React.FC = () => {
                 disabled={liveRefreshing}
                 className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
               >
-                <RefreshCw size={13} className={liveRefreshing ? 'animate-spin text-cyan-400' : ''} />
+                <RefreshCw size={13} className={liveRefreshing ? 'animate-spin text-blue-400' : ''} />
                 <span>Làm mới</span>
               </button>
             </div>
@@ -460,7 +460,7 @@ export const UserTrackingHub: React.FC = () => {
             >
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
                   Đang Online
                 </span>
                 <span className="text-[10px] text-slate-400">&lt; 2 phút</span>
@@ -521,13 +521,13 @@ export const UserTrackingHub: React.FC = () => {
               className={`p-4 rounded-2xl border transition-all cursor-pointer ${
                 customerTypeFilter === 'REGISTERED' 
                   ? 'bg-blue-950/40 border-cyan-500' 
-                  : 'bg-slate-900/60 border-white/10 hover:border-cyan-500/40'
+                  : 'bg-slate-900/60 border-white/10 hover:border-blue-500/30'
               }`}
             >
-              <span className="text-[11px] font-bold uppercase tracking-wider text-cyan-400 block">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-blue-400 block">
                 Đã Đăng Nhập
               </span>
-              <div className="text-2xl font-black text-cyan-300 mt-1.5 font-mono">
+              <div className="text-2xl font-black text-blue-400 mt-1.5 font-mono">
                 {presenceCounts.registered}
               </div>
               <p className="text-[11px] text-slate-400 mt-0.5">Có tài khoản thành viên</p>
@@ -554,7 +554,7 @@ export const UserTrackingHub: React.FC = () => {
           </div>
 
           {/* FILTER CONTROLS BAR: COMBOBOX PHÂN LOẠI TRẠNG THÁI + SEARCH + PILLS */}
-          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3.5 bg-slate-900/60 border border-white/10 rounded-2xl p-4 backdrop-blur-xl">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3.5 bg-slate-800 border border-slate-700 rounded-xl p-4 shadow-sm">
             
             {/* Search Box */}
             <div className="relative flex-1 min-w-[240px]">
@@ -564,7 +564,7 @@ export const UserTrackingHub: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm nhanh theo IP, Tên khách, Email, URL đang xem..."
-                className="w-full pl-9 pr-4 py-2 bg-slate-950 border border-white/10 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 transition-colors"
+                className="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
               />
             </div>
 
@@ -576,7 +576,7 @@ export const UserTrackingHub: React.FC = () => {
                 <select
                   value={presenceFilter}
                   onChange={(e) => setPresenceFilter(e.target.value as any)}
-                  className="bg-slate-950 border border-cyan-500/40 text-cyan-300 font-semibold text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-cyan-400 cursor-pointer"
+                  className="bg-slate-950 border border-blue-500/30 text-blue-400 font-semibold text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 cursor-pointer"
                 >
                   <option value="ALL">🌐 Tất cả trạng thái ({processedVisitors.length})</option>
                   <option value="ONLINE">🟢 Đang trực tuyến (Active &lt; 2p) ({presenceCounts.online})</option>
@@ -591,7 +591,7 @@ export const UserTrackingHub: React.FC = () => {
                   type="button"
                   onClick={() => setCustomerTypeFilter('ALL')}
                   className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                    customerTypeFilter === 'ALL' ? 'bg-cyan-500/20 text-cyan-300 font-bold' : 'text-slate-400 hover:text-white'
+                    customerTypeFilter === 'ALL' ? 'bg-blue-500/15 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   Tất cả
@@ -600,7 +600,7 @@ export const UserTrackingHub: React.FC = () => {
                   type="button"
                   onClick={() => setCustomerTypeFilter('REGISTERED')}
                   className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                    customerTypeFilter === 'REGISTERED' ? 'bg-cyan-500/20 text-cyan-300 font-bold' : 'text-slate-400 hover:text-white'
+                    customerTypeFilter === 'REGISTERED' ? 'bg-blue-500/15 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   Đã đăng nhập
@@ -609,7 +609,7 @@ export const UserTrackingHub: React.FC = () => {
                   type="button"
                   onClick={() => setCustomerTypeFilter('GUEST')}
                   className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                    customerTypeFilter === 'GUEST' ? 'bg-cyan-500/20 text-cyan-300 font-bold' : 'text-slate-400 hover:text-white'
+                    customerTypeFilter === 'GUEST' ? 'bg-blue-500/15 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   Vãng lai
@@ -620,8 +620,8 @@ export const UserTrackingHub: React.FC = () => {
           </div>
 
           {/* LIVE VISITORS TABLE */}
-          <div className="rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-2xl overflow-hidden">
-            <div className="p-4 border-b border-white/10 flex items-center justify-between">
+          <div className="rounded-2xl bg-slate-800 border border-slate-700 shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-slate-700 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Radio size={16} className="text-emerald-400" />
                 <h3 className="font-bold text-white text-sm">
@@ -635,7 +635,7 @@ export const UserTrackingHub: React.FC = () => {
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-300">
-                <thead className="bg-slate-950/70 text-slate-400 uppercase text-[10px] tracking-wider font-semibold border-b border-white/10">
+                <thead className="bg-slate-900/80 text-slate-300 uppercase text-[10px] tracking-wider font-semibold border-b border-slate-700">
                   <tr>
                     <th className="py-3 px-3 sm:px-4 whitespace-nowrap">Khách Hàng & IP</th>
                     <th className="py-3 px-3 sm:px-4 whitespace-nowrap">Trạng Thái Hiện Diện</th>
@@ -645,13 +645,13 @@ export const UserTrackingHub: React.FC = () => {
                     <th className="py-3 px-3 sm:px-4 whitespace-nowrap text-right">Hành Động</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-slate-700/60">
                   {filteredLiveVisitors.map((v, vIdx) => {
                     const isOnline = v.computedStatus === 'ONLINE';
                     const isIdle = v.computedStatus === 'IDLE';
 
                     return (
-                      <tr key={`${v.sessionId}-${vIdx}`} className="hover:bg-white/[0.02] transition-colors">
+                      <tr key={`${v.sessionId}-${vIdx}`} className="hover:bg-slate-700/30 transition-colors">
                         
                         {/* 1. Customer & IP */}
                         <td className="py-3 px-3 sm:px-4">
@@ -662,7 +662,7 @@ export const UserTrackingHub: React.FC = () => {
                               </span>
                               <span className={`px-1.5 py-0.2 rounded text-[9px] font-bold ${
                                 v.isRegisteredCustomer 
-                                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' 
+                                  ? 'bg-blue-500/15 text-blue-400 border border-blue-500/20' 
                                   : 'bg-slate-800 text-slate-400'
                               }`}>
                                 {v.isRegisteredCustomer ? 'Thành Viên' : 'Guest'}
@@ -678,7 +678,7 @@ export const UserTrackingHub: React.FC = () => {
                         <td className="py-3 px-3 sm:px-4 whitespace-nowrap">
                           {isOnline ? (
                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold text-[11px]">
-                              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                              <span className="w-2 h-2 rounded-full bg-emerald-400" />
                               <span>{v.computedLabel || 'Đang trực tuyến'}</span>
                             </span>
                           ) : isIdle ? (
@@ -748,7 +748,7 @@ export const UserTrackingHub: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => inspectCustomerJourney(v.customerId || v.anonymousId || v.ipAddress)}
-                              className="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 font-bold text-[11px] transition-colors flex items-center gap-1 cursor-pointer"
+                              className="px-2.5 py-1 rounded-lg bg-blue-500/15 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 font-bold text-[11px] transition-colors flex items-center gap-1 cursor-pointer"
                               title="Truy vết toàn bộ hành trình A - Z"
                             >
                               <Compass size={12} />
@@ -787,19 +787,19 @@ export const UserTrackingHub: React.FC = () => {
           {/* KPI CARDS (Overview) */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             
-            <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between h-[88px]">
+            <div className="p-4 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between h-[88px]">
               <div>
                 <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider whitespace-nowrap">Tổng Số Phiên</div>
                 <div className="text-2xl font-black text-white mt-1 font-mono">
                   {analytics.totalSessions} Phiên
                 </div>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
                 <Globe size={20} />
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between h-[88px]">
+            <div className="p-4 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between h-[88px]">
               <div>
                 <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider whitespace-nowrap">Khách Định Danh</div>
                 <div className="text-2xl font-black text-emerald-300 mt-1 font-mono">
@@ -811,7 +811,7 @@ export const UserTrackingHub: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between h-[88px]">
+            <div className="p-4 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between h-[88px]">
               <div>
                 <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider whitespace-nowrap">Thời Gian Dừng TB</div>
                 <div className="text-2xl font-black text-amber-300 mt-1 font-mono">
@@ -823,7 +823,7 @@ export const UserTrackingHub: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between h-[88px]">
+            <div className="p-4 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between h-[88px]">
               <div>
                 <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider whitespace-nowrap">Tương Tác Realtime</div>
                 <div className="text-2xl font-black text-purple-300 mt-1 font-mono">
@@ -841,9 +841,9 @@ export const UserTrackingHub: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             {/* Traffic Sources */}
-            <div className="p-5 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl space-y-4">
+            <div className="p-5 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm space-y-4">
               <h3 className="font-bold text-white text-sm flex items-center gap-2">
-                <Globe size={16} className="text-cyan-400 shrink-0" />
+                <Globe size={16} className="text-blue-400 shrink-0" />
                 <span>Nguồn Lưu Lượng (Traffic Sources)</span>
               </h3>
               
@@ -855,7 +855,7 @@ export const UserTrackingHub: React.FC = () => {
                     <div key={source} className="space-y-1">
                       <div className="flex justify-between text-xs font-semibold text-slate-300">
                         <span className="capitalize">{source}</span>
-                        <span className="font-mono text-cyan-300">{count} lượt ({percent}%)</span>
+                        <span className="font-mono text-blue-400">{count} lượt ({percent}%)</span>
                       </div>
                       <div className="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-white/5">
                         <div 
@@ -870,7 +870,7 @@ export const UserTrackingHub: React.FC = () => {
             </div>
 
             {/* Actions Breakdown */}
-            <div className="p-5 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl space-y-4">
+            <div className="p-5 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm space-y-4">
               <h3 className="font-bold text-white text-sm flex items-center gap-2">
                 <MousePointerClick size={16} className="text-purple-400 shrink-0" />
                 <span>Phân Bổ Tương Tác (Action Breakdown)</span>
@@ -878,7 +878,7 @@ export const UserTrackingHub: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3 pt-1">
                 {Object.entries(analytics.actionBreakdown || {}).map(([action, count]) => (
-                  <div key={action} className="p-3 rounded-xl bg-slate-950/80 border border-white/5">
+                  <div key={action} className="p-3 rounded-xl bg-slate-900 border border-slate-700/60">
                     <div className="text-[11px] font-mono text-slate-400 truncate" title={action}>
                       {action}
                     </div>
@@ -893,17 +893,17 @@ export const UserTrackingHub: React.FC = () => {
           </div>
 
           {/* Top Pages Table */}
-          <div className="rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl overflow-hidden">
-            <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between">
+          <div className="rounded-2xl bg-slate-800 border border-slate-700 shadow-sm overflow-hidden">
+            <div className="p-4 sm:p-5 border-b border-slate-700 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Navigation size={16} className="text-cyan-400" />
+                <Navigation size={16} className="text-blue-400" />
                 <h3 className="font-bold text-white text-sm">Top Trang Được Xem & Thời Gian Dừng Thực Tế</h3>
               </div>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-300">
-                <thead className="bg-slate-950/60 text-slate-400 uppercase text-[10px] tracking-wider font-semibold border-b border-white/10">
+                <thead className="bg-slate-900 text-slate-400 uppercase text-[10px] tracking-wider font-semibold border-b border-slate-700">
                   <tr>
                     <th className="py-2.5 px-3 whitespace-nowrap">Đường Dẫn (URL)</th>
                     <th className="py-2.5 px-3 whitespace-nowrap text-right">Lượt Xem</th>
@@ -911,10 +911,10 @@ export const UserTrackingHub: React.FC = () => {
                     <th className="py-2.5 px-3 whitespace-nowrap text-right">Treo Tab TB</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-slate-700/60">
                   {(analytics.topPages || []).map((page, idx) => (
-                    <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="py-2.5 px-3 font-mono text-cyan-300 font-semibold">{page.pageUrl}</td>
+                    <tr key={idx} className="hover:bg-slate-700/30 transition-colors">
+                      <td className="py-2.5 px-3 font-mono text-blue-400 font-semibold">{page.pageUrl}</td>
                       <td className="py-2.5 px-3 text-right font-mono font-bold text-white">{page.viewCount}</td>
                       <td className="py-2.5 px-3 text-right font-mono text-emerald-300">{page.avgActiveSeconds}s</td>
                       <td className="py-2.5 px-3 text-right font-mono text-slate-400">{page.avgIdleSeconds}s</td>
@@ -926,8 +926,8 @@ export const UserTrackingHub: React.FC = () => {
           </div>
 
           {/* Recent Sessions Table with Instant A-Z Inspect Button */}
-          <div className="rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl overflow-hidden">
-            <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between">
+          <div className="rounded-2xl bg-slate-800 border border-slate-700 shadow-sm overflow-hidden">
+            <div className="p-4 sm:p-5 border-b border-slate-700 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Users size={16} className="text-purple-400" />
                 <h3 className="font-bold text-white text-sm">
@@ -938,7 +938,7 @@ export const UserTrackingHub: React.FC = () => {
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-300">
-                <thead className="bg-slate-950/60 text-slate-400 uppercase text-[10px] tracking-wider font-semibold border-b border-white/10">
+                <thead className="bg-slate-900 text-slate-400 uppercase text-[10px] tracking-wider font-semibold border-b border-slate-700">
                   <tr>
                     <th className="py-2.5 px-3 whitespace-nowrap">Khách Hàng & IP</th>
                     <th className="py-2.5 px-3 whitespace-nowrap">Nguồn & Thời Gian</th>
@@ -946,18 +946,18 @@ export const UserTrackingHub: React.FC = () => {
                     <th className="py-2.5 px-3 whitespace-nowrap text-right">Chi Tiết</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-slate-700/60">
                   {(analytics.recentSessions || []).map((s, sIdx) => (
-                    <tr key={`${s.sessionId}-${sIdx}`} className="hover:bg-white/[0.02] transition-colors">
+                    <tr key={`${s.sessionId}-${sIdx}`} className="hover:bg-slate-700/30 transition-colors">
                       <td className="py-2 px-3">
                         <div className="font-mono font-semibold text-white truncate">
                           {s.customerId ? (
-                            <span className="text-cyan-300 font-bold">Khách #{s.customerId.substring(0, 8)}</span>
+                            <span className="text-blue-400 font-bold">Khách #{s.customerId.substring(0, 8)}</span>
                           ) : (
                             <span className="text-slate-300">{s.anonymousId}</span>
                           )}
                         </div>
-                        <div className="font-mono text-[10px] text-cyan-400 mt-0.5 truncate">
+                        <div className="font-mono text-[10px] text-blue-400 mt-0.5 truncate">
                           IP: {s.ipAddress}
                         </div>
                       </td>
@@ -976,7 +976,7 @@ export const UserTrackingHub: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => inspectCustomerJourney(s.customerId || s.anonymousId || s.ipAddress)}
-                          className="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 font-bold text-[11px] transition-colors cursor-pointer"
+                          className="px-2.5 py-1 rounded-lg bg-blue-500/15 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 font-bold text-[11px] transition-colors cursor-pointer"
                         >
                           Xem A-Z
                         </button>
@@ -1015,13 +1015,13 @@ export const UserTrackingHub: React.FC = () => {
                 value={searchIdentifier}
                 onChange={(e) => setSearchIdentifier(e.target.value)}
                 placeholder="Nhập IP, Email khách hàng, hoặc Anonymous ID..."
-                className="w-full pl-9 pr-4 py-2 bg-slate-950 border border-white/10 rounded-xl text-xs text-white placeholder-slate-400 focus:border-cyan-400 focus:outline-none transition-colors"
+                className="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
               />
             </div>
             <button
               type="submit"
               disabled={journeyLoading}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-purple-500/20 whitespace-nowrap cursor-pointer shrink-0"
+              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs flex items-center gap-1.5 transition-all shadow-sm whitespace-nowrap cursor-pointer shrink-0"
             >
               <Search size={13} />
               <span>Truy Vết Hành Trình</span>
@@ -1030,7 +1030,7 @@ export const UserTrackingHub: React.FC = () => {
 
           {/* Loading Indicator */}
           {journeyLoading && (
-            <div className="p-12 text-center rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl">
+            <div className="p-12 text-center rounded-2xl bg-slate-800 border border-slate-700 backdrop-blur-xl">
               <Activity size={32} className="animate-spin text-purple-400 mx-auto mb-3" />
               <p className="text-xs text-slate-300">Đang truy vấn và xâu chuỗi dữ liệu hành trình khách hàng từ máy chủ...</p>
             </div>
@@ -1038,7 +1038,7 @@ export const UserTrackingHub: React.FC = () => {
 
           {/* Empty State */}
           {!selectedJourney && !journeyLoading && (
-            <div className="p-12 text-center rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl">
+            <div className="p-12 text-center rounded-2xl bg-slate-800 border border-slate-700 backdrop-blur-xl">
               <Users size={36} className="text-slate-500 mx-auto mb-3" />
               <h3 className="text-white font-bold text-sm">Chưa có khách hàng nào được chọn</h3>
               <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
@@ -1057,7 +1057,7 @@ export const UserTrackingHub: React.FC = () => {
               : activeCluster.events;
 
             return (
-              <div className="p-5 sm:p-6 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-2xl space-y-5">
+              <div className="p-5 sm:p-6 rounded-2xl bg-slate-800 border border-slate-700 shadow-sm space-y-5">
                 
                 {/* 1. Identity Stitching Banner */}
                 {isRegistered ? (
@@ -1074,7 +1074,7 @@ export const UserTrackingHub: React.FC = () => {
                           </span>
                         </div>
                         <p className="text-xs text-slate-300 mt-0.5 truncate">
-                          Họ tên: <strong className="text-white">{selectedJourney.customerName}</strong> • Email: <strong className="text-cyan-300">{selectedJourney.customerEmail}</strong>
+                          Họ tên: <strong className="text-white">{selectedJourney.customerName}</strong> • Email: <strong className="text-blue-400">{selectedJourney.customerEmail}</strong>
                           {selectedJourney.linkedAnonymousIds && selectedJourney.linkedAnonymousIds.length > 0 && (
                             <span className="text-slate-400 ml-2">
                               (Đã tự động gộp {selectedJourney.linkedAnonymousIds.length} phiên thiết bị vãng lai trước khi đăng nhập)
@@ -1107,7 +1107,7 @@ export const UserTrackingHub: React.FC = () => {
                 )}
 
                 {/* 2. Overview Stats & Persona */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-700">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-500 to-indigo-600 text-white flex items-center justify-center font-bold text-base shrink-0">
                       <User size={18} />
@@ -1123,7 +1123,7 @@ export const UserTrackingHub: React.FC = () => {
                       <Sparkles size={12} className="text-purple-400" />
                       <span>Gu AI gán: <strong>{formatPersonaLabel(selectedJourney.matchedPersona)}</strong></span>
                     </div>
-                    <div className="px-3 py-1 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-semibold whitespace-nowrap">
+                    <div className="px-3 py-1 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold whitespace-nowrap">
                       {selectedJourney.totalSessions} phiên • {selectedJourney.totalPageViews} trang • {selectedJourney.totalActions} tương tác
                     </div>
                   </div>
@@ -1134,7 +1134,7 @@ export const UserTrackingHub: React.FC = () => {
                   <div className="space-y-3 pt-1">
                     <div className="flex items-center justify-between">
                       <h3 className="font-bold text-white text-xs sm:text-sm flex items-center gap-1.5">
-                        <Route size={15} className="text-cyan-400" />
+                        <Route size={15} className="text-blue-400" />
                         <span>Phân Đoạn Hành Trình Động (Dynamic Journeys):</span>
                       </h3>
                       <span className="text-xs text-slate-400">
@@ -1148,7 +1148,7 @@ export const UserTrackingHub: React.FC = () => {
                         onClick={() => setSelectedClusterId('ALL')}
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                           selectedClusterId === 'ALL'
-                            ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
+                            ? 'bg-blue-600 text-slate-950 shadow-md shadow-cyan-500/20'
                             : 'bg-slate-950 text-slate-300 hover:text-white border border-white/10'
                         }`}
                       >
@@ -1191,10 +1191,10 @@ export const UserTrackingHub: React.FC = () => {
                           }`} />
 
                           {/* Event Card */}
-                          <div className="p-3.5 rounded-xl bg-slate-950/80 border border-white/5 hover:border-cyan-500/30 transition-colors space-y-1">
+                          <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-700/60 hover:border-blue-500/20 transition-colors space-y-1">
                             <div className="flex items-center justify-between text-xs">
                               <span className={`font-bold uppercase tracking-wider text-[10px] px-1.5 py-0.2 rounded whitespace-nowrap ${
-                                isSession ? 'bg-cyan-500/20 text-cyan-300' : isPageView ? 'bg-emerald-500/20 text-emerald-300' : 'bg-purple-500/20 text-purple-300'
+                                isSession ? 'bg-blue-500/15 text-blue-400' : isPageView ? 'bg-emerald-500/20 text-emerald-300' : 'bg-purple-500/20 text-purple-300'
                               }`}>
                                 {evt.type}
                               </span>
@@ -1210,7 +1210,7 @@ export const UserTrackingHub: React.FC = () => {
                             </div>
 
                             {(((evt.activeSeconds || 0) > 0) || ((evt.idleSeconds || 0) > 0)) && (
-                              <div className="flex items-center gap-3 text-[10px] text-slate-400 pt-1 border-t border-white/5 mt-1">
+                              <div className="flex items-center gap-3 text-[10px] text-slate-400 pt-1 border-t border-slate-700/60 mt-1">
                                 <span className="text-emerald-400 font-semibold whitespace-nowrap">Tương tác: {evt.activeSeconds || 0}s</span>
                                 {(evt.idleSeconds || 0) > 0 && <span className="text-slate-400 whitespace-nowrap">Treo tab: {evt.idleSeconds}s</span>}
                               </div>
@@ -1242,7 +1242,7 @@ export const UserTrackingHub: React.FC = () => {
           <div className="w-full max-w-xl bg-slate-900 border-l border-white/10 shadow-2xl h-full flex flex-col overflow-hidden">
             
             {/* Drawer Header */}
-            <div className="p-5 border-b border-white/10 flex items-center justify-between bg-slate-950/60">
+            <div className="p-5 border-b border-slate-700 flex items-center justify-between bg-slate-900">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
                   <Radio size={18} className="animate-pulse" />
@@ -1282,12 +1282,12 @@ export const UserTrackingHub: React.FC = () => {
                 return (
                   <>
                     {/* Visitor Info Card */}
-                    <div className="p-4 rounded-xl bg-slate-950/80 border border-white/10 space-y-3">
+                    <div className="p-4 rounded-xl bg-slate-900 border border-slate-700 space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-white text-sm">{vis.customerName || 'Khách vãng lai'}</span>
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            vis.isRegisteredCustomer ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'bg-slate-800 text-slate-400'
+                            vis.isRegisteredCustomer ? 'bg-blue-500/15 text-blue-400 border border-blue-500/20' : 'bg-slate-800 text-slate-400'
                           }`}>
                             {vis.isRegisteredCustomer ? 'Thành Viên' : 'Vãng Lai'}
                           </span>
@@ -1304,7 +1304,7 @@ export const UserTrackingHub: React.FC = () => {
 
                       <div className="grid grid-cols-2 gap-2 text-xs text-slate-300 pt-1">
                         <div>
-                          <span className="text-slate-400">IP:</span> <strong className="font-mono text-cyan-300">{vis.ipAddress}</strong>
+                          <span className="text-slate-400">IP:</span> <strong className="font-mono text-blue-400">{vis.ipAddress}</strong>
                         </div>
                         <div>
                           <span className="text-slate-400">Thiết bị:</span> <strong>{vis.deviceType || 'Desktop'}</strong>
@@ -1317,11 +1317,11 @@ export const UserTrackingHub: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="pt-2 border-t border-white/5 flex justify-end">
+                      <div className="pt-2 border-t border-slate-700/60 flex justify-end">
                         <button
                           type="button"
                           onClick={() => inspectCustomerJourney(vis.customerId || vis.anonymousId || vis.ipAddress)}
-                          className="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                          className="px-3 py-1.5 rounded-lg bg-blue-500/15 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
                         >
                           <Compass size={13} />
                           <span>Truy vết toàn bộ hành trình khách này</span>
@@ -1339,7 +1339,7 @@ export const UserTrackingHub: React.FC = () => {
                         </div>
                         <div className="space-y-1.5">
                           {vis.recommendedTrips.map((rt, rtIdx) => (
-                            <div key={`${rt.tripId}-${rtIdx}`} className="flex items-center justify-between p-2 rounded-lg bg-slate-950/60 border border-white/5 text-xs">
+                            <div key={`${rt.tripId}-${rtIdx}`} className="flex items-center justify-between p-2 rounded-lg bg-slate-900 border border-slate-700/60 text-xs">
                               <div>
                                 <span className="font-bold text-white">{rt.route}</span>
                                 <span className="text-slate-400 ml-2">({rt.departureTime})</span>
@@ -1377,13 +1377,13 @@ export const UserTrackingHub: React.FC = () => {
                     {drawerTab === 'PAGEVIEWS' && (
                       <div className="space-y-2">
                         {drawerDetail.pageViews.map((pv, idx) => (
-                          <div key={idx} className="p-3 rounded-xl bg-slate-950/60 border border-white/5 space-y-1 text-xs">
+                          <div key={idx} className="p-3 rounded-xl bg-slate-900 border border-slate-700/60 space-y-1 text-xs">
                             <div className="flex items-center justify-between">
                               <span className="font-bold text-white truncate max-w-[260px]">{pv.pageTitle || pv.pageUrl}</span>
                               <span className="font-mono text-[10px] text-slate-400">{pv.enteredAt}</span>
                             </div>
-                            <div className="font-mono text-[11px] text-cyan-400 truncate">{pv.pageUrl}</div>
-                            <div className="flex items-center gap-3 text-[10px] text-slate-400 pt-1 border-t border-white/5">
+                            <div className="font-mono text-[11px] text-blue-400 truncate">{pv.pageUrl}</div>
+                            <div className="flex items-center gap-3 text-[10px] text-slate-400 pt-1 border-t border-slate-700/60">
                               <span className="text-emerald-400">Tương tác: {pv.activeSeconds}s</span>
                               <span>Treo tab: {pv.idleSeconds}s</span>
                             </div>
@@ -1396,7 +1396,7 @@ export const UserTrackingHub: React.FC = () => {
                     {drawerTab === 'ACTIONS' && (
                       <div className="space-y-2">
                         {drawerDetail.actions.map((act, idx) => (
-                          <div key={idx} className="p-3 rounded-xl bg-slate-950/60 border border-white/5 space-y-1 text-xs">
+                          <div key={idx} className="p-3 rounded-xl bg-slate-900 border border-slate-700/60 space-y-1 text-xs">
                             <div className="flex items-center justify-between">
                               <span className="font-bold text-purple-300 uppercase tracking-wider text-[10px] px-1.5 py-0.2 rounded bg-purple-500/20">
                                 {act.actionType}

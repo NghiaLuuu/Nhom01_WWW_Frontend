@@ -4,41 +4,38 @@ import { Bus, Phone, Mail, MapPin, ShieldCheck, CheckCircle2, Award, ExternalLin
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-slate-950 text-slate-300 border-t border-white/10 pt-16 pb-10 relative overflow-hidden font-sans">
-      {/* Subtle Background Glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-32 bg-blue-600/5 blur-3xl opacity-30 pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <footer className="bg-slate-900 text-slate-300 border-t border-slate-800 pt-16 pb-12 font-sans">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Trust Badges Banner */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-12 mb-12 border-b border-white/10">
-          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-            <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shrink-0 mt-0.5">
-              <ShieldCheck className="text-cyan-400" size={24} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-12 mb-12 border-b border-slate-800">
+          <div className="flex items-start gap-4 p-5 rounded-xl bg-slate-800/60 border border-slate-750">
+            <div className="w-11 h-11 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
+              <ShieldCheck className="text-blue-400" size={22} />
             </div>
             <div>
-              <h4 className="text-white text-sm font-bold leading-snug">Cam kết Giữ Chỗ 100%</h4>
+              <h4 className="text-white text-sm font-bold leading-snug">Cam kết giữ chỗ 100%</h4>
               <p className="text-xs text-slate-400 mt-1">Hoàn tiền 150% nếu nhà xe không cung cấp đúng chuyến</p>
             </div>
           </div>
 
-          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shrink-0 mt-0.5">
-              <CheckCircle2 className="text-emerald-400" size={24} />
+          <div className="flex items-start gap-4 p-5 rounded-xl bg-slate-800/60 border border-slate-750">
+            <div className="w-11 h-11 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="text-emerald-400" size={22} />
             </div>
             <div>
-              <h4 className="text-white text-sm font-bold leading-snug">Giá Vé Minh Bạch 3 Không</h4>
-              <p className="text-xs text-slate-400 mt-1">Không tăng giá vô cớ - Không phí ẩn - Không hủy chuyến</p>
+              <h4 className="text-white text-sm font-bold leading-snug">Giá vé minh bạch</h4>
+              <p className="text-xs text-slate-400 mt-1">Không tăng giá vô cớ, không phụ phí ẩn, rõ ràng từng chặng</p>
             </div>
           </div>
 
-          <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-            <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shrink-0 mt-0.5">
-              <Award className="text-purple-400" size={24} />
+          <div className="flex items-start gap-4 p-5 rounded-xl bg-slate-800/60 border border-slate-750">
+            <div className="w-11 h-11 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+              <Award className="text-amber-400" size={22} />
             </div>
             <div>
-              <h4 className="text-white text-sm font-bold leading-snug">100+ Nhà Xe Tuyển Chọn</h4>
-              <p className="text-xs text-slate-400 mt-1">Phương Trang, Thành Bưởi, Hoa Mai, Sao Việt,...</p>
+              <h4 className="text-white text-sm font-bold leading-snug">100+ Nhà xe tuyển chọn</h4>
+              <p className="text-xs text-slate-400 mt-1">Phương Trang, Thành Bưởi, Hoa Mai, Sao Việt, Toàn Thắng</p>
             </div>
           </div>
         </div>
@@ -48,47 +45,47 @@ export const Footer: React.FC = () => {
           
           {/* Col 1: About VEXE */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center">
-                <Bus className="text-white" size={18} />
+            <div className="flex items-center space-x-2.5">
+              <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white">
+                <Bus size={20} />
               </div>
-              <span className="text-2xl font-black text-white tracking-wider font-mono">VEXE</span>
+              <span className="text-2xl font-black text-white tracking-tight">VEXE</span>
             </div>
-            <p className="text-xs leading-relaxed text-slate-400 font-light">
-              Hệ thống công nghệ đặt vé xe khách liên tỉnh tiên phong ứng dụng Trí tuệ nhân tạo (AI & pgvector) giúp tối ưu hóa lịch trình và trải nghiệm di chuyển của hơn 500.000+ hành khách.
+            <p className="text-xs leading-relaxed text-slate-400">
+              Hệ thống công nghệ đặt vé xe khách liên tỉnh trực tuyến, kết nối trực tiếp các nhà xe chất lượng cao trên toàn quốc với lịch trình chính xác và chăm sóc khách hàng tận tâm.
             </p>
-            <div className="pt-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[11px] text-slate-300 font-mono">
-                <span>Giấy phép Vận tải số: 01/2026/GPOV-SGTVT</span>
-              </div>
+            <div className="pt-1">
+              <span className="inline-block px-3 py-1.5 rounded-md bg-slate-800 border border-slate-700 text-[11px] text-slate-300 font-mono">
+                Giấy phép Vận tải: 01/2026/GPOV-SGTVT
+              </span>
             </div>
           </div>
 
           {/* Col 2: Navigation Links */}
           <div>
-            <h3 className="text-white text-sm font-bold uppercase tracking-wider mb-4 border-l-2 border-cyan-400 pl-2.5">
+            <h3 className="text-white text-sm font-bold uppercase tracking-wider mb-4 border-l-2 border-blue-500 pl-2.5">
               Về Chúng Tôi
             </h3>
             <ul className="space-y-2.5 text-xs text-slate-400">
               <li>
-                <Link to="/about" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
-                  <span>Giới thiệu thương hiệu</span>
+                <Link to="/about" className="hover:text-white transition-colors">
+                  Giới thiệu thương hiệu
                 </Link>
               </li>
               <li>
-                <Link to="/achievements" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
-                  <span>Thành tích & Đối tác chiến lược</span>
+                <Link to="/achievements" className="hover:text-white transition-colors">
+                  Thành tích & Đối tác chiến lược
                 </Link>
               </li>
               <li>
-                <Link to="/search" className="hover:text-cyan-400 transition-colors">
-                  <span>Mạng lưới các tuyến xe hot</span>
+                <Link to="/search" className="hover:text-white transition-colors">
+                  Mạng lưới các tuyến xe phổ biến
                 </Link>
               </li>
               <li>
-                <Link to="/login/admin" className="text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-1">
-                  <span>Cổng Nhân viên & Quản trị</span>
-                  <ExternalLink size={10} />
+                <Link to="/login/admin" className="text-slate-400 hover:text-white transition-colors inline-flex items-center gap-1">
+                  <span>Cổng Quản trị & Nhân viên</span>
+                  <ExternalLink size={11} />
                 </Link>
               </li>
             </ul>
@@ -101,23 +98,23 @@ export const Footer: React.FC = () => {
             </h3>
             <ul className="space-y-2.5 text-xs text-slate-400">
               <li>
-                <Link to="/faq" className="hover:text-cyan-400 transition-colors">
-                  <span>Cẩm nang hướng dẫn đặt vé online</span>
+                <Link to="/faq" className="hover:text-white transition-colors">
+                  Hướng dẫn đặt vé trực tuyến
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="hover:text-cyan-400 transition-colors">
-                  <span>Chính sách đổi trả & Hoàn tiền vé</span>
+                <Link to="/faq" className="hover:text-white transition-colors">
+                  Chính sách đổi trả & Hoàn tiền vé
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="hover:text-cyan-400 transition-colors">
-                  <span>Quy định an toàn & Hành lý ký gửi</span>
+                <Link to="/faq" className="hover:text-white transition-colors">
+                  Quy định hành lý & Vận chuyển
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-cyan-400 transition-colors">
-                  <span>Mạng lưới trạm đón & Bến xe trung chuyển</span>
+                <Link to="/contact" className="hover:text-white transition-colors">
+                  Mạng lưới trạm đón & Bến xe trung chuyển
                 </Link>
               </li>
             </ul>
@@ -125,32 +122,32 @@ export const Footer: React.FC = () => {
 
           {/* Col 4: Contact & Channels */}
           <div>
-            <h3 className="text-white text-sm font-bold uppercase tracking-wider mb-4 border-l-2 border-indigo-500 pl-2.5">
+            <h3 className="text-white text-sm font-bold uppercase tracking-wider mb-4 border-l-2 border-blue-500 pl-2.5">
               Tổng Đài Điều Hành
             </h3>
             <ul className="space-y-3 text-xs text-slate-400">
-              <li className="flex items-start space-x-3">
-                <MapPin size={16} className="text-cyan-400 shrink-0 mt-0.5" />
-                <span>Trụ sở chính: 12 Nguyễn Văn Bảo, Phường 4, Quận Gò Vấp, TP. Hồ Chí Minh</span>
+              <li className="flex items-start space-x-2.5">
+                <MapPin size={16} className="text-blue-400 shrink-0 mt-0.5" />
+                <span>12 Nguyễn Văn Bảo, Phường 4, Quận Gò Vấp, TP. Hồ Chí Minh</span>
               </li>
-              <li className="flex items-center space-x-3">
-                <Phone size={16} className="text-cyan-400 shrink-0" />
-                <span className="text-white font-bold text-sm font-mono">1900 1234 (24/7)</span>
+              <li className="flex items-center space-x-2.5">
+                <Phone size={16} className="text-blue-400 shrink-0" />
+                <span className="text-white font-bold text-sm">1900 1234 (Hỗ trợ 24/7)</span>
               </li>
-              <li className="flex items-center space-x-3">
-                <Mail size={16} className="text-cyan-400 shrink-0" />
+              <li className="flex items-center space-x-2.5">
+                <Mail size={16} className="text-blue-400 shrink-0" />
                 <span>support@vexe.vn</span>
               </li>
             </ul>
 
             {/* Payment Partners Icons */}
-            <div className="pt-4 mt-4 border-t border-white/5">
-              <span className="text-[10px] text-slate-500 uppercase tracking-wider block mb-2 font-semibold">Đối tác thanh toán bảo mật</span>
-              <div className="flex flex-wrap items-center gap-1.5 text-xs font-bold text-slate-400">
-                <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">VNPAY</span>
-                <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">MoMo</span>
-                <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">ZaloPay</span>
-                <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">Visa/Master</span>
+            <div className="pt-4 mt-4 border-t border-slate-800">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider block mb-2 font-semibold">Đối tác thanh toán</span>
+              <div className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-300">
+                <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px]">VNPAY</span>
+                <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px]">MoMo</span>
+                <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px]">ZaloPay</span>
+                <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px]">Visa / MasterCard</span>
               </div>
             </div>
           </div>
@@ -158,7 +155,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Copyright */}
-        <div className="border-t border-white/10 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+        <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
           <p>© 2026 VEXE Platform. Bản quyền thuộc về Nhóm 01 WWW - Đại học Công nghiệp TP.HCM (IUH).</p>
           <div className="flex space-x-6 text-slate-400">
             <Link to="/faq" className="hover:text-white transition-colors">Điều khoản dịch vụ</Link>
