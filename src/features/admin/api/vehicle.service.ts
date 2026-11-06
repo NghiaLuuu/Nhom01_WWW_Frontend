@@ -4,11 +4,15 @@ export interface Vehicle {
   id: number;
   licensePlate: string;
   capacity: number;
+  type?: string;
+  status?: string;
 }
 
 export interface VehicleRequest {
   licensePlate: string;
   capacity: number;
+  type?: string;
+  status?: string;
 }
 
 export const VehicleService = {
@@ -22,6 +26,14 @@ export const VehicleService = {
   },
   update: async (id: number, data: VehicleRequest) => {
     const res = await api.put(`/vehicles/${id}`, data);
+    return res.data;
+  },
+  getSeats: async (vehicleId: number) => {
+    const res = await api.get(`/seats/vehicle/${vehicleId}`);
+    return res.data;
+  },
+  createSeats: async (vehicleId: number, totalSeats: number) => {
+    const res = await api.post(`/seats/vehicle/${vehicleId}`, { totalSeats });
     return res.data;
   },
   delete: async (id: number) => {

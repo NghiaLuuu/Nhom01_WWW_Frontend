@@ -7,6 +7,8 @@ export interface Route {
   basePrice: number;
   distance?: number;
   duration?: number;
+  durationMinutes?: number;
+  distanceKm?: number;
 }
 
 export interface RouteRequest {

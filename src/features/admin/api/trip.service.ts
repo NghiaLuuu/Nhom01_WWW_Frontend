@@ -9,6 +9,9 @@ export interface Trip {
   departureTime: string;
   price: number;
   status?: string;
+  availableSeats?: number;
+  webBookingOpen?: boolean;
+  posBookingOpen?: boolean;
 }
 
 export interface TripRequest {
@@ -30,6 +33,10 @@ export const TripService = {
   },
   update: async (id: number, data: TripRequest) => {
     const res = await api.put(`/trips/${id}`, data);
+    return res.data;
+  },
+  updateStatus: async (id: number, status: string) => {
+    const res = await api.patch(`/trips/${id}/status`, { status });
     return res.data;
   },
   delete: async (id: number) => {

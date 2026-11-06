@@ -5,6 +5,7 @@ import { useBookingStore } from '../../../store/useBookingStore';
 import { SeatMap } from './SeatMap';
 import { useNavigate } from 'react-router-dom';
 import { 
+  Clock, 
   MapPin, 
   Bus as BusIcon, 
   Sparkles, 
@@ -18,7 +19,7 @@ import {
   Wind,
   CheckCircle2
 } from 'lucide-react';
-import { recommendationService } from '../../../services/recommendation.service';
+import { recommendationService, type RecommendedTrip } from '../../../services/recommendation.service';
 import { dispatchTrackAction } from '../../../hooks/useUserTracker';
 import toast from 'react-hot-toast';
 
@@ -75,6 +76,7 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
       return;
     }
     
+    // Track user action
     dispatchTrackAction('SELECT_TRIP_VIEW', {
       tripId: trip.id,
       routeId: trip.route?.id,
@@ -88,39 +90,11 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
       if (res.success) {
         setSeats(res.data);
       }
-    } catch {
+    } catch (error) {
       toast.error('Không thể lấy sơ đồ ghế, vui lòng thử lại');
       setSelectedTrip(null);
     } finally {
       setLoadingSeats(false);
-    }
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(price) || 0);
-  };
-
-  const formatTime = (isoString: string) => {
-    try {
-      const d = new Date(isoString);
-      const hours = d.getHours().toString().padStart(2, '0');
-      const minutes = d.getMinutes().toString().padStart(2, '0');
-      return `${hours}:${minutes}`;
-    } catch {
-      return isoString;
-    }
-  };
-
-  const calculateArrival = (depIso: string) => {
-    try {
-      const d = new Date(depIso);
-      d.setHours(d.getHours() + 6);
-      d.setMinutes(d.getMinutes() + 30);
-      const hours = d.getHours().toString().padStart(2, '0');
-      const minutes = d.getMinutes().toString().padStart(2, '0');
-      return `${hours}:${minutes}`;
-    } catch {
-      return '--:--';
     }
   };
 
@@ -130,28 +104,54 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
       return;
     }
 
-    startHoldTimer();
-    dispatchTrackAction('PROCEED_TO_CHECKOUT', {
+    dispatchTrackAction('PROCEED_CHECKOUT', {
       tripId: selectedTrip?.id,
-      seatsCount: selectedSeats.length
+      seatsCount: selectedSeats.length,
+      seats: selectedSeats,
+      totalPrice: selectedSeats.length * (selectedTrip?.price || 0)
     });
 
+    startHoldTimer();
     navigate('/checkout');
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(price) || 0);
+  };
+
+  const formatTime = (dateStr: string) => {
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  // Calculate estimated arrival (+6.5 hours if not available)
+  const calculateArrival = (departureTimeStr: string, durationHours = 6.5) => {
+    try {
+      const d = new Date(departureTimeStr);
+      const arrivalDate = new Date(d.getTime() + durationHours * 3600 * 1000);
+      return arrivalDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      return '';
+    }
   };
 
   if (isLoading) {
     return (
       <div className="space-y-4">
         {[1, 2, 3].map(i => (
-          <div key={i} className="h-44 bg-slate-800 border border-slate-700 rounded-2xl flex flex-col justify-between p-6 animate-pulse">
+          <div key={i} className="h-44 bg-slate-900/60 border border-white/5 rounded-3xl animate-pulse flex flex-col justify-between p-6">
             <div className="flex justify-between items-center">
-              <div className="h-4 bg-slate-700 rounded w-1/4"></div>
-              <div className="h-4 bg-slate-700 rounded w-1/6"></div>
+              <div className="h-4 bg-white/10 rounded w-1/4"></div>
+              <div className="h-4 bg-white/10 rounded w-1/6"></div>
             </div>
-            <div className="h-8 bg-slate-700 rounded w-1/2"></div>
+            <div className="h-8 bg-white/10 rounded w-1/2"></div>
             <div className="flex justify-between items-center">
-              <div className="h-4 bg-slate-700 rounded w-1/3"></div>
-              <div className="h-10 bg-slate-700 rounded-xl w-32"></div>
+              <div className="h-4 bg-white/10 rounded w-1/3"></div>
+              <div className="h-10 bg-cyan-500/20 rounded-xl w-32"></div>
             </div>
           </div>
         ))}
@@ -161,11 +161,11 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
 
   if (trips.length === 0) {
     return (
-      <div className="bg-slate-800 p-12 rounded-2xl border border-slate-700 text-center text-slate-300 space-y-4 shadow-sm">
-        <div className="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-700 flex items-center justify-center mx-auto text-slate-400">
+      <div className="bg-slate-900/60 backdrop-blur-xl p-12 rounded-3xl border border-white/10 text-center text-slate-400 space-y-4 shadow-2xl">
+        <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto text-slate-500">
           <BusIcon size={32} />
         </div>
-        <h3 className="text-lg font-bold text-white">Không tìm thấy chuyến xe phù hợp</h3>
+        <h3 className="text-xl font-bold text-white">Không tìm thấy chuyến xe phù hợp</h3>
         <p className="text-sm text-slate-400 max-w-md mx-auto">
           Hiện tại không có chuyến nào khớp với bộ lọc của bạn. Bạn vui lòng thử điều chỉnh lại điểm đi, điểm đến, ngày hoặc khoảng giá.
         </p>
@@ -174,45 +174,48 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {trips.map((trip) => {
         const isExpanded = selectedTrip?.id === trip.id;
         const capacity = trip.vehicle?.capacity || 34;
-        const vehicleType = capacity <= 24 ? 'Limousine VIP 24 phòng' : capacity <= 34 ? 'Limousine 34 phòng' : 'Xe giường nằm 45 chỗ';
+        const vehicleType = capacity <= 24 ? 'Limousine VIP 24 phòng' : capacity <= 34 ? 'Limousine 34 phòng VIP' : 'Xe giường nằm 45 chỗ';
         const rating = (4.8 + ((trip.id % 3) * 0.1)).toFixed(1);
         const reviewCount = 200 + ((trip.id * 83) % 800);
 
+        // AI recommendation info for this trip (from backend recommendation engine or top ranked)
         const rec = recMap[trip.id] || (trip.id === trips[0]?.id ? {
           matchScore: 0.95,
-          badgeText: 'Khớp 95% lộ trình',
-          reason: 'Chuyến xe có giờ khởi hành thuận tiện, xe Limousine chất lượng cao và tỷ lệ đúng giờ 99.8%.'
+          badgeText: 'Khớp 95% hành trình',
+          reason: 'Chuyến xe được AI tối ưu hóa hàng đầu về độ đúng giờ, xe Limousine cao cấp và thời điểm khởi hành vàng.'
         } : null);
 
         return (
           <div 
             key={trip.id} 
-            className={`rounded-2xl bg-slate-800 border transition-colors shadow-sm overflow-hidden ${
+            className={`rounded-3xl bg-slate-900/80 backdrop-blur-2xl border transition-all duration-300 overflow-hidden shadow-2xl ${
               isExpanded 
-                ? 'border-cyan-400 ring-1 ring-cyan-400/40' 
-                : 'border-slate-700 hover:border-slate-600'
+                ? 'border-cyan-400/80 shadow-cyan-950/50 ring-1 ring-cyan-400/30' 
+                : rec
+                  ? 'border-cyan-500/40 hover:border-cyan-400/70 shadow-cyan-950/30'
+                  : 'border-white/10 hover:border-cyan-500/40 hover:shadow-cyan-950/20'
             }`}
           >
-            {/* Top Bar inside Card */}
-            <div className="px-5 py-3 flex flex-wrap items-center justify-between gap-3 border-b border-slate-700 bg-slate-850 bg-slate-900/40">
+            {/* Top Bar inside Card: AI Smart Badge & Ratings */}
+            <div className="px-6 pt-5 pb-3 flex flex-wrap items-center justify-between gap-3 border-b border-white/5 bg-white/[0.02]">
               <div className="flex flex-wrap items-center gap-2">
                 {rec ? (
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/20 text-cyan-300 text-xs font-bold border border-blue-500/30">
-                    <Sparkles size={12} className="text-cyan-400" />
-                    <span>ĐỀ XUẤT {rec.matchScore ? `(Khớp ${Math.round(rec.matchScore * 100)}%)` : ''}</span>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500/20 via-cyan-500/20 to-blue-500/20 border border-cyan-400/50 text-cyan-300 text-xs font-bold tracking-wide shadow-sm shadow-cyan-500/20">
+                    <Sparkles size={13} className="text-cyan-400 animate-pulse" />
+                    <span>✨ VEXE AI ĐỀ XUẤT {rec.matchScore ? `(Khớp ${Math.round(rec.matchScore * 100)}%)` : ''}</span>
                   </div>
                 ) : (
-                  <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-900 text-slate-300 text-[11px] font-medium border border-slate-700">
-                    <BusIcon size={12} className="text-slate-400" />
+                  <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-300 text-[11px] font-medium">
+                    <BusIcon size={12} className="text-cyan-400" />
                     <span>{vehicleType}</span>
                   </div>
                 )}
 
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-700">
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
                   {trip.vehicle?.licensePlate || `BS-79B-${trip.id}23`}
                 </span>
               </div>
@@ -221,24 +224,24 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
                 <span className="text-amber-400 font-bold flex items-center gap-1">
                   ★ <span>{rating}</span>
                 </span>
-                <span className="text-slate-400">({reviewCount} đánh giá)</span>
+                <span className="text-slate-500">({reviewCount} đánh giá)</span>
                 <span className="text-slate-600">•</span>
                 <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                  <CheckCircle2 size={13} />
+                  <CheckCircle2 size={12} />
                   <span>Còn {Math.max(4, capacity - 18)} chỗ</span>
                 </span>
               </div>
             </div>
 
             {/* Main Trip Card Content */}
-            <div className="p-5 sm:p-6 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6">
+            <div className="p-6 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 relative">
               
-              {/* Route Timeline & Departure/Arrival */}
+              {/* Left & Center: Route Timeline & Departure/Arrival */}
               <div className="flex-1 min-w-0 space-y-4">
                 <div className="flex items-center justify-between sm:justify-start sm:space-x-8">
                   
                   {/* Departure Info */}
-                  <div className="space-y-1 min-w-[100px]">
+                  <div className="space-y-1 min-w-[110px]">
                     <div className="text-2xl sm:text-3xl font-black text-white font-mono tracking-tight leading-none">
                       {formatTime(trip.departureTime)}
                     </div>
@@ -246,98 +249,103 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
                       <MapPin size={14} className="text-cyan-400 shrink-0" />
                       <span className="truncate">{trip.route?.departureLocation || 'Bến xe'}</span>
                     </div>
-                    <div className="text-[11px] text-slate-400 hidden sm:block">
-                      Xuất bến đúng giờ
+                    <div className="text-[11px] text-slate-400 font-light hidden sm:block">
+                      Xuất bến đúng giờ 99.8%
                     </div>
                   </div>
 
                   {/* Travel Duration Timeline Indicator */}
                   <div className="flex flex-col items-center px-2 sm:px-4 shrink-0">
                     <span className="text-[11px] font-mono text-slate-400 mb-1">~6h 30m</span>
-                    <div className="relative flex items-center w-20 sm:w-28">
-                      <div className="w-2 h-2 rounded-full bg-cyan-400 shrink-0"></div>
-                      <div className="flex-1 h-0.5 bg-slate-600 mx-1"></div>
-                      <ArrowRight size={14} className="text-slate-400 shrink-0" />
+                    <div className="relative flex items-center w-20 sm:w-32">
+                      <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 shrink-0 ring-4 ring-cyan-500/20"></div>
+                      <div className="flex-1 h-0.5 bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 mx-1"></div>
+                      <ArrowRight size={14} className="text-indigo-400 shrink-0" />
                     </div>
-                    <span className="text-[10px] text-slate-400 mt-1">Chạy cao tốc</span>
+                    <span className="text-[10px] text-slate-500 mt-1">Chạy cao tốc</span>
                   </div>
 
                   {/* Arrival Info */}
-                  <div className="space-y-1 text-right sm:text-left min-w-[100px]">
+                  <div className="space-y-1 text-right sm:text-left min-w-[110px]">
                     <div className="text-2xl sm:text-3xl font-black text-slate-200 font-mono tracking-tight leading-none">
                       {calculateArrival(trip.departureTime)}
                     </div>
                     <div className="flex items-center justify-end sm:justify-start gap-1.5 text-xs sm:text-sm font-semibold text-white">
-                      <MapPin size={14} className="text-slate-400 shrink-0" />
+                      <MapPin size={14} className="text-indigo-400 shrink-0" />
                       <span className="truncate">{trip.route?.arrivalLocation || 'Điểm đến'}</span>
                     </div>
-                    <div className="text-[11px] text-slate-400 hidden sm:block">
-                      Có xe trung chuyển
+                    <div className="text-[11px] text-slate-400 font-light hidden sm:block">
+                      Có xe trung chuyển tận nơi
                     </div>
                   </div>
 
                 </div>
 
                 {/* Amenities Badges */}
-                <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-slate-300">
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700" title="Wifi tốc độ cao">
+                <div className="flex flex-wrap items-center gap-2.5 pt-1 text-xs text-slate-400">
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 shrink-0" title="Wifi 5G tốc độ cao miễn phí">
                     <Wifi size={13} className="text-cyan-400" />
-                    <span className="hidden sm:inline">Wifi</span>
+                    <span className="hidden sm:inline">Wifi 5G</span>
                   </div>
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700" title="Cổng sạc Type-C & USB">
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 shrink-0" title="Cổng sạc Type-C & USB tại mỗi ghế">
                     <Zap size={13} className="text-amber-400" />
                     <span className="hidden sm:inline">Cổng sạc</span>
                   </div>
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700" title="Nước suối và khăn lạnh">
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 shrink-0" title="Nước suối và khăn lạnh miễn phí">
                     <Droplets size={13} className="text-blue-400" />
                     <span className="hidden sm:inline">Nước & Khăn</span>
                   </div>
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700" title="Điều hòa mát mẻ">
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 shrink-0" title="Điều hòa ion âm khử khuẩn">
                     <Wind size={13} className="text-emerald-400" />
                     <span className="hidden sm:inline">Điều hòa</span>
                   </div>
                 </div>
 
-                {/* AI Rationale Box */}
+                {/* AI Recommendation Rationale Box if trip is suggested by AI */}
                 {rec && (
-                  <div className="rounded-xl bg-slate-900 border border-blue-500/30 p-3 text-xs text-slate-300">
-                    <div className="flex items-center gap-1.5 font-bold text-cyan-300 mb-1">
-                      <Sparkles size={13} className="text-cyan-400 shrink-0" />
-                      <span>Lý do gợi ý:</span>
+                  <div className="rounded-2xl bg-cyan-950/40 border border-cyan-500/30 p-3 text-xs text-slate-200 shadow-inner">
+                    <div className="flex items-center gap-1.5 font-bold text-cyan-300 mb-1 text-xs">
+                      <Sparkles size={14} className="text-cyan-400 shrink-0 animate-pulse" />
+                      <span>💡 Lý do AI đề xuất:</span>
                       {rec.badgeText && (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-cyan-200">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-200 border border-cyan-400/30">
                           {rec.badgeText}
                         </span>
                       )}
                     </div>
-                    <p className="text-slate-300 leading-relaxed pl-5">
-                      {rec.reason || 'Chuyến xe được tối ưu về lịch trình và dịch vụ cao cấp.'}
+                    <p className="text-slate-300 leading-relaxed font-light pl-5">
+                      {rec.reason || 'Chuyến xe được AI phân tích phù hợp nhất với thói quen di chuyển và thời điểm xuất bến tối ưu.'}
                     </p>
                   </div>
                 )}
 
               </div>
 
-              {/* Price & Select Seat Button */}
-              <div className="shrink-0 min-w-[190px] flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-center border-t lg:border-t-0 lg:border-l border-slate-700 pt-4 lg:pt-0 lg:pl-6 gap-3">
+              {/* Right Side: Price & Select Seat Button */}
+              <div className="shrink-0 min-w-[200px] flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-center border-t lg:border-t-0 lg:border-l border-white/10 pt-4 lg:pt-0 lg:pl-6 gap-3">
                 <div className="text-left lg:text-right">
                   <div className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Giá vé 1 khách</div>
-                  <div className="text-2xl sm:text-3xl font-black text-cyan-400 tracking-tight font-mono tabular-nums">
+                  <div className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 tracking-tight font-mono">
                     {formatPrice(trip.price)}
                   </div>
                 </div>
 
                 <button 
                   onClick={() => handleSelectTrip(trip)}
+                  disabled={trip.webBookingOpen === false}
                   type="button"
-                  className={`px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap shrink-0 shadow-sm ${
+                  className={`px-5 py-2.5 sm:px-6 sm:py-3 rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-300 shadow-lg cursor-pointer whitespace-nowrap shrink-0 disabled:opacity-50 disabled:cursor-not-allowed ${
                     isExpanded 
-                      ? 'bg-slate-700 hover:bg-slate-650 text-white border border-slate-600' 
-                      : 'bg-blue-600 hover:bg-blue-500 text-white'
+                      ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-600' 
+                      : trip.webBookingOpen === false
+                        ? 'bg-slate-800 text-slate-500 border border-slate-700'
+                        : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 hover:scale-105 shadow-cyan-500/25 active:scale-95'
                   }`}
                 >
-                  <span>{isExpanded ? 'Đóng sơ đồ ghế' : 'Chọn chuyến'}</span>
-                  {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  <span className="whitespace-nowrap shrink-0">
+                    {isExpanded ? 'Đóng chọn chỗ' : trip.webBookingOpen === false ? 'Đã đóng bán vé web' : 'Chọn chuyến'}
+                  </span>
+                  {isExpanded ? <ChevronUp size={16} className="shrink-0" /> : <ChevronDown size={16} className="shrink-0" />}
                 </button>
               </div>
 
@@ -345,26 +353,26 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
 
             {/* Expandable Interactive Seat Map */}
             {isExpanded && (
-              <div className="bg-slate-900 border-t border-slate-700 p-5 sm:p-7">
+              <div className="bg-slate-950/90 border-t border-cyan-500/30 p-6 sm:p-8 animate-in slide-in-from-top-4 duration-300">
                 {loadingSeats ? (
-                  <div className="text-center py-10 text-slate-400 space-y-2">
-                    <div className="w-7 h-7 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                    <p className="text-xs">Đang tải sơ đồ vị trí ghế...</p>
+                  <div className="text-center py-12 text-slate-400 space-y-3">
+                    <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <p className="text-sm">Đang tải sơ đồ vị trí ghế thời gian thực...</p>
                   </div>
                 ) : (
-                  <div className="space-y-5">
+                  <div className="space-y-6">
                     <SeatMap seats={seats} maxSeats={5} />
                     
-                    {/* Booking Action Bar */}
-                    <div className="rounded-xl bg-slate-800 border border-slate-700 p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-lg">
+                    {/* Sticky Bottom Booking Action Bar */}
+                    <div className="rounded-2xl bg-slate-900/95 backdrop-blur-xl border border-cyan-500/40 p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
                       <div className="flex flex-wrap items-center gap-3">
-                        <div className="text-xs text-slate-300 font-medium">
+                        <div className="text-xs text-slate-400">
                           Ghế đang chọn:
                         </div>
                         {selectedSeats.length > 0 ? (
                           <div className="flex flex-wrap gap-1.5">
                             {selectedSeats.map(seatId => (
-                              <span key={seatId} className="px-2.5 py-1 rounded-md bg-blue-600/30 text-cyan-300 border border-cyan-400/50 text-xs font-bold font-mono">
+                              <span key={seatId} className="px-2.5 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-bold font-mono">
                                 {seatId}
                               </span>
                             ))}
@@ -377,7 +385,7 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
                       <div className="flex items-center space-x-6 w-full md:w-auto justify-between md:justify-end">
                         <div className="text-right">
                           <div className="text-[11px] text-slate-400">Tổng tiền tạm tính:</div>
-                          <div className="text-xl sm:text-2xl font-black text-cyan-400 font-mono tabular-nums">
+                          <div className="text-xl sm:text-2xl font-black text-cyan-400 font-mono">
                             {formatPrice(selectedSeats.length * trip.price)}
                           </div>
                         </div>
@@ -386,7 +394,7 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
                           onClick={handleContinue}
                           disabled={selectedSeats.length === 0}
                           type="button"
-                          className="px-6 sm:px-7 py-3 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-bold text-xs sm:text-sm rounded-xl transition-colors shadow-sm cursor-pointer flex items-center gap-1.5"
+                          className="px-6 sm:px-8 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-600 disabled:cursor-not-allowed text-slate-950 font-bold text-xs sm:text-sm rounded-xl transition-all shadow-lg shadow-emerald-500/20 cursor-pointer flex items-center gap-2"
                         >
                           <span>Tiếp tục thanh toán</span>
                           <ArrowRight size={16} />
@@ -395,13 +403,13 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
                     </div>
 
                     {/* Trust Note */}
-                    <div className="flex flex-wrap items-center justify-between text-[11px] text-slate-400 pt-1 px-1 gap-2">
+                    <div className="flex flex-wrap items-center justify-between text-[11px] text-slate-400 pt-2 px-1 gap-2">
                       <div className="flex items-center gap-1.5">
                         <ShieldCheck size={14} className="text-emerald-400" />
-                        <span>Giữ chỗ an toàn 100% trong 5 phút sau khi bấm tiếp tục</span>
+                        <span>Giữ ghế trực tuyến an toàn 100% trong 5 phút sau khi bấm tiếp tục</span>
                       </div>
-                      <div>
-                        Giá đã bao gồm bảo hiểm hành khách và thuế VAT
+                      <div className="text-slate-500">
+                        Giá đã bao gồm bảo hiểm du lịch và VAT
                       </div>
                     </div>
 
@@ -416,5 +424,3 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
     </div>
   );
 };
-
-export default TripList;
