@@ -65,6 +65,11 @@ function App() {
             <Route path="forgot-password" element={<ForgotPasswordPage />} />
             
             {/* Protected Customer Booking Routes inside Public Layout */}
+            <Route path="booking" element={
+              <ProtectedRoute>
+                <BookingHistoryPage />
+              </ProtectedRoute>
+            } />
             <Route path="bookings" element={
               <ProtectedRoute>
                 <BookingHistoryPage />
