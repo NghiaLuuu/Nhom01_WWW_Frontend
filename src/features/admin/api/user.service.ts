@@ -53,6 +53,10 @@ export const UserService = {
     const res = await api.patch(`/admin/staffs/${id}/reset-password`);
     return res.data;
   },
+  getRevenueStatistics: async () => {
+    const res = await api.get('/admin/statistics/revenue');
+    return res.data;
+  },
   resetCustomerPassword: async (id: string) => {
     const res = await api.patch(`/admin/customers/${id}/reset-password`);
     return res.data;

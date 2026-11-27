@@ -400,7 +400,7 @@ export const UserBehaviorAnalytics: React.FC = () => {
                             {s.trafficSource}
                           </span>
                           <div className="font-mono text-[10px] text-slate-400 mt-0.5 whitespace-nowrap">
-                            {s.createdAt}
+                            {s.createdAt && !Number.isNaN(new Date(s.createdAt).getTime()) ? new Date(s.createdAt).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : s.createdAt}
                           </div>
                         </div>
                       </td>

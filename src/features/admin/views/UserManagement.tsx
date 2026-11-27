@@ -1,3 +1,4 @@
+import { useModal } from '../../../context/ModalContext';
 import React, { useState, useEffect, useMemo } from 'react';
 import { type User, type StaffRequest, UserService } from '../api/user.service';
 import { type Role, RoleService } from '../api/role.service';
@@ -8,6 +9,7 @@ import toast from 'react-hot-toast';
 import { Plus, Users, UserCheck, Search, Shield, KeyRound, Lock, Unlock, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
 
 export const UserManagement: React.FC = () => {
+  const { confirm } = useModal();
   const [activeTab, setActiveTab] = useState<'STAFF' | 'CUSTOMER'>('STAFF');
   const [staffs, setStaffs] = useState<User[]>([]);
   const [customers, setCustomers] = useState<User[]>([]);
@@ -166,7 +168,14 @@ export const UserManagement: React.FC = () => {
   const handleResetPassword = async (id: string, isStaff: boolean) => {
     const defaultPass = isStaff ? "Vexe@123" : "123456";
     const message = isStaff ? "nhân viên" : "khách hàng";
-    if (window.confirm(`Bạn có chắc chắn muốn reset mật khẩu ${message} này về mặc định (${defaultPass})?`)) {
+    const ok = await confirm({
+      title: "Đặt lại mật khẩu",
+      message: `Bạn có chắc chắn muốn reset mật khẩu ${message} này về mặc định (${defaultPass}) không?`,
+      type: "warning",
+      confirmText: "Đặt lại mật khẩu",
+      cancelText: "Hủy"
+    });
+    if (ok) {
       try {
         if (isStaff) {
           await UserService.resetStaffPassword(id);

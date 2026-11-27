@@ -482,7 +482,7 @@ export const CheckoutPage: React.FC = () => {
                       {activeTrip.route?.departureLocation || 'TP. Hồ Chí Minh'}
                     </div>
                     <div className="text-[11px] text-cyan-400 font-mono mt-0.5">
-                      Khởi hành: {new Date(activeTrip.departureTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} - {new Date(activeTrip.departureTime).toLocaleDateString('vi-VN')}
+                      Khởi hành: {new Date(activeTrip.departureTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} - {new Date(activeTrip.departureTime).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                     </div>
                   </div>
                 </div>

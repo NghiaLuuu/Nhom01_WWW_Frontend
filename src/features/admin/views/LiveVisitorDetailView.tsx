@@ -505,7 +505,7 @@ export const LiveVisitorDetailView: React.FC = () => {
                             </span>
                           )}
                         </div>
-                        <span className="text-[10px] text-slate-500 whitespace-nowrap">{act.createdAt}</span>
+                        <span className="text-[10px] text-slate-500 whitespace-nowrap">{act.createdAt && !Number.isNaN(new Date(act.createdAt).getTime()) ? new Date(act.createdAt).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : act.createdAt}</span>
                       </div>
                       {act.payload && (
                         <pre className="font-mono text-[10px] text-slate-300 bg-slate-900/90 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all max-h-20 custom-scrollbar">

@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, accessToken, refreshToken, user } = useAuthStore();
   const location = useLocation();
 
   // Check localStorage directly for immediate synchronous hydration protection on initial mount / F5
@@ -25,10 +25,13 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowe
     return null;
   }, []);
 
-  const authed = isAuthenticated || Boolean(storedAuth?.isAuthenticated && storedAuth?.accessToken);
+  const effectiveAuth = isAuthenticated || Boolean(storedAuth?.isAuthenticated && storedAuth?.accessToken);
+  const effectiveAccess = accessToken || storedAuth?.accessToken;
+  const effectiveRefresh = refreshToken || storedAuth?.refreshToken;
   const currentUser = user || storedAuth?.user;
 
-  if (!authed) {
+  // Ensure both authenticated flag and tokens exist
+  if (!effectiveAuth || !effectiveAccess || !effectiveRefresh) {
     // Redirect to login but save the attempted url
     return <Navigate to="/login" state={{ from: location }} replace />;
   }

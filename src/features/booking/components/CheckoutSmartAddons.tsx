@@ -118,7 +118,7 @@ export const CheckoutSmartAddons: React.FC<CheckoutSmartAddonsProps> = ({
             </div>
             <p className="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5">
               <Calendar size={12} className="text-slate-400" />
-              <span>Dự kiến ngày về: <strong className="text-slate-200">{returnDate}</strong> (Sau 3 ngày)</span>
+              <span>Dự kiến ngày về: <strong className="text-slate-200">{returnDate ? returnDate.split('-').reverse().join('/') : 'Chưa xác định'}</strong> (Sau 3 ngày)</span>
             </p>
           </div>
 

@@ -1,3 +1,4 @@
+import { VietnameseDateInput } from '../../../components/VietnameseDateInput';
 import React, { useState } from 'react';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { ProfileService } from '../../../services/profile.service';
@@ -240,10 +241,10 @@ export const AdminProfilePage: React.FC = () => {
                   <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                     Ngày Tháng Năm Sinh
                   </label>
-                  <input
-                    type="date"
+                  <VietnameseDateInput
+                    
                     value={dateOfBirth}
-                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    onValueChange={setDateOfBirth}
                     className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
                   />
                 </div>

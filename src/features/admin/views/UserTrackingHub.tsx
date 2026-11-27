@@ -966,7 +966,7 @@ export const UserTrackingHub: React.FC = () => {
                           {s.trafficSource}
                         </span>
                         <div className="font-mono text-[10px] text-slate-400 mt-0.5">
-                          {s.createdAt}
+                          {s.createdAt && !Number.isNaN(new Date(s.createdAt).getTime()) ? new Date(s.createdAt).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : s.createdAt}
                         </div>
                       </td>
                       <td className="py-2 px-3 font-mono text-slate-300 whitespace-nowrap">
@@ -1401,7 +1401,7 @@ export const UserTrackingHub: React.FC = () => {
                               <span className="font-bold text-purple-300 uppercase tracking-wider text-[10px] px-1.5 py-0.2 rounded bg-purple-500/20">
                                 {act.actionType}
                               </span>
-                              <span className="font-mono text-[10px] text-slate-400">{act.createdAt}</span>
+                              <span className="font-mono text-[10px] text-slate-400">{act.createdAt && !Number.isNaN(new Date(act.createdAt).getTime()) ? new Date(act.createdAt).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : act.createdAt}</span>
                             </div>
                             <div className="font-mono text-[11px] text-slate-300 break-all">{act.payload}</div>
                           </div>

@@ -1,12 +1,14 @@
+import { useModal } from '../../../context/ModalContext';
 import React, { useState, useEffect, useMemo } from 'react';
 import { type Route, type RouteRequest, RouteService } from '../api/route.service';
 import { DataTable, type Column } from '../../../components/DataTable';
 import { FormModal } from '../../../components/FormModal';
 import { AdminPageLayout } from '../../../components/AdminPageLayout';
 import toast from 'react-hot-toast';
-import { Plus, MapPin, Navigation, Clock, Search, Route as RouteIcon, TrendingUp, Compass } from 'lucide-react';
+import { Plus, MapPin, Navigation, Clock, Search, ArrowRight, Route as RouteIcon, TrendingUp, Compass } from 'lucide-react';
 
 export const RouteManagement: React.FC = () => {
+  const { confirm } = useModal();
   const [routes, setRoutes] = useState<Route[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -94,9 +96,15 @@ export const RouteManagement: React.FC = () => {
   };
 
   const handleDelete = async (route: Route) => {
-    if (!window.confirm(`Bạn có chắc chắn muốn xóa tuyến đường ${route.departureLocation} - ${route.arrivalLocation}?`)) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Xóa tuyến đường",
+      message: `Bạn có chắc chắn muốn xóa tuyến đường ${route.departureLocation} - ${route.arrivalLocation} không? Hành động này không thể hoàn tác.`,
+      type: "danger",
+      confirmText: "Xóa tuyến đường",
+      cancelText: "Hủy"
+    });
+    if (!ok) return;
+    
     try {
       await RouteService.delete(route.id);
       toast.success('Xóa tuyến đường thành công');
@@ -132,15 +140,15 @@ export const RouteManagement: React.FC = () => {
     { 
       header: 'Mã', 
       accessor: (row) => (
-        <span className="font-mono font-medium text-blue-400">#{row.id}</span>
+        <span className="font-mono font-bold text-cyan-300">#{row.id}</span>
       ), 
       width: '8%' 
     },
     { 
       header: 'Điểm Khởi Hành', 
       accessor: (row) => (
-        <div className="flex items-center gap-1.5 text-slate-200 font-medium text-xs whitespace-nowrap">
-          <MapPin size={13} className="text-blue-400 shrink-0" />
+        <div className="flex items-center gap-1.5 text-white font-medium text-xs whitespace-nowrap">
+          <MapPin size={13} className="text-cyan-400 shrink-0" />
           <span>{row.departureLocation}</span>
         </div>
       ), 
@@ -149,8 +157,8 @@ export const RouteManagement: React.FC = () => {
     { 
       header: 'Điểm Đến', 
       accessor: (row) => (
-        <div className="flex items-center gap-1.5 text-slate-200 font-medium text-xs whitespace-nowrap">
-          <Navigation size={13} className="text-indigo-400 shrink-0" />
+        <div className="flex items-center gap-1.5 text-white font-medium text-xs whitespace-nowrap">
+          <Navigation size={13} className="text-blue-400 shrink-0" />
           <span>{row.arrivalLocation}</span>
         </div>
       ), 
@@ -162,7 +170,7 @@ export const RouteManagement: React.FC = () => {
         <div className="font-mono text-xs text-slate-300 text-right whitespace-nowrap">
           <span>{row.distance || 350} km</span>
           <span className="text-slate-500 mx-1">•</span>
-          <span className="text-slate-300">~{row.duration || 7}h</span>
+          <span className="text-cyan-300">~{row.duration || 7}h</span>
         </div>
       ),
       align: 'right',
@@ -171,7 +179,7 @@ export const RouteManagement: React.FC = () => {
     { 
       header: 'Giá Cơ Bản', 
       accessor: (row) => (
-        <span className="font-mono font-semibold text-emerald-400 whitespace-nowrap text-xs">
+        <span className="font-mono font-bold text-emerald-400 whitespace-nowrap text-xs">
           {new Intl.NumberFormat('vi-VN').format(row.basePrice)}đ
         </span>
       ),
@@ -187,7 +195,7 @@ export const RouteManagement: React.FC = () => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Tìm điểm đi hoặc điểm đến..."
-        className="w-64 sm:w-80 py-1.5 pl-8 pr-3 text-xs bg-slate-900 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
+        className="w-64 sm:w-80 py-1.5 pl-8 pr-3 text-xs bg-slate-950 border border-white/10 rounded-xl text-white placeholder-slate-400 focus:border-cyan-400 focus:outline-none transition-colors"
       />
       <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
     </div>
@@ -196,7 +204,7 @@ export const RouteManagement: React.FC = () => {
   const actionButton = (
     <button 
       onClick={handleOpenAdd}
-      className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer"
+      className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
     >
       <Plus size={16} />
       <span>Thêm Tuyến Đường Mới</span>
@@ -208,44 +216,44 @@ export const RouteManagement: React.FC = () => {
       
       {/* 4 Summary Stat Chips */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Tổng Tuyến Vận Hành</div>
-            <div className="text-2xl font-bold text-white mt-1">{stats.total} Tuyến</div>
+            <div className="text-2xl font-black text-white mt-1">{stats.total} Tuyến</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
             <RouteIcon size={20} />
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
           <div>
-            <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Tuyến Trọng Điểm</div>
-            <div className="text-2xl font-bold text-blue-400 mt-1">SG ⇌ PY</div>
+            <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Tuyến Trọng Điểm AI</div>
+            <div className="text-2xl font-black text-cyan-300 mt-1">SG ⇌ PY</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
             <Compass size={20} />
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Cự Ly Trung Bình</div>
-            <div className="text-2xl font-bold text-amber-400 mt-1">{stats.avgDistance} km</div>
+            <div className="text-2xl font-black text-amber-300 mt-1">{stats.avgDistance} km</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
             <Clock size={20} />
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-slate-800 border border-slate-700 shadow-sm flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center justify-between">
           <div>
             <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Giá Bình Quân</div>
-            <div className="text-2xl font-bold text-emerald-400 mt-1">
+            <div className="text-2xl font-black text-emerald-300 mt-1">
               {new Intl.NumberFormat('vi-VN').format(stats.avgPrice)}đ
             </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
             <TrendingUp size={20} />
           </div>
         </div>
@@ -276,7 +284,7 @@ export const RouteManagement: React.FC = () => {
                 type="text"
                 value={departureLocation}
                 onChange={(e) => setDepartureLocation(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm bg-slate-900 border border-slate-700 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none text-white transition-colors"
+                className="w-full px-3.5 py-2.5 text-sm bg-slate-950 border border-white/10 rounded-xl focus:border-cyan-400 focus:outline-none text-white transition-colors"
                 placeholder="VD: Sài Gòn (Bến Xe Miền Đông)"
               />
             </div>
@@ -288,7 +296,7 @@ export const RouteManagement: React.FC = () => {
                 type="text"
                 value={arrivalLocation}
                 onChange={(e) => setArrivalLocation(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm bg-slate-900 border border-slate-700 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none text-white transition-colors"
+                className="w-full px-3.5 py-2.5 text-sm bg-slate-950 border border-white/10 rounded-xl focus:border-cyan-400 focus:outline-none text-white transition-colors"
                 placeholder="VD: Phú Yên (Tuy Hòa)"
               />
             </div>
@@ -301,7 +309,7 @@ export const RouteManagement: React.FC = () => {
                   min="0"
                   value={distance}
                   onChange={(e) => setDistance(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm bg-slate-900 border border-slate-700 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none text-white transition-colors"
+                  className="w-full px-3.5 py-2.5 text-sm bg-slate-950 border border-white/10 rounded-xl focus:border-cyan-400 focus:outline-none text-white transition-colors"
                   placeholder="VD: 520"
                 />
               </div>
@@ -312,7 +320,7 @@ export const RouteManagement: React.FC = () => {
                   type="text"
                   value={duration}
                   onChange={(e) => setDuration(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm bg-slate-900 border border-slate-700 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none text-white transition-colors"
+                  className="w-full px-3.5 py-2.5 text-sm bg-slate-950 border border-white/10 rounded-xl focus:border-cyan-400 focus:outline-none text-white transition-colors"
                   placeholder="VD: 10"
                 />
               </div>
@@ -326,23 +334,23 @@ export const RouteManagement: React.FC = () => {
                 min="0"
                 value={basePrice}
                 onChange={(e) => setBasePrice(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm bg-slate-900 border border-slate-700 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none text-white transition-colors"
+                className="w-full px-3.5 py-2.5 text-sm bg-slate-950 border border-white/10 rounded-xl focus:border-cyan-400 focus:outline-none text-white transition-colors"
                 placeholder="VD: 320000"
               />
             </div>
 
-            <div className="pt-5 mt-4 flex justify-end space-x-3 border-t border-slate-700">
+            <div className="pt-5 mt-4 flex justify-end space-x-3 border-t border-white/10">
               <button 
                 type="button" 
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 text-xs font-semibold text-slate-300 bg-slate-700 border border-slate-600 rounded-xl hover:bg-slate-600 transition-colors cursor-pointer"
+                className="px-4 py-2 text-xs font-semibold text-slate-300 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors cursor-pointer"
               >
                 Hủy
               </button>
               <button 
                 type="submit" 
                 disabled={isSubmitting}
-                className="px-5 py-2 text-xs font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-500 transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
+                className="px-5 py-2 text-xs font-bold text-slate-950 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl hover:from-cyan-400 hover:to-blue-500 transition-colors disabled:opacity-50 cursor-pointer shadow-lg shadow-cyan-500/20"
               >
                 {isSubmitting ? 'Đang lưu...' : (editingRoute ? 'Lưu Thay Đổi' : 'Thêm Tuyến Đường')}
               </button>

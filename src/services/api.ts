@@ -10,6 +10,12 @@ export const api = axios.create({
   },
 });
 
+// Multiple protected requests can fail at the same time (React Strict Mode, a
+// page loading several resources, etc.). The backend rotates refresh tokens,
+// so those requests must share one refresh operation rather than refresh in
+// parallel and invalidate each other.
+let refreshPromise: Promise<string | null> | null = null;
+
 // Request Interceptor to attach Access Token
 api.interceptors.request.use(
   (config) => {
@@ -33,18 +39,37 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       
       try {
-        // Attempt to refresh token
+        // Do not attempt to refresh the refresh-token request itself.
+        if (originalRequest.url?.includes('/auth/refresh-token')) {
+          useAuthStore.getState().logout();
+          return Promise.reject(error);
+        }
+
         const { refreshToken, setTokens, logout } = useAuthStore.getState();
-        if (refreshToken) {
-          const res = await axios.post(`${API_URL}/auth/refresh-token`, { refreshToken });
-          
-          if (res.data?.data?.accessToken) {
-            setTokens(res.data.data.accessToken, res.data.data.refreshToken);
-            
-            // Retry original request with new token
-            originalRequest.headers.Authorization = `Bearer ${res.data.data.accessToken}`;
-            return api(originalRequest);
-          }
+        if (!refreshToken) {
+          logout();
+          return Promise.reject(error);
+        }
+
+        refreshPromise ??= axios
+          .post(`${API_URL}/auth/refresh-token`, { refreshToken })
+          .then((res) => {
+            const tokens = res.data?.data;
+            if (!tokens?.accessToken || !tokens?.refreshToken) {
+              throw new Error('Invalid refresh-token response');
+            }
+            setTokens(tokens.accessToken, tokens.refreshToken);
+            return tokens.accessToken;
+          })
+          .finally(() => {
+            refreshPromise = null;
+          });
+
+        const accessToken = await refreshPromise;
+        if (accessToken) {
+          originalRequest.headers = originalRequest.headers ?? {};
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          return api(originalRequest);
         }
       } catch (refreshError) {
         // If refresh fails, log the user out completely

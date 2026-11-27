@@ -14,7 +14,8 @@ interface DataTableProps<T> {
   isLoading?: boolean;
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
-  keyExtractor: (row: T) => string | number;
+  actions?: (row: T) => React.ReactNode;
+  keyExtractor?: (row: T) => string | number;
 }
 
 export const DataTable = <T,>({
@@ -23,6 +24,7 @@ export const DataTable = <T,>({
   isLoading,
   onEdit,
   onDelete,
+  actions,
   keyExtractor
 }: DataTableProps<T>) => {
   if (isLoading) {
@@ -42,6 +44,13 @@ export const DataTable = <T,>({
     );
   }
 
+  const getKey = (row: T, idx: number): string | number => {
+    if (keyExtractor) return keyExtractor(row);
+    return (row as any)?.id ?? idx;
+  };
+
+  const hasActions = Boolean(onEdit || onDelete || actions);
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm text-slate-200">
@@ -56,23 +65,24 @@ export const DataTable = <T,>({
                 {col.header}
               </th>
             ))}
-            {(onEdit || onDelete) && <th className="px-3 py-3 text-right whitespace-nowrap w-20">Thao tác</th>}
+            {hasActions && <th className="px-3 py-3 text-right whitespace-nowrap w-24">Thao tác</th>}
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-700/60">
-          {data.map((row) => (
-            <tr key={keyExtractor(row)} className="hover:bg-slate-700/30 transition-colors group">
-              {columns.map((col, idx) => (
+          {data.map((row, idx) => (
+            <tr key={getKey(row, idx)} className="hover:bg-slate-700/30 transition-colors group">
+              {columns.map((col, colIdx) => (
                 <td 
-                  key={idx} 
+                  key={colIdx} 
                   className={`px-3 py-3 ${col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left'}`}
                 >
                   {typeof col.accessor === 'function' ? col.accessor(row) : (row[col.accessor] as React.ReactNode)}
                 </td>
               ))}
-              {(onEdit || onDelete) && (
+              {hasActions && (
                 <td className="px-3 py-3 text-right whitespace-nowrap">
                   <div className="flex items-center justify-end gap-1">
+                    {actions && actions(row)}
                     {onEdit && (
                       <button 
                         onClick={() => onEdit(row)} 
