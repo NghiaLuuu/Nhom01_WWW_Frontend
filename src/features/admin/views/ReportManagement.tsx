@@ -149,7 +149,7 @@ export const ReportManagement: React.FC = () => {
             </div>
             <span className="flex items-center text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
               <TrendingUp size={12} className="mr-1" />
-              Thực thu
+              Tổng hợp
             </span>
           </div>
           <div className="mt-4">
@@ -157,7 +157,8 @@ export const ReportManagement: React.FC = () => {
             <h3 className="text-2xl font-black text-gray-900 tracking-tight mt-1">
               {formatVND(totalRevenue)}
             </h3>
-            <p className="text-[11px] text-gray-400 mt-1">Từ các đơn hàng thanh toán thành công</p>
+            <p className="text-[11px] text-gray-500 mt-1">Tiền vé còn hiệu lực: {formatVND(statsData?.ticketRevenue)} · Phí hủy mô phỏng: {formatVND(statsData?.cancellationFees)}</p>
+            <p className="text-[11px] text-gray-500">Tiền hoàn mô phỏng: {formatVND(statsData?.simulatedRefunds)}</p>
           </div>
         </div>
 
@@ -359,6 +360,7 @@ export const ReportManagement: React.FC = () => {
                 <th className="py-3 px-4">Thời Gian Khởi Hành</th>
                 <th className="py-3 px-4">Số Ghế</th>
                 <th className="py-3 px-4 text-right">Tổng Tiền</th>
+                <th className="py-3 px-4 text-right">Phí hủy / Hoàn mô phỏng</th>
                 <th className="py-3 px-4 text-center">Trạng Thái</th>
                 <th className="py-3 px-4 text-right">Ngày Tạo</th>
               </tr>
@@ -366,7 +368,7 @@ export const ReportManagement: React.FC = () => {
             <tbody className="divide-y divide-gray-50">
               {filteredBookings.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-gray-400">
+                  <td colSpan={9} className="py-8 text-center text-gray-400">
                     Không có giao dịch nào phù hợp
                   </td>
                 </tr>
@@ -377,6 +379,8 @@ export const ReportManagement: React.FC = () => {
                     ? `${trip.route.departureLocation} → ${trip.route.arrivalLocation}` 
                     : 'N/A';
                   const seatCount = booking.tickets?.length || booking.seats?.length || 1;
+                  const cancellation = statsData?.cancellationByBooking?.[String(booking.id)];
+                  const isCancelled = booking.status === 'CANCELLED' || (booking.status as string) === 'PARTIALLY_CANCELLED';
                   
                   return (
                     <tr key={booking.id} className="hover:bg-gray-50/80 transition-colors">
@@ -399,6 +403,16 @@ export const ReportManagement: React.FC = () => {
                       <td className="py-3 px-4 font-black text-gray-900 text-right">
                         {formatVND(booking.totalPrice)}
                       </td>
+                      <td className="py-3 px-4 text-right text-xs">
+                        {cancellation ? (
+                          <div>
+                            <div className="font-semibold text-rose-700">Phí hủy: {formatVND(cancellation.feeAmount)}{cancellation.feePercent != null ? ` (${cancellation.feePercent}%)` : ""}</div>
+                            <div className="text-gray-500">Hoàn: {formatVND(cancellation.refundAmount)}</div>
+                          </div>
+                        ) : isCancelled ? (
+                          <span className="text-gray-400">Chưa có dữ liệu phí hủy</span>
+                        ) : <span className="text-gray-400">—</span>}
+                      </td>
                       <td className="py-3 px-4 text-center">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                           booking.status === 'PAID' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
@@ -416,7 +430,7 @@ export const ReportManagement: React.FC = () => {
                         </span>
                       </td>
                       <td className="py-3 px-4 text-gray-400 text-right font-mono text-[11px]">
-                        {new Date(booking.createdAt).toLocaleDateString('vi-VN')}
+                        {new Date(booking.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                       </td>
                     </tr>
                   );

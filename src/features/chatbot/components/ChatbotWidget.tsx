@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
+import { useAuthStore } from '../../../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import {
   MessageSquare,
@@ -246,16 +247,86 @@ export const ChatbotWidget: React.FC = () => {
       text: '**Xin chào!** Em là trợ lý AI thông minh của **VEXE** 🚌.\nEm có thể giúp anh/chị tra cứu chuyến xe, đặt vé, xem vé đã mua hoặc **tự động hỗ trợ hủy vé & hoàn tiền** trực tiếp ngay trong chat.\n\n*Gợi ý câu hỏi:*\n- *"Các chuyến xe khởi hành vào ngày mai"*\n- *"Xe Sài Gòn đi Đà Lạt"*\n- *"Xem đơn đặt vé của tôi"*\n- *"Đặt giúp tôi 2 vé đến Đà Lạt ngày mai"*\n- *"Hủy vé đến Đà Lạt"*'
     }
   ]);
+  const initialMessages = useRef(messages);
+  const historyIdentity = useAuthStore((state) => state.isAuthenticated ? (state.user?.email || state.user?.id || "signed-in") : "guest");
+  const historyToken = useMemo(() => {
+    const key = `vexe_chat_history_token:${historyIdentity}`;
+    let token = localStorage.getItem(key);
+    if (!token || !/^[a-f0-9]{64}$/.test(token)) {
+      token = (crypto.randomUUID() + crypto.randomUUID()).replaceAll("-", "");
+      localStorage.setItem(key, token);
+    }
+    return token;
+  }, [historyIdentity]);
+  const pendingHistoryKey = `vexe_chat_pending:${historyToken}`;
+  const currentHistoryToken = useRef(historyToken);
+  currentHistoryToken.current = historyToken;
+  const historySaveQueue = useRef<Promise<void>>(Promise.resolve());
+  const [historyReadyFor, setHistoryReadyFor] = useState<string | null>(null);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [historyError, setHistoryError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    setHistoryReadyFor(null);
+    setHistoryLoading(true);
+    setHistoryError(false);
+    setMessages(initialMessages.current);
+    try {
+      const pending = JSON.parse(sessionStorage.getItem(pendingHistoryKey) ?? 'null');
+      if (Array.isArray(pending) && pending.length) {
+        setMessages(pending);
+        setHistoryReadyFor(historyToken);
+        setHistoryLoading(false);
+        return;
+      }
+    } catch {
+      // Server history is still available when browser storage cannot be read.
+    }
+    api.get<ChatMessage[]>(`/chatbot/conversations/${historyToken}`)
+      .then(({ data }) => {
+        if (!active) return;
+        setMessages(Array.isArray(data) && data.length ? data : initialMessages.current);
+        setHistoryReadyFor(historyToken);
+      })
+      .catch(() => { if (active) setHistoryError(true); })
+      .finally(() => { if (active) setHistoryLoading(false); });
+    return () => { active = false; };
+  }, [historyToken, pendingHistoryKey]);
+
+  useLayoutEffect(() => {
+    if (historyReadyFor !== historyToken || messages === initialMessages.current) return;
+    const snapshot = messages.slice(-200);
+    const serialized = JSON.stringify(snapshot);
+    try {
+      sessionStorage.setItem(pendingHistoryKey, serialized);
+    } catch {
+      // Continue syncing to the server if browser storage is unavailable or full.
+    }
+    historySaveQueue.current = historySaveQueue.current.catch(() => {}).then(async () => {
+      if (currentHistoryToken.current !== historyToken) return;
+      await api.put(`/chatbot/conversations/${historyToken}`, snapshot);
+      try {
+        if (sessionStorage.getItem(pendingHistoryKey) === serialized) {
+          sessionStorage.removeItem(pendingHistoryKey);
+        }
+      } catch {
+        // The server already saved the snapshot.
+      }
+      if (currentHistoryToken.current === historyToken) setHistoryError(false);
+    }).catch(() => { if (currentHistoryToken.current === historyToken) setHistoryError(true); });
+  }, [messages, historyReadyFor, historyToken, pendingHistoryKey]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [sessionId] = useState<string>(() => {
-    let sid = localStorage.getItem('ai_booking_session_id');
+  const sessionId = useMemo(() => {
+    const key = `ai_booking_session_id:${historyIdentity}`;
+    let sid = localStorage.getItem(key);
     if (!sid) {
-      sid = 'session_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now();
-      localStorage.setItem('ai_booking_session_id', sid);
+      sid = `session_${crypto.randomUUID()}`;
+      localStorage.setItem(key, sid);
     }
     return sid;
-  });
+  }, [historyIdentity]);
 
   // Persistent Booking Session State
   const [selectedDeparture, setSelectedDeparture] = useState<string | null>(() => {
@@ -267,7 +338,7 @@ export const ChatbotWidget: React.FC = () => {
   });
   const [passengerCount, setPassengerCount] = useState<number>(() => {
     const val = localStorage.getItem('ai_booking_passenger_count');
-    return val ? Number(val) : 2;
+    return val ? Number(val) : 1;
   });
   const [stateVersion, setStateVersion] = useState<number>(() => {
     const val = localStorage.getItem('ai_booking_state_version');
@@ -305,10 +376,12 @@ export const ChatbotWidget: React.FC = () => {
   }, [messages, isTyping, isOpen]);
 
   const sendMessage = async (textToSend: string, actionPayload?: ActionPayload) => {
-    if ((!textToSend.trim() && !actionPayload?.action) || isTyping) return;
+    if ((!textToSend.trim() && !actionPayload?.action) || isTyping || historyLoading) return;
 
     let displayText = textToSend.trim();
-    if (displayText.startsWith('SELECT_DEPARTURE:')) {
+    if (actionPayload?.action === 'SIMULATE_PAYMENT' || displayText.startsWith('SIMULATE_PAYMENT:')) {
+      displayText = 'Xác nhận thanh toán mô phỏng';
+    } else if (displayText.startsWith('SELECT_DEPARTURE:')) {
       displayText = `Chọn khởi hành từ ${displayText.substring(17)}`;
     } else if (displayText.startsWith('SELECT_TRIP:')) {
       displayText = `Chọn chuyến xe #${displayText.substring(12)}`;
@@ -560,7 +633,7 @@ export const ChatbotWidget: React.FC = () => {
               const isLatestMessage = index === messages.length - 1;
               return (
               <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`flex max-w-[92%] ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`flex min-w-0 max-w-[92%] ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                   <div
                     className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
                       msg.sender === 'user' ? 'bg-blue-600 text-white ml-2' : 'bg-indigo-100 text-indigo-700 mr-2'
@@ -569,7 +642,7 @@ export const ChatbotWidget: React.FC = () => {
                     {msg.sender === 'user' ? <User size={14} /> : <Bot size={14} />}
                   </div>
                   <div
-                    className={`px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
+                    className={`min-w-0 [overflow-wrap:anywhere] px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                       msg.sender === 'user'
                         ? 'bg-blue-600 text-white rounded-tr-none shadow-md'
                         : 'bg-white border border-gray-200/80 text-gray-800 rounded-tl-none shadow-sm'
@@ -588,7 +661,7 @@ export const ChatbotWidget: React.FC = () => {
                           sendMessage(`SELECT_DEPARTURE:${depLoc}`, {
                             action: 'SELECT_DEPARTURE',
                             departureLocation: depLoc,
-                            passengerCount,
+                            passengerCount: msg.passengerCount || 1,
                             stateVersion
                           });
                         }}
@@ -639,7 +712,7 @@ export const ChatbotWidget: React.FC = () => {
                                     sendMessage(`SELECT_TRIP:${trip.tripId}`, {
                                       action: 'SELECT_TRIP',
                                       tripId: trip.tripId,
-                                      passengerCount,
+                                      passengerCount: msg.passengerCount || 1,
                                       stateVersion
                                     });
                                   }}
@@ -666,23 +739,23 @@ export const ChatbotWidget: React.FC = () => {
                             Đề xuất chọn ghế thông minh
                           </div>
                           <p className="text-[11px] text-indigo-700 mb-2">
-                            Bạn có muốn em tự động tìm {passengerCount > 1 ? `${passengerCount} ghế liền kề cạnh nhau` : 'vị trí ghế tốt nhất'} trên cùng một tầng không?
+                            Bạn có muốn em tự động tìm {(msg.passengerCount || 1) > 1 ? `${msg.passengerCount || 1} ghế liền kề cạnh nhau` : 'vị trí ghế tốt nhất'} trên cùng một tầng không?
                           </p>
                           <div className="flex gap-2">
-                            {passengerCount > 1 && (
+                            {(msg.passengerCount || 1) > 1 && (
                               <button
                                 disabled={isTyping}
                                 onClick={() => {
-                                  sendMessage(`Có, chọn ${passengerCount} ghế cạnh nhau`, {
+                                  sendMessage(`Có, chọn ${msg.passengerCount || 1} ghế cạnh nhau`, {
                                     action: 'AUTO_ADJACENT_SEATS',
                                     tripId: msg.tripId || selectedTripId || undefined,
-                                    passengerCount,
+                                    passengerCount: msg.passengerCount || 1,
                                     stateVersion
                                   });
                                 }}
                                 className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white py-1.5 px-2.5 rounded-lg font-semibold text-xs transition-colors shadow-2xs"
                               >
-                                Có, chọn {passengerCount} ghế cạnh nhau
+                                Có, chọn {msg.passengerCount || 1} ghế cạnh nhau
                               </button>
                             )}
                             <button
@@ -691,11 +764,11 @@ export const ChatbotWidget: React.FC = () => {
                                 sendMessage("Tôi muốn tự chọn vị trí ghế", {
                                   action: 'MANUAL_SEAT_MAP',
                                   tripId: msg.tripId || selectedTripId || undefined,
-                                  passengerCount,
+                                  passengerCount: msg.passengerCount || 1,
                                   stateVersion
                                 });
                               }}
-                              className={`${passengerCount > 1 ? '' : 'w-full'} bg-white hover:bg-gray-100 disabled:opacity-50 text-gray-700 border border-gray-300 py-1.5 px-2.5 rounded-lg font-semibold text-xs transition-colors flex items-center justify-center gap-1`}
+                              className={`${(msg.passengerCount || 1) > 1 ? '' : 'w-full'} bg-white hover:bg-gray-100 disabled:opacity-50 text-gray-700 border border-gray-300 py-1.5 px-2.5 rounded-lg font-semibold text-xs transition-colors flex items-center justify-center gap-1`}
                             >
                               <span>Tự chọn ghế</span>
                               <ArrowRight size={12} />
@@ -709,7 +782,7 @@ export const ChatbotWidget: React.FC = () => {
                     {(msg.cardType === 'SEAT_SELECTION_CARD' || msg.seatMap) && msg.seatMap && (
                       <SeatSelectionCard
                         seatMap={msg.seatMap}
-                        requiredPassengerCount={passengerCount}
+                        requiredPassengerCount={msg.seatMap.passengerCount || msg.passengerCount || 1}
                         disabled={isTyping}
                         onConfirmSeats={(seatIds, seatNames) => {
                           sendMessage(`SELECT_SEATS:${seatNames.join(',')}`, {
@@ -717,7 +790,7 @@ export const ChatbotWidget: React.FC = () => {
                             tripId: msg.seatMap?.tripId || selectedTripId || undefined,
                             seatIds,
                             seatNames,
-                            passengerCount,
+                            passengerCount: seatIds.length,
                             stateVersion
                           });
                         }}
@@ -860,7 +933,7 @@ export const ChatbotWidget: React.FC = () => {
                         {msg.actionTripIds.map((tripId) => (
                           <button
                             key={tripId}
-                            onClick={() => sendMessage(`SELECT_TRIP:${tripId}`)}
+                            onClick={() => sendMessage(`SELECT_TRIP:${tripId}`, { action: 'SELECT_TRIP', tripId: Number(tripId), passengerCount: msg.passengerCount || 1, stateVersion })}
                             className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-1.5 px-3 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all"
                           >
                             <span>👉 Đặt vé chuyến xe #{tripId}</span>
@@ -894,18 +967,19 @@ export const ChatbotWidget: React.FC = () => {
 
           {/* Input Area */}
           <div className="p-3 bg-white border-t border-gray-100">
+            {historyError && <p role="status" className="mb-2 text-xs text-amber-700">Không thể đồng bộ lịch sử chat. Vui lòng kiểm tra kết nối rồi tải lại trang.</p>}
             <form onSubmit={handleSend} className="flex items-center space-x-2">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Nhập yêu cầu: 'Hủy vé đi Đà Lạt', 'Đặt vé'..."
-                disabled={isTyping}
-                className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 rounded-xl outline-none transition-all text-xs sm:text-sm"
+                disabled={isTyping || historyLoading}
+                className="flex-1 px-4 py-2.5 bg-gray-50 text-gray-900 placeholder:text-gray-500 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 rounded-xl outline-none transition-all text-xs sm:text-sm"
               />
               <button
                 type="submit"
-                disabled={!input.trim() || isTyping}
+                disabled={!input.trim() || isTyping || historyLoading}
                 className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl flex items-center justify-center hover:opacity-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md"
               >
                 <Send size={16} />
@@ -1002,6 +1076,7 @@ const SeatSelectionCard: React.FC<{
     ? requiredPassengerCount
     : (seatMap.passengerCount || seatMap.requiredSeats || 1);
   const [selectedSeatIds, setSelectedSeatIds] = useState<number[]>([]);
+  const [confirmQuantityChange, setConfirmQuantityChange] = useState(false);
   const [activeFloor, setActiveFloor] = useState<number>(1);
 
   const allSeats: SeatMapSeatItem[] = seatMap.seats || [];
@@ -1040,19 +1115,10 @@ const SeatSelectionCard: React.FC<{
   const handleToggleSeat = (seat: SeatMapSeatItem) => {
     if (seat.status !== 'AVAILABLE' || disabled) return;
 
-    if (selectedSeatIds.includes(seat.seatId)) {
-      setSelectedSeatIds(prev => prev.filter(id => id !== seat.seatId));
-    } else {
-      if (selectedSeatIds.length < targetCount) {
-        setSelectedSeatIds(prev => [...prev, seat.seatId]);
-      } else if (targetCount === 1) {
-        // Single seat mode: Replace selection directly
-        setSelectedSeatIds([seat.seatId]);
-      } else {
-        // Multi seat mode: rotate selection by replacing oldest selected seat
-        setSelectedSeatIds(prev => [...prev.slice(1), seat.seatId]);
-      }
-    }
+    setConfirmQuantityChange(false);
+    setSelectedSeatIds(prev => prev.includes(seat.seatId)
+      ? prev.filter(id => id !== seat.seatId)
+      : [...prev, seat.seatId]);
   };
 
   const selectedSeatObjects = allSeats.filter(s => selectedSeatIds.includes(s.seatId));
@@ -1226,22 +1292,25 @@ const SeatSelectionCard: React.FC<{
             </div>
           </div>
 
-          {selectedSeatIds.length < targetCount && (
-            <div className="text-[11px] text-amber-800 bg-amber-50 py-1.5 px-2.5 rounded-xl border border-amber-200 flex items-center gap-1.5">
-              <span>👉</span>
-              <span>Vui lòng chọn thêm <strong>{targetCount - selectedSeatIds.length}</strong> ghế nữa để đủ {targetCount} vé.</span>
+          {confirmQuantityChange ? (
+            <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-xs text-blue-900 space-y-2" role="status">
+              <p>Anh/chị ban đầu yêu cầu {targetCount} vé nhưng đã chọn {selectedSeatIds.length} ghế. Anh/chị có muốn tiếp tục đặt {selectedSeatIds.length} vé không?</p>
+              <div className="flex gap-2">
+                <button type="button" disabled={disabled} onClick={() => onConfirmSeats(selectedSeatIds, selectedSeatNames)} className="flex-1 rounded-lg bg-blue-600 px-3 py-2 font-bold text-white disabled:opacity-50">Đồng ý, đặt {selectedSeatIds.length} vé</button>
+                <button type="button" disabled={disabled} onClick={() => setConfirmQuantityChange(false)} className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 font-semibold text-gray-700">Chọn lại ghế</button>
+              </div>
             </div>
+          ) : (
+            <button
+              type="button"
+              disabled={selectedSeatIds.length === 0 || disabled}
+              onClick={() => selectedSeatIds.length !== targetCount ? setConfirmQuantityChange(true) : onConfirmSeats(selectedSeatIds, selectedSeatNames)}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+            >
+              <CheckCircle2 size={15} />
+              <span>Xác nhận chọn {selectedSeatIds.length || targetCount} ghế này</span>
+            </button>
           )}
-
-          <button
-            type="button"
-            disabled={selectedSeatIds.length === 0 || disabled}
-            onClick={() => onConfirmSeats(selectedSeatIds, selectedSeatNames)}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20 transition-all cursor-pointer"
-          >
-            <CheckCircle2 size={15} />
-            <span>Xác nhận chọn {selectedSeatIds.length || targetCount} ghế này</span>
-          </button>
         </div>
       </div>
     </div>

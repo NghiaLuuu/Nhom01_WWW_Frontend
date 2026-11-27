@@ -10,11 +10,14 @@ export interface ModalOptions {
   confirmText?: string;
   cancelText?: string;
   isAlert?: boolean;
+  inputLabel?: string;
+  defaultValue?: string;
 }
 
 interface ModalContextType {
   confirm: (options: ModalOptions | string) => Promise<boolean>;
   alert: (options: ModalOptions | string) => Promise<void>;
+  prompt: (options: ModalOptions) => Promise<string | null>;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
@@ -29,6 +32,9 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   });
 
   const resolverRef = useRef<((value: boolean) => void) | null>(null);
+  const promptResolverRef = useRef<((value: string | null) => void) | null>(null);
+  const [promptValue, setPromptValue] = useState('');
+  const promptValueRef = useRef('');
 
   const confirm = useCallback((options: ModalOptions | string): Promise<boolean> => {
     const opts: ModalOptions = typeof options === 'string' 
@@ -52,6 +58,15 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   }, []);
 
+  const prompt = useCallback((options: ModalOptions): Promise<string | null> => {
+    const initial = options.defaultValue ?? "";
+    promptValueRef.current = initial;
+    setPromptValue(initial);
+    return new Promise<string | null>((resolve) => {
+      promptResolverRef.current = resolve;
+      setModalState({ isOpen: true, options: { title: "Nhập thông tin", type: "warning", ...options, isAlert: false } });
+    });
+  }, []);
   // Intercept native window.alert so that any window.alert call shows this modal
   useEffect(() => {
     const originalAlert = window.alert;
@@ -70,6 +85,10 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const handleClose = (result: boolean) => {
     setModalState(prev => ({ ...prev, isOpen: false }));
+    if (promptResolverRef.current) {
+      promptResolverRef.current(result ? promptValueRef.current : null);
+      promptResolverRef.current = null;
+    }
     if (resolverRef.current) {
       resolverRef.current(result);
       resolverRef.current = null;
@@ -134,7 +153,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const { icon, iconBg, btnConfirm } = getIconAndColors();
 
   return (
-    <ModalContext.Provider value={{ confirm, alert }}>
+    <ModalContext.Provider value={{ confirm, alert, prompt }}>
       {children}
       {isOpen && (
         <div 
@@ -165,6 +184,12 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 <div className="mt-2 text-sm text-gray-600 leading-relaxed whitespace-pre-line">
                   {message}
                 </div>
+                {options.inputLabel && (
+                  <label className="mt-4 block text-sm font-medium text-gray-700">
+                    {options.inputLabel}
+                    <input autoFocus type="text" value={promptValue} onChange={(e) => { promptValueRef.current = e.target.value; setPromptValue(e.target.value); }} className="mt-1.5 w-full rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
+                  </label>
+                )}
               </div>
             </div>
 

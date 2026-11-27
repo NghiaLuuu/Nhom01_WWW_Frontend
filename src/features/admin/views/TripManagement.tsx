@@ -1,3 +1,4 @@
+import { VietnameseDateInput } from '../../../components/VietnameseDateInput';
 import { useModal } from '../../../context/ModalContext';
 import React, { useState, useEffect, useMemo } from 'react';
 import { type Trip, type TripRequest, TripService } from '../api/trip.service';
@@ -196,7 +197,7 @@ export const TripManagement: React.FC = () => {
             <span>{new Date(row.departureTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
           <div className="text-[11px] text-slate-400">
-            {new Date(row.departureTime).toLocaleDateString('vi-VN')}
+            {new Date(row.departureTime).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
           </div>
         </div>
       ),
@@ -377,11 +378,11 @@ export const TripManagement: React.FC = () => {
 
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Thời Gian Khởi Hành</label>
-                <input 
+                <VietnameseDateInput 
                   required
                   type="datetime-local"
                   value={departureTime}
-                  onChange={(e) => setDepartureTime(e.target.value)}
+                  onValueChange={setDepartureTime}
                   className="w-full px-3.5 py-2.5 text-sm bg-slate-950 border border-white/10 rounded-xl focus:border-cyan-400 focus:outline-none text-white transition-colors"
                 />
               </div>

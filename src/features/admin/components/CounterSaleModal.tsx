@@ -1,3 +1,4 @@
+import { VietnameseDateInput } from '../../../components/VietnameseDateInput';
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
@@ -341,10 +342,10 @@ export const CounterSaleModal: React.FC<CounterSaleModalProps> = ({ isOpen, onCl
                       </label>
                       <label className="space-y-1">
                         <span className="text-[11px] font-semibold text-gray-600 flex items-center gap-1"><Calendar size={12} /> Ngày đi</span>
-                        <input
-                          type="date"
+                        <VietnameseDateInput
+                          
                           value={departureDateFilter}
-                          onChange={(e) => { setDepartureDateFilter(e.target.value); resetTripSelection(); }}
+                          onValueChange={(value) => { setDepartureDateFilter(value); resetTripSelection(); }}
                           className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs font-medium bg-white"
                         />
                       </label>

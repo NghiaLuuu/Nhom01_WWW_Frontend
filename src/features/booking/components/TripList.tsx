@@ -245,6 +245,9 @@ export const TripList: React.FC<TripListProps> = ({ trips, isLoading }) => {
                     <div className="text-2xl sm:text-3xl font-black text-white font-mono tracking-tight leading-none">
                       {formatTime(trip.departureTime)}
                     </div>
+                    <div className="text-xs sm:text-sm font-medium text-slate-300">
+                      Ngày khởi hành: {new Date(trip.departureTime).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                    </div>
                     <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-cyan-300">
                       <MapPin size={14} className="text-cyan-400 shrink-0" />
                       <span className="truncate">{trip.route?.departureLocation || 'Bến xe'}</span>

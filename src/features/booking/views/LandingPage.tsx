@@ -1,3 +1,4 @@
+import { VietnameseDateInput } from '../../../components/VietnameseDateInput';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -210,10 +211,10 @@ export const LandingPage: React.FC = () => {
                     <label className="text-xs font-bold text-slate-300 uppercase tracking-wide">Ngày đi</label>
                     <div className="relative">
                       <Calendar size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                      <input 
-                        type="date"
+                      <VietnameseDateInput 
+                        
                         value={date}
-                        onChange={(e) => setDate(e.target.value)}
+                        onValueChange={setDate}
                         className="w-full pl-10 pr-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm focus:border-cyan-400 outline-none transition-colors"
                       />
                     </div>
@@ -447,10 +448,10 @@ export const LandingPage: React.FC = () => {
 
             <div className="w-full md:w-44 relative">
               <Calendar size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-              <input 
-                type="date"
+              <VietnameseDateInput 
+                
                 value={date}
-                onChange={(e) => setDate(e.target.value)}
+                onValueChange={setDate}
                 className="w-full pl-9 pr-3 py-2 text-xs sm:text-sm bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded-lg text-white outline-none"
               />
             </div>
@@ -520,11 +521,11 @@ export const LandingPage: React.FC = () => {
                 <label className="text-xs font-bold text-slate-300 uppercase">Ngày xuất bến</label>
                 <div className="relative">
                   <Calendar size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input 
-                    type="date"
+                  <VietnameseDateInput 
+                    
                     required
                     value={date}
-                    onChange={(e) => setDate(e.target.value)}
+                    onValueChange={setDate}
                     className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded-lg text-white text-sm outline-none"
                   />
                 </div>

@@ -1,3 +1,4 @@
+import { useModal } from '../../../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
@@ -34,6 +35,7 @@ import toast from 'react-hot-toast';
 import { useAuthStore } from '../../../store/useAuthStore';
 
 export const TicketDetailPage: React.FC = () => {
+  const { prompt } = useModal();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -83,7 +85,17 @@ export const TicketDetailPage: React.FC = () => {
   }, [id]);
 
   const handleCancelSingleTicket = async (ticketId: number, seatName: string) => {
-    const reason = window.prompt(`Xác nhận hủy vé ghế ${seatName}?\nNhập lý do hủy:`, 'Khách yêu cầu hủy vé');
+    const reason = await prompt({
+      title: 'Xác nhận hủy vé',
+      message: 
+`Xác nhận hủy vé ghế ${seatName}?`
+,
+      type: 'danger',
+      inputLabel: 'Lý do hủy',
+      defaultValue: 'Khách yêu cầu hủy vé',
+      confirmText: 'Xác nhận hủy',
+      cancelText: 'Giữ vé',
+    });
     if (reason === null) return;
 
     const toastId = toast.loading('Đang xử lý hủy vé lẻ...');
@@ -364,7 +376,7 @@ export const TicketDetailPage: React.FC = () => {
                   {depTime ? depTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : '--:--'}
                 </span>
                 <span>•</span>
-                <span>{depTime ? depTime.toLocaleDateString('vi-VN') : ''}</span>
+                <span>{depTime ? depTime.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}</span>
               </div>
               <p className="text-xs text-gray-400">
                 {booking.pickupPoint || 'Bến xe trung tâm (Vui lòng có mặt trước 30 phút)'}

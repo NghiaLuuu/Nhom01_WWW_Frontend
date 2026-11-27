@@ -53,7 +53,7 @@ export const FaqPage: React.FC = () => {
       id: 'cancel-change-ticket',
       category: 'BOOKING',
       question: 'Tôi có thể đổi ngày đi hoặc hủy vé đã đặt không? Mức phí thế nào?',
-      answer: 'Có. Tùy thuộc vào chính sách của từng nhà xe: Thông thường nếu hủy trước 24 giờ so với giờ khởi hành, bạn sẽ được hoàn từ 90% - 100% tiền vé; nếu hủy từ 12 - 24 giờ trước giờ xe chạy, phí hủy từ 10% - 30%. Bạn có thể thao tác trực tiếp trong trang quản lý vé hoặc liên hệ bộ phận CSKH để được trợ giúp.'
+      answer: 'Hủy trước giờ khởi hành hơn 2 giờ: phí hủy 20%, hoàn 80% giá vé. Hủy trong vòng 2 giờ trước giờ khởi hành: không hoàn tiền. Vé đã khởi hành không thể hủy theo chính sách này.'
     },
     {
       id: 'payment-methods',

@@ -510,7 +510,7 @@ export const BookingHistoryPage: React.FC = () => {
                           {depTime ? depTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : '--:--'}
                         </div>
                         <div className="text-gray-500 text-[11px]">
-                          {depTime ? depTime.toLocaleDateString('vi-VN') : 'Chưa có'}
+                          {depTime ? depTime.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Chưa có'}
                         </div>
                       </div>
 
@@ -615,7 +615,7 @@ export const BookingHistoryPage: React.FC = () => {
                             {depTime ? depTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : '--:--'}
                           </div>
                           <div className="text-xs text-gray-400">
-                            {depTime ? depTime.toLocaleDateString('vi-VN') : ''}
+                            {depTime ? depTime.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}
                           </div>
                         </td>
                         <td className="py-4 px-6 whitespace-nowrap">

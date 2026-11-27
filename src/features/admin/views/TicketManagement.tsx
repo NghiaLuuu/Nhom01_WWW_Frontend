@@ -1,3 +1,4 @@
+import { useModal } from '../../../context/ModalContext';
 import React, { useState, useEffect, useRef } from 'react';
 import { BookingService } from '../../booking/api/booking.service';
 import { TripService, type Trip } from '../api/trip.service';
@@ -29,6 +30,7 @@ import { PassengerManifestModal } from '../components/PassengerManifestModal';
 import toast from 'react-hot-toast';
 
 export const TicketManagement: React.FC = () => {
+  const { prompt } = useModal();
   const [activeTab, setActiveTab] = useState<'BOOKINGS' | 'CHECK_IN'>('BOOKINGS');
   
   // Bookings state
@@ -214,7 +216,17 @@ export const TicketManagement: React.FC = () => {
 
   // Cancel Single Ticket
   const handleCancelSingleTicket = async (ticket: TicketItem) => {
-    const reason = window.prompt(`Xác nhận hủy vé ${ticket.ticketCode} (Ghế ${ticket.seat?.seatName})?\nNhập lý do hủy:`, 'Khách yêu cầu hủy vé');
+    const reason = await prompt({
+      title: 'Xác nhận hủy vé',
+      message: 
+`Xác nhận hủy vé ${ticket.ticketCode} (Ghế ${ticket.seat?.seatName})?`
+,
+      type: 'danger',
+      inputLabel: 'Lý do hủy',
+      defaultValue: 'Khách yêu cầu hủy vé',
+      confirmText: 'Xác nhận hủy',
+      cancelText: 'Giữ vé',
+    });
     if (reason === null) return;
 
     const toastId = toast.loading('Đang xử lý hủy vé lẻ...');
@@ -777,7 +789,7 @@ export const TicketManagement: React.FC = () => {
                         <td className="py-3.5 px-4">
                           <span className="font-mono font-bold text-blue-600">#{booking.id}</span>
                           <span className="block text-[10px] text-gray-400">
-                            {new Date(booking.createdAt).toLocaleDateString('vi-VN')}
+                            {new Date(booking.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                           </span>
                         </td>
                         <td className="py-3.5 px-4">

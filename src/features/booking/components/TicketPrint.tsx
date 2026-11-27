@@ -82,7 +82,7 @@ export const TicketPrint = forwardRef<HTMLDivElement, TicketPrintProps>(({ booki
             </div>
             <div className="flex items-center space-x-3 text-xs text-slate-500">
               <span className="font-semibold text-slate-700">
-                Ngày đặt: <strong className="text-slate-900">{issueDate.toLocaleDateString('vi-VN')} {issueDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</strong>
+                Ngày đặt: <strong className="text-slate-900">{issueDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })} {issueDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</strong>
               </span>
               <span>•</span>
               <span>Dự kiến: ~{booking.trip?.route?.durationMinutes || 240} phút ({booking.trip?.route?.distanceKm || 300} km)</span>
@@ -251,7 +251,7 @@ export const TicketPrint = forwardRef<HTMLDivElement, TicketPrintProps>(({ booki
 
       {/* Ticket Footer */}
       <div className="bg-slate-100 px-5 py-2 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-[10px] text-slate-500 gap-1">
-        <span>Ngày giờ đặt vé: <strong className="text-slate-700">{issueDate.toLocaleDateString('vi-VN')} {issueDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</strong></span>
+        <span>Ngày giờ đặt vé: <strong className="text-slate-700">{issueDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })} {issueDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</strong></span>
         <span>Tổng đài 24/7: <strong className="text-blue-700">1900 8888</strong> • vexe.vn</span>
         <span className="font-semibold text-slate-700">Trang 1/1</span>
       </div>

@@ -1,3 +1,4 @@
+import { VietnameseDateInput } from '../../../components/VietnameseDateInput';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { type Trip } from '../../admin/api/trip.service';
@@ -182,7 +183,7 @@ export const SearchPage: React.FC = () => {
     if (!dateString) return 'Tất cả các ngày';
     try {
       const d = new Date(dateString);
-      return `Thứ ${d.getDay() === 0 ? 'Chủ nhật' : d.getDay() + 1}, ${d.getDate()} thg ${d.getMonth() + 1}, ${d.getFullYear()}`;
+      return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
     } catch {
       return dateString;
     }
@@ -239,10 +240,10 @@ export const SearchPage: React.FC = () => {
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <Calendar size={16} />
               </div>
-              <input 
-                type="date"
+              <VietnameseDateInput 
+                
                 value={date}
-                onChange={(e) => setDate(e.target.value)}
+                onValueChange={setDate}
                 className="w-full pl-10 pr-3.5 py-2 bg-slate-800 border border-slate-700 focus:border-cyan-400 rounded-lg text-white text-xs sm:text-sm font-medium outline-none transition-colors"
               />
             </div>

@@ -55,18 +55,8 @@ export const CancelTicketModal: React.FC<CancelTicketModalProps> = ({
     const now = new Date().getTime();
     const diffHours = (departure - now) / (1000 * 60 * 60);
 
-    let rate = 0;
-    if (diffHours >= 24) {
-      rate = 1.0; // 100% refund
-    } else if (diffHours >= 12) {
-      rate = 0.8; // 80% refund
-    } else if (diffHours >= 4) {
-      rate = 0.5; // 50% refund
-    } else {
-      rate = 0.0; // No refund
-    }
-
-    const total = Number(booking.totalPrice) || 0;
+    const rate = diffHours > 2 ? 0.8 : 0.0;
+const total = Number(booking.totalPrice) || 0;
     const refAmount = Math.round(total * rate);
     const fee = total - refAmount;
 
@@ -184,7 +174,7 @@ export const CancelTicketModal: React.FC<CancelTicketModalProps> = ({
               <div className="flex justify-between">
                 <span>Tỷ lệ hoàn tiền:</span>
                 <span className={`font-bold ${refundRate > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                  {refundRate}% ({hoursUntilDeparture >= 24 ? 'Hủy trước 24h' : hoursUntilDeparture >= 12 ? 'Hủy 12h - 24h' : hoursUntilDeparture >= 4 ? 'Hủy 4h - 12h' : 'Dưới 4h'})
+                  {refundRate}% ({refundRate > 0 ? 'Trước giờ chạy hơn 2 giờ' : 'Trong vòng 2 giờ trước giờ chạy'})
                 </span>
               </div>
               <div className="flex justify-between text-gray-500">
