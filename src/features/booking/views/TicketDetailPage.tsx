@@ -500,12 +500,12 @@ export const TicketDetailPage: React.FC = () => {
                           <ArrowLeftRight size={12} />
                           <span>Đổi ghế</span>
                         </button>
-                        <button
+                        {isStaffOrAdmin && <button
                           onClick={() => handleCancelSingleTicket(t.id, t.seat?.seatName || t.seatNumber)}
                           className="px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl font-semibold text-[10px] transition-colors"
                         >
                           Hủy vé
-                        </button>
+                        </button>}
                       </div>
                     )}
                   </div>
@@ -609,12 +609,12 @@ export const TicketDetailPage: React.FC = () => {
             </Link>
 
             <div className="flex items-center space-x-2">
-              {isCanCancel && (
+              {isCanCancel && !isStaffOrAdmin && (
                 <button
                   onClick={() => setIsCancelModalOpen(true)}
                   className="px-5 py-3 rounded-2xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold transition-colors"
                 >
-                  Hủy vé này
+                  Gửi yêu cầu hủy vé
                 </button>
               )}
 

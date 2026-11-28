@@ -3,10 +3,6 @@ import {
   X, 
   AlertTriangle, 
   Clock, 
-  DollarSign, 
-  CreditCard, 
-  FileText, 
-  CheckCircle2, 
   Info,
   ChevronDown
 } from 'lucide-react';
@@ -39,9 +35,6 @@ export const CancelTicketModal: React.FC<CancelTicketModalProps> = ({
 }) => {
   const [selectedReason, setSelectedReason] = useState<string>(CANCEL_REASONS[0]);
   const [customReason, setCustomReason] = useState<string>('');
-  const [bankName, setBankName] = useState<string>('');
-  const [accountNumber, setAccountNumber] = useState<string>('');
-  const [accountHolder, setAccountHolder] = useState<string>('');
   const [agreePolicy, setAgreePolicy] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -85,12 +78,9 @@ const total = Number(booking.totalPrice) || 0;
       const res = await BookingService.requestCancelBooking({
         bookingId: booking.id,
         reason: finalReason,
-        bankName,
-        accountNumber,
-        accountHolder,
       });
 
-      if (res.success || res.data) {
+      if (res.success && res.data) {
         toast.success(res.message || 'Yêu cầu hủy vé đã được gửi thành công!');
         onCancelSuccess();
         onClose();
@@ -115,7 +105,7 @@ const total = Number(booking.totalPrice) || 0;
               <AlertTriangle className="text-white" size={22} />
             </div>
             <div>
-              <h3 className="text-lg font-bold">Xác nhận hủy vé</h3>
+              <h3 className="text-lg font-bold">Gửi yêu cầu hủy vé</h3>
               <p className="text-xs text-red-100">Mã đơn: #{booking.id}</p>
             </div>
           </div>
@@ -130,6 +120,9 @@ const total = Number(booking.totalPrice) || 0;
 
         {/* Content */}
         <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
+          <p className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-xs leading-relaxed text-blue-900">
+            Yêu cầu áp dụng cho toàn bộ đơn đặt vé và cần nhân viên duyệt. Vé và ghế vẫn còn hiệu lực trong thời gian chờ xử lý. Việc gửi yêu cầu chưa xác nhận hủy vé hoặc hoàn tiền.
+          </p>
           {/* Trip Summary Card */}
           <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
             <div className="flex justify-between items-start mb-2">
@@ -212,6 +205,7 @@ const total = Number(booking.totalPrice) || 0;
 
             {selectedReason === 'Lý do khác' && (
               <textarea
+                maxLength={1000}
                 value={customReason}
                 onChange={(e) => setCustomReason(e.target.value)}
                 placeholder="Nhập lý do chi tiết..."
@@ -220,39 +214,6 @@ const total = Number(booking.totalPrice) || 0;
               />
             )}
           </div>
-
-          {/* Bank Info for Refund (if refundAmount > 0) */}
-          {refundAmount > 0 && (
-            <div className="space-y-3 pt-2 border-t border-gray-100">
-              <div className="flex items-center space-x-2 text-xs font-semibold text-gray-700">
-                <CreditCard size={15} className="text-blue-600" />
-                <span>Thông tin tài khoản nhận tiền hoàn (Nếu có)</span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <input
-                  type="text"
-                  placeholder="Tên ngân hàng (VD: Vietcombank)"
-                  value={bankName}
-                  onChange={(e) => setBankName(e.target.value)}
-                  className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none"
-                />
-                <input
-                  type="text"
-                  placeholder="Số tài khoản"
-                  value={accountNumber}
-                  onChange={(e) => setAccountNumber(e.target.value)}
-                  className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none"
-                />
-                <input
-                  type="text"
-                  placeholder="Tên chủ tài khoản"
-                  value={accountHolder}
-                  onChange={(e) => setAccountHolder(e.target.value)}
-                  className="sm:col-span-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none uppercase"
-                />
-              </div>
-            </div>
-          )}
 
           {/* Agreement Checkbox */}
           <label className="flex items-start space-x-2.5 pt-2 cursor-pointer select-none">
@@ -263,8 +224,7 @@ const total = Number(booking.totalPrice) || 0;
               className="mt-0.5 w-4 h-4 rounded text-red-600 focus:ring-red-500 border-gray-300"
             />
             <span className="text-xs text-gray-600 leading-relaxed">
-              Tôi xác nhận muốn hủy vé này và đồng ý với mức hoàn tiền{' '}
-              <strong className="text-gray-900">{refundAmount.toLocaleString('vi-VN')}₫</strong> theo quy định nhà xe.
+              Tôi xác nhận gửi yêu cầu hủy toàn bộ đơn vé và chờ nhân viên xử lý. Mức hoàn tiền hiển thị chỉ là dự kiến, chưa phải giao dịch hoàn tiền.
             </span>
           </label>
 
@@ -286,7 +246,7 @@ const total = Number(booking.totalPrice) || 0;
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
-                <span>Xác nhận hủy</span>
+                <span>Gửi yêu cầu</span>
               )}
             </button>
           </div>

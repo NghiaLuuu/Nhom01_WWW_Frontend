@@ -21,6 +21,7 @@ import { TicketDetailPage } from './features/booking/views/TicketDetailPage';
 import { ETicketPage } from './features/booking/views/ETicketPage';
 import { ProfilePage } from './features/customer/views/ProfilePage';
 import { TicketManagement } from './features/admin/views/TicketManagement';
+import { CancelRequestManagement } from './features/admin/views/CancelRequestManagement';
 import { ReportManagement } from './features/admin/views/ReportManagement';
 import { LiveVisitorDetailView } from './features/admin/views/LiveVisitorDetailView';
 import { UserTrackingHub } from './features/admin/views/UserTrackingHub';
@@ -111,6 +112,7 @@ function App() {
             <Route path="trips" element={<TripManagement />} />
             <Route path="users" element={<UserManagement />} />
             <Route path="tickets" element={<TicketManagement />} />
+            <Route path="cancel-requests" element={<CancelRequestManagement />} />
 
             <Route path="routes" element={<RouteManagement />} />
             <Route path="vehicles-drivers" element={<VehicleManagement />} />
