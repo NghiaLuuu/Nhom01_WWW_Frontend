@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Bus, LayoutDashboard, Ticket, Users, Car, Map, 
-  BarChart3, UserCircle, FileText, ChevronLeft, ChevronRight, LogOut, Activity, Radio 
+  BarChart3, UserCircle, FileText, ChevronLeft, ChevronRight, LogOut, Activity, Radio, ClipboardList
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -23,6 +23,7 @@ const MENU_GROUPS = [
     items: [
       { name: 'Quản Lý Chuyến Xe', icon: Bus, path: '/admin/trips', roles: ['ROLE_ADMIN', 'TRIP_MANAGE'] },
       { name: 'Đơn Đặt Vé', icon: Ticket, path: '/admin/tickets', roles: ['ROLE_ADMIN', 'MANAGE_TICKET'] },
+      { name: 'Yêu Cầu Hủy Vé', icon: ClipboardList, path: '/admin/cancel-requests', roles: ['ROLE_ADMIN', 'ROLE_STAFF', 'MANAGE_TICKET', 'TICKET_MANAGE'] },
       { name: 'Xe & Tài Xế', icon: Car, path: '/admin/vehicles-drivers', roles: ['ROLE_ADMIN', 'VEHICLE_MANAGE'] },
       { name: 'Tuyến Đường', icon: Map, path: '/admin/routes', roles: ['ROLE_ADMIN', 'ROUTE_MANAGE'] },
     ]

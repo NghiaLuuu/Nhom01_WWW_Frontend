@@ -43,7 +43,7 @@ Dự án Frontend được xây dựng dựa trên các tiêu chuẩn thiết k�
 
 ## ⚙️ Yêu Cầu Môi Trường (Prerequisites)
 
-* **Node.js**: Phiên bản 18.0.0 hoặc mới hơn.
+* **Node.js**: Dùng Node.js 22.12+ hoặc Node.js 24 LTS cho Vite 8 hiện tại.
 * **NPM** hoặc **Yarn** được cài đặt.
 
 ---
@@ -53,7 +53,7 @@ Dự án Frontend được xây dựng dựa trên các tiêu chuẩn thiết k�
 Tạo file `.env` tại thư mục gốc của dự án Frontend và cấu hình địa chỉ trỏ tới Backend API của bạn:
 
 ```env
-VITE_API_BASE_URL=http://localhost:8080/api
+VITE_API_URL=http://localhost:8080/api
 ```
 
 ---

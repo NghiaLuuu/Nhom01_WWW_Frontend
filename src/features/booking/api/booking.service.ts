@@ -220,8 +220,8 @@ export const BookingService = {
     return res.data;
   },
 
-  getPendingCancelRequests: async (): Promise<{ success: boolean; data: CancelRequestItem[]; message?: string }> => {
-    const res = await api.get('/cancel-requests');
+  getPendingCancelRequests: async (status = 'PENDING'): Promise<{ success: boolean; data: CancelRequestItem[]; message?: string }> => {
+    const res = await api.get('/cancel-requests', { params: { status } });
     return res.data;
   },
 
